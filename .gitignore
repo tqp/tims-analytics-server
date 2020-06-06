@@ -1,0 +1,7 @@
+# Project exclude paths
+/target/
+/src/main/resources/config/
+/.idea/
+
+*.iml
+pom.xml
