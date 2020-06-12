@@ -1,0 +1,23 @@
+
+ ##############################################################################
+ #
+ #   ${application.title}
+ #   ------------
+ #
+ #   Build:                 ${application.timestamp}
+ #   Environment:           ${application.environment}
+ #   Spring Boot:           ${spring-boot.version}
+ #
+ #   Client URL:            ${application.client.url}
+ #   Server URL:            ${application.server.url}
+ #
+ #   Google Client ID:      ${google.client-id}
+ #   Google Redirect URI:   ${google.redirect-uri}
+ #
+ #   Intuit Client ID:      ${intuit.production.client-id}
+ #   Intuit Redirect URL:   ${intuit.production.redirect-uri}
+ #   Intuit API URL:        ${intuit.production.api-uri}
+ #
+ #   AWS Access Key:        ${aws.s3.accessKey}
+ #
+ ##############################################################################
