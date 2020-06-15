@@ -3,7 +3,7 @@ package com.timsanalytics.auth.authCommon.services;
 import com.timsanalytics.auth.authCommon.beans.Role;
 import com.timsanalytics.auth.authCommon.beans.User;
 import com.timsanalytics.auth.authCommon.dao.UserDao;
-import com.timsanalytics.auth.authCommon.utils.PrintObjectService;
+import com.timsanalytics.utils.PrintObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.timsanalytics.auth.authCommon.utils;
+package com.timsanalytics.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;

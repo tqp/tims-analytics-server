@@ -1,4 +1,4 @@
-package com.timsanalytics.auth.authCommon.utils;
+package com.timsanalytics.utils;
 
 import com.timsanalytics.auth.authCommon.beans.User;
 import com.timsanalytics.auth.authCommon.services.AuthService;

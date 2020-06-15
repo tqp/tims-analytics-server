@@ -1,7 +1,7 @@
 package com.timsanalytics.auth.authCommon.dao;
 
 import com.timsanalytics.auth.authCommon.beans.User;
-import com.timsanalytics.auth.authCommon.utils.GenerateUuidService;
+import com.timsanalytics.utils.GenerateUuidService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

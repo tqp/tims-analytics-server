@@ -2,7 +2,7 @@ package com.timsanalytics.auth.authInternal.services;
 
 import com.timsanalytics.auth.authCommon.beans.User;
 import com.timsanalytics.auth.authCommon.services.AuthService;
-import com.timsanalytics.auth.authCommon.utils.BCryptEncoderService;
+import com.timsanalytics.utils.BCryptEncoderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

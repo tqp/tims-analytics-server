@@ -1,4 +1,4 @@
-package com.timsanalytics.auth.authCommon.utils;
+package com.timsanalytics.utils;
 
 import org.springframework.stereotype.Service;
 
