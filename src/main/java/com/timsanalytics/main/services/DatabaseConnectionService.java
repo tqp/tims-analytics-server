@@ -16,7 +16,7 @@ public class DatabaseConnectionService {
         this.databaseConnectionDao = databaseConnectionDao;
     }
 
-    public List<KeyValueString> getDatabaseResponse() {
+    public KeyValueString getDatabaseResponse() {
         return this.databaseConnectionDao.getDatabaseResponse();
     }
 }

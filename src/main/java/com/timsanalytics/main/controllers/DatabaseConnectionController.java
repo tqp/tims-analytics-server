@@ -23,9 +23,9 @@ public class DatabaseConnectionController {
         this.databaseConnectionService = databaseConnectionService;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "", method = RequestMethod.GET)
     @Operation(summary = "Get Database Response", tags = {"Basic Test Pages"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public List<KeyValueString> getDatabaseResponse() {
+    public KeyValueString getDatabaseResponse() {
         try {
             return databaseConnectionService.getDatabaseResponse();
         } catch (Exception e) {

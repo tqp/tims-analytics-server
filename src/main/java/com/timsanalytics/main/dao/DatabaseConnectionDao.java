@@ -8,8 +8,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class DatabaseConnectionDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
@@ -20,7 +18,7 @@ public class DatabaseConnectionDao {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
     }
 
-    public List<KeyValueString> getDatabaseResponse() {
+    public KeyValueString getDatabaseResponse() {
         this.logger.trace("DatabaseConnectionDao -> getDatabaseResponse");
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
@@ -29,9 +27,7 @@ public class DatabaseConnectionDao {
         query.append("      DUAL\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> {
-                return new KeyValueString("response", rs.getString("TIMESTAMP"));
-            });
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{}, (rs, rowNum) -> new KeyValueString("response", rs.getString("TIMESTAMP")));
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
