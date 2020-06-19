@@ -5,8 +5,6 @@ import com.timsanalytics.main.dao.DatabaseConnectionDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class DatabaseConnectionService {
     private final DatabaseConnectionDao databaseConnectionDao;

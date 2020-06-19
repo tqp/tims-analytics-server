@@ -86,6 +86,7 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/sample-data/**").permitAll()
 
                 .antMatchers("/api/v1/basic-database-connection/**").permitAll()
+                .antMatchers("/api/v1/fuel-tracker/**").permitAll()
 
                 // API Endpoints USER
                 .antMatchers("/api/v1/my-profile/**").hasAnyRole("USER")
@@ -136,7 +137,7 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 //        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://localhost:4201", "https://timsanalytics.com"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://localhost:4201", "https://timsanalytics.com", "https://demo.timsanalytics.com"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(
                 Arrays.asList(
