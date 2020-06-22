@@ -1,5 +1,6 @@
 package com.timsanalytics.main.controllers;
 
+import com.timsanalytics.main.beans.KeyValueDouble;
 import com.timsanalytics.main.beans.KeyValueLong;
 import com.timsanalytics.main.services.FuelTrackerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,11 +24,33 @@ public class FuelTrackerController {
         this.fuelTrackerService = fuelTrackerService;
     }
 
-    @RequestMapping(value = "/fuel-info", method = RequestMethod.GET)
-    @Operation(summary = "Get Fuel Info", tags = {"Fuel Tracker"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public List<KeyValueLong> getFuelInfo() {
+    @RequestMapping(value = "/longest-distance", method = RequestMethod.GET)
+    @Operation(summary = "Get Longest Single-Tank Distance", tags = {"Fuel Tracker"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public Double getLongestDistance() {
         try {
-            return fuelTrackerService.getFuelInfo();
+            return fuelTrackerService.getLongestDistance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @RequestMapping(value = "/odometer", method = RequestMethod.GET)
+    @Operation(summary = "Get Odometer Data", tags = {"Fuel Tracker"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public List<KeyValueDouble> getOdometerData() {
+        try {
+            return fuelTrackerService.getOdometerData();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @RequestMapping(value = "/mpg", method = RequestMethod.GET)
+    @Operation(summary = "Get Miles Per Gallon Data", tags = {"Fuel Tracker"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public List<KeyValueDouble> getMpgData() {
+        try {
+            return fuelTrackerService.getMpgData();
         } catch (Exception e) {
             e.printStackTrace();
             return null;

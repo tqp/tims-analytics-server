@@ -1,5 +1,6 @@
 package com.timsanalytics.main.services;
 
+import com.timsanalytics.main.beans.KeyValueDouble;
 import com.timsanalytics.main.beans.KeyValueLong;
 import com.timsanalytics.main.dao.FuelTrackerDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,15 @@ public class FuelTrackerService {
         this.fuelTrackerDao = fuelTrackerDao;
     }
 
-    public List<KeyValueLong> getFuelInfo() {
-        return this.fuelTrackerDao.getFuelInfo();
+    public Double getLongestDistance() {
+        return this.fuelTrackerDao.getLongestDistance();
+    }
+
+    public List<KeyValueDouble> getOdometerData() {
+        return this.fuelTrackerDao.getOdometerData();
+    }
+
+    public List<KeyValueDouble> getMpgData() {
+        return this.fuelTrackerDao.getMpgData();
     }
 }
