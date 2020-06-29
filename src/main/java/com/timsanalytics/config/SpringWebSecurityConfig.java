@@ -111,11 +111,11 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/sample-app/**").hasAnyRole("DEVELOPER")
 
                 // Testing Endpoints
-                .antMatchers("/api/v1/endpoint-test/open/**").permitAll()
-                .antMatchers("/api/v1/endpoint-test/user/**").hasAnyRole("USER")
-                .antMatchers("/api/v1/endpoint-test/manager/**").hasAnyRole("MANAGER")
-                .antMatchers("/api/v1/endpoint-test/admin/**").hasAnyRole("ADMIN")
-                .antMatchers("/api/v1/endpoint-test/developer/**").hasAnyRole("DEVELOPER")
+                .antMatchers("/api/v1/diagnostics/endpoint/open/**").permitAll()
+                .antMatchers("/api/v1/diagnostics/endpoint/user/**").hasAnyRole("USER")
+                .antMatchers("/api/v1/diagnostics/endpoint/manager/**").hasAnyRole("MANAGER")
+                .antMatchers("/api/v1/diagnostics/endpoint/admin/**").hasAnyRole("ADMIN")
+                .antMatchers("/api/v1/diagnostics/endpoint/developer/**").hasAnyRole("DEVELOPER")
 
                 .anyRequest().authenticated();
     }

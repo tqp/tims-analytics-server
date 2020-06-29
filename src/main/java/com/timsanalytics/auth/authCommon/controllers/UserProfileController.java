@@ -30,7 +30,7 @@ public class UserProfileController {
     }
 
     // READ: ITEM
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "", method = RequestMethod.GET)
     @Operation(summary = "Get My Profile", description = "Get My Profile", tags = {"My Profile"})
     public User getMyProfile(HttpServletRequest request) {
         User loggedInUser = this.tokenService.getUserFromRequest(request);
@@ -44,7 +44,7 @@ public class UserProfileController {
     }
 
     // UPDATE
-    @RequestMapping(value = "/", method = RequestMethod.PUT)
+    @RequestMapping(value = "", method = RequestMethod.PUT)
     @Operation(summary = "Update My Profile", description = "Update My Profile", tags = {"My Profile"})
     public User updateMyProfile(HttpServletRequest request, @RequestBody User User) {
         this.logger.debug("############################################################################");
@@ -52,8 +52,7 @@ public class UserProfileController {
         try {
             User loggedInUser = this.tokenService.getUserFromRequest(request);
             this.logger.debug("loggedInUser=" + loggedInUser.getUserGuid());
-            User item = this.userService.updateMyProfile(User, loggedInUser);
-            return item;
+            return this.userService.updateMyProfile(User, loggedInUser);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -80,8 +79,7 @@ public class UserProfileController {
         this.logger.debug("MyProfileController -> changePassword: userGuid=" + User.getUserGuid());
         try {
             User loggedInUser = this.tokenService.getUserFromRequest(request);
-            User item = this.userService.changePassword(User, loggedInUser);
-            return item;
+            return this.userService.changePassword(User, loggedInUser);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
