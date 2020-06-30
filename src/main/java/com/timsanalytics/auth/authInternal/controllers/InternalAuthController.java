@@ -31,7 +31,7 @@ public class InternalAuthController {
 
     @RequestMapping(value = "/{a_username}/{b_password}", method = RequestMethod.POST)
     @Operation(summary = "Authenticate with Username and Password", description = "Attempt authentication using a given Username and Password", tags = {"Authentication - Internal"})
-    public ResponseEntity<?> submitUsernameAndPassword(@Parameter(description="Username", required=true, example = "admin@mail.com") @PathVariable String a_username,
+    public ResponseEntity<?> submitUsernameAndPassword(@Parameter(description="Username", required=true, example = "admin") @PathVariable String a_username,
                                                        @Parameter(description="Password", required=true, example = "admin1") @PathVariable String b_password) {
         return this.internalAuthService.submitUsernameAndPassword(a_username, b_password);
     }

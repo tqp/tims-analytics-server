@@ -5,6 +5,7 @@ import com.timsanalytics.auth.authCommon.beans.User;
 import com.timsanalytics.auth.authCommon.services.TokenService;
 import com.timsanalytics.auth.authCommon.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ public class UserProfileController {
 
     // READ: ITEM
     @RequestMapping(value = "", method = RequestMethod.GET)
-    @Operation(summary = "Get My Profile", description = "Get My Profile", tags = {"My Profile"})
+    @Operation(summary = "Get My Profile", description = "Get My Profile", tags = {"My Profile"}, security = @SecurityRequirement(name = "bearerAuth"))
     public User getMyProfile(HttpServletRequest request) {
         User loggedInUser = this.tokenService.getUserFromRequest(request);
         this.logger.trace("MyProfileController -> getMyProfile: userGuid=" + loggedInUser.getUserGuid());
