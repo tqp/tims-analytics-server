@@ -5,6 +5,7 @@ import com.timsanalytics.main.beans.ServerSidePaginationRequest;
 import com.timsanalytics.main.beans.ServerSidePaginationResponse;
 import com.timsanalytics.main.services.PersonService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
@@ -68,6 +69,18 @@ public class PersonController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/{personGuid}", method = RequestMethod.GET)
+    @Operation(summary = "getPersonDetail", tags = {"Person"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Person> getPersonDetail(@Parameter(description = "Person GUID", required = true) @PathVariable String personGuid) {
+        try {
+            return ResponseEntity.ok()
+                    .body(personService.getPersonDetail(personGuid));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

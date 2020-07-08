@@ -28,19 +28,19 @@ public class PersonDao {
         this.logger.trace("PersonDao -> getPersonList_All");
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      PERSON.GUID,\n");
-        query.append("      PERSON.FIRST_NAME,\n");
-        query.append("      PERSON.LAST_NAME,\n");
-        query.append("      PERSON.COMPANY_NAME,\n");
-        query.append("      PERSON.ADDRESS,\n");
-        query.append("      PERSON.CITY,\n");
-        query.append("      PERSON.COUNTY,\n");
-        query.append("      PERSON.STATE,\n");
-        query.append("      PERSON.ZIP,\n");
-        query.append("      PERSON.PHONE1,\n");
-        query.append("      PERSON.PHONE2,\n");
-        query.append("      PERSON.EMAIL,\n");
-        query.append("      PERSON.WEB\n");
+        query.append("      PERSON.PERSON_GUID,\n");
+        query.append("      PERSON.PERSON_LAST_NAME,\n");
+        query.append("      PERSON.PERSON_FIRST_NAME,\n");
+        query.append("      PERSON.PERSON_STREET,\n");
+        query.append("      PERSON.PERSON_CITY,\n");
+        query.append("      PERSON.PERSON_COUNTY,\n");
+        query.append("      PERSON.PERSON_STATE,\n");
+        query.append("      PERSON.PERSON_ZIP_CODE,\n");
+        query.append("      PERSON.PERSON_HOME_PHONE,\n");
+        query.append("      PERSON.PERSON_MOBILE_PHONE,\n");
+        query.append("      PERSON.PERSON_EMAIL_ADDRESS,\n");
+        query.append("      PERSON.PERSON_COMPANY_NAME,\n");
+        query.append("      PERSON.PERSON_COMPANY_WEB_SITE\n");
         query.append("  FROM\n");
         query.append("      PERSON\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -77,11 +77,7 @@ public class PersonDao {
         query.append(getPersonList_InfiniteScroll_RootQuery());
         query.append("              WHERE\n");
         query.append("              (\n");
-        query.append("                  (\n");
-        query.append("                      UPPER(PERSON.PERSON_LAST_NAME) LIKE UPPER('%%')\n");
-        query.append("                      OR\n");
-        query.append("                      UPPER(PERSON.PERSON_FIRST_NAME) LIKE UPPER('%%')\n");
-        query.append("                  )\n");
+        query.append(getPersonList_InfiniteScroll_WhereClause(filter));
         query.append("              )\n");
         query.append("          ) AS ROOT_QUERY\n");
         query.append("          -- END ROOT QUERY\n");
@@ -105,8 +101,8 @@ public class PersonDao {
             }, (rs, rowNum) -> {
                 Person item = new Person();
                 item.setGuid(rs.getString("PERSON_GUID"));
-                item.setFirstName(rs.getString("PERSON_FIRST_NAME"));
                 item.setLastName(rs.getString("PERSON_LAST_NAME"));
+                item.setFirstName(rs.getString("PERSON_FIRST_NAME"));
                 item.setAddress(rs.getString("PERSON_STREET"));
                 item.setCity(rs.getString("PERSON_CITY"));
                 item.setCounty(rs.getString("PERSON_COUNTY"));
@@ -159,6 +155,35 @@ public class PersonDao {
             whereClause.append("(1=1)");
         }
         return whereClause.toString();
+    }
+
+    public Person getPersonDetail(String personGuid) {
+        this.logger.trace("PersonDao -> getPersonDetail: personGuid=" + personGuid);
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      PERSON_GUID,\n");
+        query.append("      PERSON_LAST_NAME,\n");
+        query.append("      PERSON_FIRST_NAME,\n");
+        query.append("      PERSON_STREET,\n");
+        query.append("      PERSON_CITY,\n");
+        query.append("      PERSON_STATE,\n");
+        query.append("      PERSON_ZIP_CODE,\n");
+        query.append("      PERSON_COUNTY,\n");
+        query.append("      PERSON_HOME_PHONE,\n");
+        query.append("      PERSON_MOBILE_PHONE,\n");
+        query.append("      PERSON_EMAIL_ADDRESS,\n");
+        query.append("      PERSON_COMPANY_NAME,\n");
+        query.append("      PERSON_COMPANY_WEB_SITE\n");
+        query.append("  FROM\n");
+        query.append("      SAMPLE_DATA.PERSON\n");
+        query.append("  WHERE\n");
+        query.append("      PERSON_GUID = ?;\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{personGuid}, new PersonRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
 }

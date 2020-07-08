@@ -12,8 +12,8 @@ import java.util.List;
 
 @Service
 public class PersonService {
-    private Logger logger = LoggerFactory.getLogger(getClass().getName());
-    private PersonDao personDao;
+    private final Logger logger = LoggerFactory.getLogger(getClass().getName());
+    private final PersonDao personDao;
 
     @Autowired
     public PersonService(PersonDao personDao) {
@@ -26,6 +26,10 @@ public class PersonService {
 
     public List<Person> getPersonList_InfiniteScroll(ServerSidePaginationRequest serverSidePaginationRequest) {
         return this.personDao.getPersonList_InfiniteScroll(serverSidePaginationRequest);
+    }
+
+    public Person getPersonDetail(String personGuid) {
+        return this.personDao.getPersonDetail(personGuid);
     }
 
 }
