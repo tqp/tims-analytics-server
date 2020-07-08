@@ -14,10 +14,6 @@
  #   Google Client ID:      ${google.client-id}
  #   Google Redirect URI:   ${google.redirect-uri}
  #
- #   Intuit Client ID:      ${intuit.production.client-id}
- #   Intuit Redirect URL:   ${intuit.production.redirect-uri}
- #   Intuit API URL:        ${intuit.production.api-uri}
- #
  #   AWS Access Key:        ${aws.s3.accessKey}
  #
  ##############################################################################
