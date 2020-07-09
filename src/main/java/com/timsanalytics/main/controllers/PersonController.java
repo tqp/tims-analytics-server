@@ -84,5 +84,18 @@ public class PersonController {
         }
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "updatePerson", tags = {"Person"}, description = "Update Person record.", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Person> updatePerson(@RequestBody Person person) {
+        try {
+            return ResponseEntity.ok()
+                    .body(personService.updatePerson(person));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
 }

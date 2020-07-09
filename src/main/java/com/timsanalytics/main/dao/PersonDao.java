@@ -10,6 +10,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Service
@@ -147,9 +148,9 @@ public class PersonDao {
         // IF a table-wide filter exists, search all 'searchable' fields.
         if (!"".equalsIgnoreCase(filter)) {
             whereClause.append("(\n");
-            whereClause.append("    UPPER(PERSON.LAST_NAME) LIKE UPPER('%").append(filter).append("%')\n");
+            whereClause.append("    UPPER(PERSON.PERSON_LAST_NAME) LIKE UPPER('%").append(filter).append("%')\n");
             whereClause.append("    OR");
-            whereClause.append("    UPPER(PERSON.FIRST_NAME) LIKE UPPER('%").append(filter).append("%')\n");
+            whereClause.append("    UPPER(PERSON.PERSON_FIRST_NAME) LIKE UPPER('%").append(filter).append("%')\n");
             whereClause.append(")\n");
         } else {
             whereClause.append("(1=1)");
@@ -184,6 +185,34 @@ public class PersonDao {
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    public Person updatePerson(Person person) {
+        this.logger.debug("PersonDao -> updatePerson");
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      SAMPLE_DATA.PERSON\n");
+        query.append("  SET\n");
+        query.append("      PERSON.PERSON_LAST_NAME = ?,\n");
+        query.append("      PERSON.PERSON_FIRST_NAME = ?\n");
+        query.append("  WHERE\n");
+        query.append("      PERSON.PERSON_GUID = ?\n");
+        this.logger.debug("SQL:\n" + query.toString());
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setString(1, person.getLastName());
+                        ps.setString(2, person.getFirstName());
+                        ps.setString(3, person.getGuid());
+                        return ps;
+                    }
+            );
+            return this.getPersonDetail(person.getGuid());
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+
     }
 
 }

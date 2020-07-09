@@ -32,4 +32,7 @@ public class PersonService {
         return this.personDao.getPersonDetail(personGuid);
     }
 
+    public Person updatePerson(Person person) {
+        return this.personDao.updatePerson(person);
+    }
 }
