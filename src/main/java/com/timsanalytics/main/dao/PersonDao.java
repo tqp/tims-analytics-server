@@ -1,8 +1,9 @@
 package com.timsanalytics.main.dao;
 
+import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.main.beans.Person;
 import com.timsanalytics.main.beans.ServerSidePaginationRequest;
-import com.timsanalytics.utils.PrintObjectService;
+import com.timsanalytics.utils.GenerateUuidService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,58 @@ import java.util.List;
 public class PersonDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final JdbcTemplate mySqlAuthJdbcTemplate;
-    private final PrintObjectService printObjectService;
+    private final GenerateUuidService generateUuidService;
 
     @Autowired
-    public PersonDao(JdbcTemplate mySqlAuthJdbcTemplate, PrintObjectService printObjectService) {
+    public PersonDao(JdbcTemplate mySqlAuthJdbcTemplate, GenerateUuidService generateUuidService) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
-        this.printObjectService = printObjectService;
+        this.generateUuidService = generateUuidService;
+    }
+
+    public Person createPerson(Person person) {
+        this.logger.trace("PersonDao -> createPerson");
+        StringBuilder query = new StringBuilder();
+        query.append("  INSERT INTO\n");
+        query.append("      SAMPLE_DATA.PERSON\n");
+        query.append("      (\n");
+        query.append("          PERSON.PERSON_GUID,\n");
+        query.append("          PERSON.PERSON_LAST_NAME,\n");
+        query.append("          PERSON.PERSON_FIRST_NAME,\n");
+        query.append("          PERSON.PERSON_STREET,\n");
+        query.append("          PERSON.PERSON_CITY,\n");
+        query.append("          PERSON.PERSON_COUNTY,\n");
+        query.append("          PERSON.PERSON_STATE,\n");
+        query.append("          PERSON.PERSON_ZIP_CODE,\n");
+        query.append("          PERSON.PERSON_HOME_PHONE,\n");
+        query.append("          PERSON.PERSON_MOBILE_PHONE,\n");
+        query.append("          PERSON.PERSON_EMAIL_ADDRESS,\n");
+        query.append("          PERSON.PERSON_COMPANY_NAME,\n");
+        query.append("          PERSON.PERSON_COMPANY_WEB_SITE\n");
+        query.append("      )\n");
+        query.append("      VALUES\n");
+        query.append("      (\n");
+        query.append("          ?,\n"); // 1
+        query.append("          ?,\n"); // 2
+        query.append("          ?\n"); // 3
+        query.append("      )\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        person.setGuid(this.generateUuidService.GenerateUuid());
+                        this.logger.debug("New Person GUID: " + person.getGuid());
+                        ps.setString(1, person.getGuid());
+                        ps.setString(2, person.getLastName());
+                        ps.setString(3, person.getFirstName());
+                        return ps;
+                    }
+            );
+            return person;
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("FuelStationDao -> createFuelStation -> EmptyResultDataAccessException: " + e);
+            return null;
+        }
     }
 
     public List<Person> getPersonList_All() {
@@ -43,7 +90,9 @@ public class PersonDao {
         query.append("      PERSON.PERSON_COMPANY_NAME,\n");
         query.append("      PERSON.PERSON_COMPANY_WEB_SITE\n");
         query.append("  FROM\n");
-        query.append("      PERSON\n");
+        query.append("      SAMPLE_DATA.PERSON\n");
+        query.append("  WHERE\n");
+        query.append("      PERSON.STATUS = 'Active'\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, new PersonRowMapper());
@@ -53,8 +102,7 @@ public class PersonDao {
     }
 
     public List<Person> getPersonList_InfiniteScroll(ServerSidePaginationRequest serverSidePaginationRequest) {
-        this.logger.debug("PersonDao -> getPersonList_InfiniteScroll");
-        this.printObjectService.PrintObject("serverSidePaginationRequest", serverSidePaginationRequest);
+        this.logger.trace("PersonDao -> getPersonList_InfiniteScroll");
 
         int pageStart = (serverSidePaginationRequest.getPageIndex() - 1) * (serverSidePaginationRequest.getPageSize() + 1);
         int pageEnd = (pageStart + serverSidePaginationRequest.getPageSize() - 1);
@@ -78,6 +126,8 @@ public class PersonDao {
         query.append(getPersonList_InfiniteScroll_RootQuery());
         query.append("              WHERE\n");
         query.append("              (\n");
+        query.append("                  PERSON.STATUS = 'Active'\n");
+        query.append("                  AND\n");
         query.append(getPersonList_InfiniteScroll_WhereClause(filter));
         query.append("              )\n");
         query.append("          ) AS ROOT_QUERY\n");
@@ -91,9 +141,9 @@ public class PersonDao {
 
         query.append("  LIMIT ?, ?\n");
         query.append("  -- END PAGINATION QUERY\n");
-        this.logger.debug("SQL:\n" + query.toString());
-        this.logger.debug("pageStart=" + pageStart + ", pageEnd=" + pageEnd);
-        this.logger.debug("filter: " + filter);
+        this.logger.trace("SQL:\n" + query.toString());
+        this.logger.trace("pageStart=" + pageStart + ", pageEnd=" + pageEnd);
+        this.logger.trace("filter: " + filter);
 
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{
@@ -104,16 +154,16 @@ public class PersonDao {
                 item.setGuid(rs.getString("PERSON_GUID"));
                 item.setLastName(rs.getString("PERSON_LAST_NAME"));
                 item.setFirstName(rs.getString("PERSON_FIRST_NAME"));
-                item.setAddress(rs.getString("PERSON_STREET"));
+                item.setStreet(rs.getString("PERSON_STREET"));
                 item.setCity(rs.getString("PERSON_CITY"));
                 item.setCounty(rs.getString("PERSON_COUNTY"));
                 item.setState(rs.getString("PERSON_STATE"));
-                item.setZip(rs.getString("PERSON_ZIP_CODE"));
-                item.setPhone1(rs.getString("PERSON_HOME_PHONE"));
-                item.setPhone2(rs.getString("PERSON_MOBILE_PHONE"));
-                item.setEmail(rs.getString("PERSON_EMAIL_ADDRESS"));
+                item.setZipCode(rs.getString("PERSON_ZIP_CODE"));
+                item.setHomePhone(rs.getString("PERSON_HOME_PHONE"));
+                item.setMobilePhone(rs.getString("PERSON_MOBILE_PHONE"));
+                item.setEmailAddress(rs.getString("PERSON_EMAIL_ADDRESS"));
                 item.setCompanyName(rs.getString("PERSON_COMPANY_NAME"));
-                item.setWeb(rs.getString("PERSON_COMPANY_WEB_SITE"));
+                item.setCompanyWebsite(rs.getString("PERSON_COMPANY_WEB_SITE"));
                 return item;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -142,7 +192,7 @@ public class PersonDao {
     }
 
     private String getPersonList_InfiniteScroll_WhereClause(String filter) {
-        this.logger.debug("PersonDao -> getPersonList_InfiniteScroll_WhereClause: filter=" + filter);
+        this.logger.trace("PersonDao -> getPersonList_InfiniteScroll_WhereClause: filter=" + filter);
         StringBuilder whereClause = new StringBuilder();
 
         // IF a table-wide filter exists, search all 'searchable' fields.
@@ -188,23 +238,43 @@ public class PersonDao {
     }
 
     public Person updatePerson(Person person) {
-        this.logger.debug("PersonDao -> updatePerson");
+        this.logger.trace("PersonDao -> updatePerson");
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
         query.append("      SAMPLE_DATA.PERSON\n");
         query.append("  SET\n");
-        query.append("      PERSON.PERSON_LAST_NAME = ?,\n");
-        query.append("      PERSON.PERSON_FIRST_NAME = ?\n");
+        query.append("      PERSON.PERSON_LAST_NAME = ?,\n");       // 1
+        query.append("      PERSON.PERSON_FIRST_NAME = ?,\n");      // 2
+        query.append("      PERSON.PERSON_STREET = ?,\n");          // 3
+        query.append("      PERSON.PERSON_CITY = ?,\n");            // 4
+        query.append("      PERSON.PERSON_STATE = ?,\n");           // 5
+        query.append("      PERSON.PERSON_ZIP_CODE = ?,\n");        // 6
+        query.append("      PERSON.PERSON_COUNTY = ?,\n");          // 7
+        query.append("      PERSON.PERSON_HOME_PHONE = ?,\n");      // 8
+        query.append("      PERSON.PERSON_MOBILE_PHONE = ?,\n");    // 9
+        query.append("      PERSON.PERSON_EMAIL_ADDRESS = ?,\n");   // 10
+        query.append("      PERSON.PERSON_COMPANY_NAME = ?,\n");    // 11
+        query.append("      PERSON.PERSON_COMPANY_WEB_SITE = ?\n"); // 12
         query.append("  WHERE\n");
         query.append("      PERSON.PERSON_GUID = ?\n");
-        this.logger.debug("SQL:\n" + query.toString());
+        this.logger.trace("SQL:\n" + query.toString());
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, person.getLastName());
                         ps.setString(2, person.getFirstName());
-                        ps.setString(3, person.getGuid());
+                        ps.setString(3, person.getStreet());
+                        ps.setString(4, person.getCity());
+                        ps.setString(5, person.getState());
+                        ps.setString(6, person.getZipCode());
+                        ps.setString(7, person.getCounty());
+                        ps.setString(8, person.getHomePhone());
+                        ps.setString(9, person.getMobilePhone());
+                        ps.setString(10, person.getEmailAddress());
+                        ps.setString(11, person.getCompanyName());
+                        ps.setString(12, person.getCompanyWebsite());
+                        ps.setString(13, person.getGuid());
                         return ps;
                     }
             );
@@ -212,7 +282,32 @@ public class PersonDao {
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
 
+    public KeyValue deletePerson(String personGuid) {
+        this.logger.trace("PersonDao -> deletePerson: personGuid=" + personGuid);
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      SAMPLE_DATA.PERSON\n");
+        query.append("  SET\n");
+        query.append("      STATUS = 'Deleted'\n");
+        query.append("  WHERE\n");
+        query.append("      PERSON_GUID = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        this.logger.trace("PERSON_GUID=" + personGuid);
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setString(1, personGuid);
+                        return ps;
+                    }
+            );
+            return new KeyValue("personGuid", personGuid);
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("PersonDao -> deletePerson -> EmptyResultDataAccessException: " + e);
+            return null;
+        }
     }
 
 }

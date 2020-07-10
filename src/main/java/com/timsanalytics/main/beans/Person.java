@@ -7,16 +7,16 @@ public class Person {
     private String guid;
     private String firstName;
     private String lastName;
-    private String companyName;
-    private String address;
+    private String street;
     private String city;
     private String county;
     private String state;
-    private String zip;
-    private String phone1;
-    private String phone2;
-    private String email;
-    private String web;
+    private String zipCode;
+    private String homePhone;
+    private String mobilePhone;
+    private String emailAddress;
+    private String companyName;
+    private String companyWebsite;
 
     public String getGuid() {
         return guid;
@@ -42,20 +42,12 @@ public class Person {
         this.lastName = lastName;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getStreet() {
+        return street;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     public String getCity() {
@@ -82,43 +74,51 @@ public class Person {
         this.state = state;
     }
 
-    public String getZip() {
-        return zip;
+    public String getZipCode() {
+        return zipCode;
     }
 
-    public void setZip(String zip) {
-        this.zip = zip;
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
     }
 
-    public String getPhone1() {
-        return phone1;
+    public String getHomePhone() {
+        return homePhone;
     }
 
-    public void setPhone1(String phone1) {
-        this.phone1 = phone1;
+    public void setHomePhone(String homePhone) {
+        this.homePhone = homePhone;
     }
 
-    public String getPhone2() {
-        return phone2;
+    public String getMobilePhone() {
+        return mobilePhone;
     }
 
-    public void setPhone2(String phone2) {
-        this.phone2 = phone2;
+    public void setMobilePhone(String mobilePhone) {
+        this.mobilePhone = mobilePhone;
     }
 
-    public String getEmail() {
-        return email;
+    public String getEmailAddress() {
+        return emailAddress;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
-    public String getWeb() {
-        return web;
+    public String getCompanyName() {
+        return companyName;
     }
 
-    public void setWeb(String web) {
-        this.web = web;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getCompanyWebsite() {
+        return companyWebsite;
+    }
+
+    public void setCompanyWebsite(String companyWebsite) {
+        this.companyWebsite = companyWebsite;
     }
 }

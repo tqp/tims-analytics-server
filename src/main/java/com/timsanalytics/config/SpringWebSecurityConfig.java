@@ -2,7 +2,7 @@ package com.timsanalytics.config;
 
 import com.timsanalytics.auth.authCommon.services.AuthService;
 import com.timsanalytics.auth.authCommon.services.TokenService;
-import com.timsanalytics.utils.TokenAuthenticationFilter;
+import com.timsanalytics.auth.authCommon.services.TokenAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

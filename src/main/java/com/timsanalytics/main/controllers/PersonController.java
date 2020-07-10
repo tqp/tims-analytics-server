@@ -1,9 +1,11 @@
 package com.timsanalytics.main.controllers;
 
+import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.main.beans.Person;
 import com.timsanalytics.main.beans.ServerSidePaginationRequest;
 import com.timsanalytics.main.beans.ServerSidePaginationResponse;
 import com.timsanalytics.main.services.PersonService;
+import com.timsanalytics.utils.PrintObjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -26,15 +28,31 @@ import java.util.List;
 public class PersonController {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final PersonService personService;
+    private final PrintObjectService printObjectService;
 
     @Autowired
-    public PersonController(PersonService personService) {
+    public PersonController(PersonService personService, PrintObjectService printObjectService) {
         this.personService = personService;
+        this.printObjectService = printObjectService;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Create Person", tags = {"Person"}, description = "Update Person record.", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Person> createPerson(@RequestBody Person person) {
+        this.logger.debug("PersonController -> createPerson");
+        try {
+            return ResponseEntity.ok()
+                    .body(personService.createPerson(person));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @ResponseBody
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "getPersonList_ALl", tags = {"Person"}, description = "Get all Person records.", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Person List (All)", tags = {"Person"}, description = "Get all Person records.", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<Person>> getPersonList_All() {
         this.logger.debug("PersonController -> getPersonList_All");
         try {
@@ -49,13 +67,11 @@ public class PersonController {
 
     @ResponseBody
     @RequestMapping(value = "/infinite-scroll", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "getPersonList_InfiniteScroll", tags = {"Person"}, description = "Get Person records using infinite scroll.", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Person List (Infinite Scroll)", tags = {"Person"}, description = "Get Person records using infinite scroll.", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ServerSidePaginationResponse> getPersonList_InfiniteScroll(@RequestBody ServerSidePaginationRequest serverSidePaginationRequest) {
-        this.logger.debug("PersonController -> getPersonList_InfiniteScroll");
-
         long startTime = new Date().getTime();
-        this.logger.debug("Page Index=" + serverSidePaginationRequest.getPageIndex());
-        this.logger.debug("Page Size =" + serverSidePaginationRequest.getPageSize());
+        this.logger.trace("Page Index=" + serverSidePaginationRequest.getPageIndex());
+        this.logger.trace("Page Size =" + serverSidePaginationRequest.getPageSize());
         try {
             ServerSidePaginationResponse container = new ServerSidePaginationResponse();
             List<Person> personList = this.personService.getPersonList_InfiniteScroll(serverSidePaginationRequest);
@@ -73,11 +89,12 @@ public class PersonController {
     }
 
     @RequestMapping(value = "/{personGuid}", method = RequestMethod.GET)
-    @Operation(summary = "getPersonDetail", tags = {"Person"}, security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Person Detail", tags = {"Person"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Person> getPersonDetail(@Parameter(description = "Person GUID", required = true) @PathVariable String personGuid) {
         try {
+            Person person = personService.getPersonDetail(personGuid);
             return ResponseEntity.ok()
-                    .body(personService.getPersonDetail(personGuid));
+                    .body(person);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -86,8 +103,9 @@ public class PersonController {
 
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "updatePerson", tags = {"Person"}, description = "Update Person record.", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Update Person", tags = {"Person"}, description = "Update Person record.", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Person> updatePerson(@RequestBody Person person) {
+        this.printObjectService.PrintObject("Person", person);
         try {
             return ResponseEntity.ok()
                     .body(personService.updatePerson(person));
@@ -97,5 +115,17 @@ public class PersonController {
         }
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/{personGuid}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Delete Person", tags = {"Person"}, description = "Delete Person record.", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<KeyValue> deletePerson(@Parameter(description = "Person GUID", required = true) @PathVariable String personGuid) {
+        try {
+            return ResponseEntity.ok()
+                    .body(personService.deletePerson(personGuid));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }

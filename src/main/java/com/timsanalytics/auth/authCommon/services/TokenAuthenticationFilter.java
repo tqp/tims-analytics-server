@@ -1,4 +1,4 @@
-package com.timsanalytics.utils;
+package com.timsanalytics.auth.authCommon.services;
 
 import com.timsanalytics.auth.authCommon.beans.User;
 import com.timsanalytics.auth.authCommon.services.AuthService;
@@ -47,8 +47,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
         if (header != null && header.startsWith(TOKEN_PREFIX)) {
             authToken = header.replace(TOKEN_PREFIX, "");
-
-            this.logger.debug("authToken: " + authToken);
+            this.logger.trace("authToken: " + authToken);
 
             try {
                 username = tokenService.getUsernameFromToken(authToken);
@@ -75,7 +74,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication =
                     tokenService.getAuthentication(authToken, SecurityContextHolder.getContext().getAuthentication(), user);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                this.logger.debug("Authenticated User: " + username + ". Setting security context.");
+                this.logger.debug("User Authenticated: '" + username + "'.");
                 SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 

@@ -1,5 +1,6 @@
 package com.timsanalytics.main.services;
 
+import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.main.beans.Person;
 import com.timsanalytics.main.beans.ServerSidePaginationRequest;
 import com.timsanalytics.main.dao.PersonDao;
@@ -20,6 +21,10 @@ public class PersonService {
         this.personDao = personDao;
     }
 
+    public Person createPerson(Person person) {
+        return this.personDao.createPerson(person);
+    }
+
     public List<Person> getPersonList_All() {
         return this.personDao.getPersonList_All();
     }
@@ -34,5 +39,9 @@ public class PersonService {
 
     public Person updatePerson(Person person) {
         return this.personDao.updatePerson(person);
+    }
+
+    public KeyValue deletePerson(String personGuid) {
+        return this.personDao.deletePerson(personGuid);
     }
 }
