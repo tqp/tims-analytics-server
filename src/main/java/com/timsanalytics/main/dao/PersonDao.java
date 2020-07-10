@@ -44,13 +44,25 @@ public class PersonDao {
         query.append("          PERSON.PERSON_MOBILE_PHONE,\n");
         query.append("          PERSON.PERSON_EMAIL_ADDRESS,\n");
         query.append("          PERSON.PERSON_COMPANY_NAME,\n");
-        query.append("          PERSON.PERSON_COMPANY_WEB_SITE\n");
+        query.append("          PERSON.PERSON_COMPANY_WEB_SITE,\n");
+        query.append("          PERSON.STATUS\n");
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
         query.append("          ?,\n"); // 1
         query.append("          ?,\n"); // 2
-        query.append("          ?\n"); // 3
+        query.append("          ?,\n"); // 3
+        query.append("          ?,\n"); // 4
+        query.append("          ?,\n"); // 5
+        query.append("          ?,\n"); // 6
+        query.append("          ?,\n"); // 7
+        query.append("          ?,\n"); // 8
+        query.append("          ?,\n"); // 9
+        query.append("          ?,\n"); // 10
+        query.append("          ?,\n"); // 11
+        query.append("          ?,\n"); // 12
+        query.append("          ?,\n");  // 13
+        query.append("          'Active'\n");
         query.append("      )\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
@@ -62,12 +74,22 @@ public class PersonDao {
                         ps.setString(1, person.getGuid());
                         ps.setString(2, person.getLastName());
                         ps.setString(3, person.getFirstName());
+                        ps.setString(4, person.getStreet());
+                        ps.setString(5, person.getCity());
+                        ps.setString(6, person.getCounty());
+                        ps.setString(7, person.getState());
+                        ps.setString(8, person.getZipCode());
+                        ps.setString(9, person.getHomePhone());
+                        ps.setString(10, person.getMobilePhone());
+                        ps.setString(11, person.getEmailAddress());
+                        ps.setString(12, person.getCompanyName());
+                        ps.setString(13, person.getCompanyWebsite());
                         return ps;
                     }
             );
-            return person;
+            return this.getPersonDetail(person.getGuid());
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("FuelStationDao -> createFuelStation -> EmptyResultDataAccessException: " + e);
+            this.logger.error("PersonDao -> createPerson -> EmptyResultDataAccessException: " + e);
             return null;
         }
     }

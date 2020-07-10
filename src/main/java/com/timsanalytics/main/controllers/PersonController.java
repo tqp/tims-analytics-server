@@ -28,12 +28,10 @@ import java.util.List;
 public class PersonController {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final PersonService personService;
-    private final PrintObjectService printObjectService;
 
     @Autowired
-    public PersonController(PersonService personService, PrintObjectService printObjectService) {
+    public PersonController(PersonService personService) {
         this.personService = personService;
-        this.printObjectService = printObjectService;
     }
 
     @ResponseBody
@@ -105,7 +103,6 @@ public class PersonController {
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update Person", tags = {"Person"}, description = "Update Person record.", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Person> updatePerson(@RequestBody Person person) {
-        this.printObjectService.PrintObject("Person", person);
         try {
             return ResponseEntity.ok()
                     .body(personService.updatePerson(person));
