@@ -1,8 +1,8 @@
 package com.timsanalytics.config;
 
 import com.timsanalytics.auth.authCommon.services.AuthService;
-import com.timsanalytics.auth.authCommon.services.TokenService;
 import com.timsanalytics.auth.authCommon.services.TokenAuthenticationFilter;
+import com.timsanalytics.auth.authCommon.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -138,9 +138,26 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://localhost:4201", "https://timsanalytics.com", "https://demo.timsanalytics.com"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        //configuration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+        configuration.setAllowedOrigins(
+                Arrays.asList(
+                        "http://localhost:4200",
+                        "http://localhost:4201",
+                        "https://timsanalytics.com",
+                        "https://www.timsanalytics.com",
+                        "https://demo.timsanalytics.com"
+                )
+        );
+        configuration.setAllowedMethods(
+                Arrays.asList(
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "PATCH",
+                        "DELETE",
+                        "OPTIONS"
+                )
+        );
         configuration.setAllowedHeaders(
                 Arrays.asList(
                         "accept",
