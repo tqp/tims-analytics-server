@@ -5,7 +5,6 @@ import com.timsanalytics.main.beans.Person;
 import com.timsanalytics.main.beans.ServerSidePaginationRequest;
 import com.timsanalytics.main.beans.ServerSidePaginationResponse;
 import com.timsanalytics.main.services.PersonService;
-import com.timsanalytics.utils.PrintObjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -68,6 +67,12 @@ public class PersonController {
     @Operation(summary = "Get Person List (Infinite Scroll)", tags = {"Person"}, description = "Get Person records using infinite scroll.", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ServerSidePaginationResponse> getPersonList_InfiniteScroll(@RequestBody ServerSidePaginationRequest serverSidePaginationRequest) {
         long startTime = new Date().getTime();
+        if (serverSidePaginationRequest.getPageIndex() == 0) {
+            serverSidePaginationRequest.setPageIndex(1);
+        }
+        if (serverSidePaginationRequest.getPageSize() == 0) {
+            serverSidePaginationRequest.setPageSize(50);
+        }
         this.logger.trace("Page Index=" + serverSidePaginationRequest.getPageIndex());
         this.logger.trace("Page Size =" + serverSidePaginationRequest.getPageSize());
         try {
@@ -122,6 +127,99 @@ public class PersonController {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    // Sub-List
+
+    @ResponseBody
+    @RequestMapping(value = "/sub", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Friend List (Infinite Scroll)", tags = {"Person"}, description = "Get Friend records using infinite scroll.", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<ServerSidePaginationResponse> getPersonSubList_InfiniteScroll(@RequestBody ServerSidePaginationRequest serverSidePaginationRequest) {
+        long startTime = new Date().getTime();
+        if (serverSidePaginationRequest.getPageIndex() == 0) {
+            serverSidePaginationRequest.setPageIndex(1);
+        }
+        if (serverSidePaginationRequest.getPageSize() == 0) {
+            serverSidePaginationRequest.setPageSize(50);
+        }
+        this.logger.trace("Page Index=" + serverSidePaginationRequest.getPageIndex());
+        this.logger.trace("Page Size =" + serverSidePaginationRequest.getPageSize());
+        try {
+            ServerSidePaginationResponse container = new ServerSidePaginationResponse();
+            List<Person> personList = this.personService.getPersonSubList_InfiniteScroll(serverSidePaginationRequest);
+            container.setLength(personList.size());
+            container.setData(personList);
+            container.setServerSidePaginationRequest(serverSidePaginationRequest);
+            container.setRequestTime(new Date().getTime() - startTime);
+            return ResponseEntity.ok()
+                    .body(container);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    // FRIENDS ADD/REMOVE
+
+    @ResponseBody
+    @RequestMapping(value = "/friends/available/{personGuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Person>> getAvailableFriends(@PathVariable String personGuid) {
+        this.logger.debug("getAvailableFriends: personGuid=" + personGuid);
+        try {
+            List<Person> personList = this.personService.getAvailableFriends(personGuid);
+            return ResponseEntity.ok()
+                    .body(personList);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/friends/current/{personGuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Person>> getCurrentFriends(@PathVariable String personGuid) {
+        this.logger.debug("getCurrentFriends: personGuid=" + personGuid);
+        try {
+            List<Person> personList = this.personService.getCurrentFriends(personGuid);
+            return ResponseEntity.ok()
+                    .body(personList);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/friends/add/{personGuid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Person>> addFriends(@PathVariable String personGuid,
+                                                   @RequestBody List<Person> friendList) {
+        try {
+            this.personService.addFriends(personGuid, friendList);
+            return ResponseEntity.ok()
+                    .body(friendList);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/friends/remove/{personGuid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Person>> removeFriends(@PathVariable String personGuid,
+                                                   @RequestBody List<Person> friendList) {
+        try {
+            this.personService.removeFriends(personGuid, friendList);
+            return ResponseEntity.ok()
+                    .body(friendList);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 

@@ -44,4 +44,30 @@ public class PersonService {
     public KeyValue deletePerson(String personGuid) {
         return this.personDao.deletePerson(personGuid);
     }
+
+    // Sub-List
+
+    public List<Person> getPersonSubList_InfiniteScroll(ServerSidePaginationRequest serverSidePaginationRequest) {
+        return this.personDao.getPersonSubList_InfiniteScroll(serverSidePaginationRequest);
+    }
+
+    // FRIENDS ADD/REMOVE
+
+    public List<Person> getCurrentFriends(String personGuid) {
+        return this.personDao.getCurrentFriends(personGuid);
+    }
+
+    public List<Person> getAvailableFriends(String personGuid) {
+        return this.personDao.getAvailableFriends(personGuid);
+    }
+
+    public List<Person> addFriends(String personGuid, List<Person> friendList) {
+        int[] recordsUpdated = this.personDao.addFriends(personGuid, friendList);
+        return friendList;
+    }
+
+    public List<Person> removeFriends(String personGuid, List<Person> friendList) {
+        int[] recordsUpdated = this.personDao.removeFriends(personGuid, friendList);
+        return friendList;
+    }
 }
