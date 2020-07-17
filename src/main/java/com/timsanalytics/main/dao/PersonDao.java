@@ -72,7 +72,7 @@ public class PersonDao {
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         person.setGuid(this.generateUuidService.GenerateUuid());
-                        this.logger.debug("New Person GUID: " + person.getGuid());
+                        this.logger.trace("New Person GUID: " + person.getGuid());
                         ps.setString(1, person.getGuid());
                         ps.setString(2, person.getLastName());
                         ps.setString(3, person.getFirstName());
@@ -451,7 +451,7 @@ public class PersonDao {
     // FRIEND ADD/REMOVE
 
     public List<Person> getCurrentFriends(String personGuid) {
-        this.logger.debug("getCurrentFriends: personGuid=" + personGuid);
+        this.logger.trace("getCurrentFriends: personGuid=" + personGuid);
         StringBuilder query = new StringBuilder();
         query.append("  SELECT DISTINCT\n");
         query.append("      PERSON.PERSON_GUID,\n");
@@ -486,7 +486,7 @@ public class PersonDao {
     }
 
     public List<Person> getAvailableFriends(String personGuid) {
-        this.logger.debug("getAvailableFriends: personGuid=" + personGuid);
+        this.logger.trace("getAvailableFriends: personGuid=" + personGuid);
         StringBuilder query = new StringBuilder();
         query.append("  SELECT DISTINCT\n");
         query.append("      PERSON_GUID,\n");
