@@ -67,20 +67,8 @@ public class PersonController {
     @Operation(summary = "Get Person List (Infinite Scroll)", tags = {"Person"}, description = "Get Person records using infinite scroll.", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ServerSidePaginationResponse> getPersonList_InfiniteScroll(@RequestBody ServerSidePaginationRequest serverSidePaginationRequest) {
         long startTime = new Date().getTime();
-        if (serverSidePaginationRequest.getPageIndex() == 0) {
-            serverSidePaginationRequest.setPageIndex(1);
-        }
-        if (serverSidePaginationRequest.getPageSize() == 0) {
-            serverSidePaginationRequest.setPageSize(50);
-        }
-        this.logger.trace("Page Index=" + serverSidePaginationRequest.getPageIndex());
-        this.logger.trace("Page Size =" + serverSidePaginationRequest.getPageSize());
         try {
-            ServerSidePaginationResponse container = new ServerSidePaginationResponse();
-            List<Person> personList = this.personService.getPersonList_InfiniteScroll(serverSidePaginationRequest);
-            container.setLength(personList.size());
-            container.setData(personList);
-            container.setServerSidePaginationRequest(serverSidePaginationRequest);
+            ServerSidePaginationResponse container = this.personService.getPersonList_InfiniteScroll(serverSidePaginationRequest);
             container.setRequestTime(new Date().getTime() - startTime);
             return ResponseEntity.ok()
                     .body(container);
@@ -130,7 +118,7 @@ public class PersonController {
         }
     }
 
-    // Sub-List
+    // PERSON-FRIEND ASSOCIATIONS
 
     @ResponseBody
     @RequestMapping(value = "/sub", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -147,8 +135,8 @@ public class PersonController {
         this.logger.trace("Page Size =" + serverSidePaginationRequest.getPageSize());
         try {
             ServerSidePaginationResponse container = new ServerSidePaginationResponse();
-            List<Person> personList = this.personService.getPersonSubList_InfiniteScroll(serverSidePaginationRequest);
-            container.setLength(personList.size());
+            List<Person> personList = this.personService.getPersonFriendList_InfiniteScroll(serverSidePaginationRequest);
+            container.setLoadedRecords(personList.size());
             container.setData(personList);
             container.setServerSidePaginationRequest(serverSidePaginationRequest);
             container.setRequestTime(new Date().getTime() - startTime);
@@ -164,11 +152,11 @@ public class PersonController {
     // FRIENDS ADD/REMOVE
 
     @ResponseBody
-    @RequestMapping(value = "/friends/available/{personGuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Person>> getAvailableFriends(@PathVariable String personGuid) {
-        this.logger.debug("getAvailableFriends: personGuid=" + personGuid);
+    @RequestMapping(value = "/friends/current/{personGuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Person>> getCurrentFriends(@PathVariable String personGuid) {
+        this.logger.trace("getCurrentFriends: personGuid=" + personGuid);
         try {
-            List<Person> personList = this.personService.getAvailableFriends(personGuid);
+            List<Person> personList = this.personService.getCurrentFriends(personGuid);
             return ResponseEntity.ok()
                     .body(personList);
         } catch (IllegalArgumentException e) {
@@ -179,11 +167,11 @@ public class PersonController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/friends/current/{personGuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Person>> getCurrentFriends(@PathVariable String personGuid) {
-        this.logger.debug("getCurrentFriends: personGuid=" + personGuid);
+    @RequestMapping(value = "/friends/available/{personGuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Person>> getAvailableFriends(@PathVariable String personGuid) {
+        this.logger.trace("getAvailableFriends: personGuid=" + personGuid);
         try {
-            List<Person> personList = this.personService.getCurrentFriends(personGuid);
+            List<Person> personList = this.personService.getAvailableFriends(personGuid);
             return ResponseEntity.ok()
                     .body(personList);
         } catch (IllegalArgumentException e) {

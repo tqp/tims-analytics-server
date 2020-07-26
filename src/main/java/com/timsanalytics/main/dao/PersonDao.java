@@ -4,16 +4,15 @@ import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.main.beans.Person;
 import com.timsanalytics.main.beans.ServerSidePaginationRequest;
 import com.timsanalytics.utils.GenerateUuidService;
+import com.timsanalytics.utils.PrintObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
 
 @Service
@@ -21,11 +20,15 @@ public class PersonDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final JdbcTemplate mySqlAuthJdbcTemplate;
     private final GenerateUuidService generateUuidService;
+    private final PrintObjectService printObjectService;
 
     @Autowired
-    public PersonDao(JdbcTemplate mySqlAuthJdbcTemplate, GenerateUuidService generateUuidService) {
+    public PersonDao(JdbcTemplate mySqlAuthJdbcTemplate,
+                     GenerateUuidService generateUuidService,
+                     PrintObjectService printObjectService) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
         this.generateUuidService = generateUuidService;
+        this.printObjectService = printObjectService;
     }
 
     public Person createPerson(Person person) {
@@ -132,6 +135,32 @@ public class PersonDao {
         }
     }
 
+    public int getPersonList_InfiniteScroll_TotalRecords(ServerSidePaginationRequest serverSidePaginationRequest) {
+        this.logger.trace("PersonDao -> getPersonList_InfiniteScroll_TotalRecords");
+        String filter = serverSidePaginationRequest.getFilter() != null ? serverSidePaginationRequest.getFilter() : "";
+
+        StringBuilder query = new StringBuilder();
+        query.append("          SELECT\n");
+        query.append("              COUNT(*)\n");
+        query.append("          FROM\n");
+
+        query.append("          -- ROOT QUERY\n");
+        query.append("          (\n");
+        query.append(getPersonList_InfiniteScroll_RootQuery(filter));
+        query.append("          ) AS ROOT_QUERY\n");
+        query.append("          -- END ROOT QUERY\n");
+
+        try {
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{}, Integer.class);
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("PersonDao -> getPersonList_InfiniteScroll -> EmptyResultDataAccessException: " + e);
+            return 0;
+        } catch (Exception e) {
+            this.logger.error("PersonDao -> getPersonList_InfiniteScroll -> Exception: " + e);
+            return 0;
+        }
+    }
+
     public List<Person> getPersonList_InfiniteScroll(ServerSidePaginationRequest serverSidePaginationRequest) {
         this.logger.trace("PersonDao -> getPersonList_InfiniteScroll");
 
@@ -153,13 +182,7 @@ public class PersonDao {
 
         query.append("          -- ROOT QUERY\n");
         query.append("          (\n");
-        query.append(getPersonList_InfiniteScroll_RootQuery());
-        query.append("              WHERE\n");
-        query.append("              (\n");
-        query.append("                  PERSON.STATUS = 'Active'\n");
-        query.append("                  AND\n");
-        query.append(getPersonList_InfiniteScroll_WhereClause(filter));
-        query.append("              )\n");
+        query.append(getPersonList_InfiniteScroll_RootQuery(filter));
         query.append("          ) AS ROOT_QUERY\n");
         query.append("          -- END ROOT QUERY\n");
 
@@ -206,27 +229,34 @@ public class PersonDao {
         }
     }
 
-    private String getPersonList_InfiniteScroll_RootQuery() {
-        return "" +
-                "SELECT DISTINCT" +
-                "   PERSON.PERSON_GUID,\n" +
-                "   PERSON.PERSON_LAST_NAME,\n" +
-                "   PERSON.PERSON_FIRST_NAME,\n" +
-                "   PERSON.PERSON_STREET,\n" +
-                "   PERSON.PERSON_CITY,\n" +
-                "   PERSON.PERSON_COUNTY,\n" +
-                "   PERSON.PERSON_STATE,\n" +
-                "   PERSON.PERSON_ZIP_CODE,\n" +
-                "   PERSON.PERSON_HOME_PHONE,\n" +
-                "   PERSON.PERSON_MOBILE_PHONE,\n" +
-                "   PERSON.PERSON_EMAIL_ADDRESS,\n" +
-                "   PERSON.PERSON_COMPANY_NAME,\n" +
-                "   PERSON.PERSON_COMPANY_WEB_SITE\n" +
-                "FROM\n" +
-                "   SAMPLE_DATA.PERSON\n";
+    private String getPersonList_InfiniteScroll_RootQuery(String filter) {
+        StringBuilder rootQuery = new StringBuilder();
+        rootQuery.append("              SELECT DISTINCT");
+        rootQuery.append("                  PERSON.PERSON_GUID,\n");
+        rootQuery.append("                  PERSON.PERSON_LAST_NAME,\n");
+        rootQuery.append("                  PERSON.PERSON_FIRST_NAME,\n");
+        rootQuery.append("                  PERSON.PERSON_STREET,\n");
+        rootQuery.append("                  PERSON.PERSON_CITY,\n");
+        rootQuery.append("                  PERSON.PERSON_COUNTY,\n");
+        rootQuery.append("                  PERSON.PERSON_STATE,\n");
+        rootQuery.append("                  PERSON.PERSON_ZIP_CODE,\n");
+        rootQuery.append("                  PERSON.PERSON_HOME_PHONE,\n");
+        rootQuery.append("                  PERSON.PERSON_MOBILE_PHONE,\n");
+        rootQuery.append("                  PERSON.PERSON_EMAIL_ADDRESS,\n");
+        rootQuery.append("                  PERSON.PERSON_COMPANY_NAME,\n");
+        rootQuery.append("                  PERSON.PERSON_COMPANY_WEB_SITE\n");
+        rootQuery.append("              FROM\n");
+        rootQuery.append("                  SAMPLE_DATA.PERSON\n");
+        rootQuery.append("              WHERE\n");
+        rootQuery.append("              (\n");
+        rootQuery.append("                  PERSON.STATUS = 'Active'\n");
+        rootQuery.append("                  AND\n");
+        rootQuery.append(getPersonList_InfiniteScroll_AdditionalWhereClause(filter));
+        rootQuery.append("              )\n");
+        return rootQuery.toString();
     }
 
-    private String getPersonList_InfiniteScroll_WhereClause(String filter) {
+    private String getPersonList_InfiniteScroll_AdditionalWhereClause(String filter) {
         this.logger.trace("PersonDao -> getPersonList_InfiniteScroll_WhereClause: filter=" + filter);
         StringBuilder whereClause = new StringBuilder();
 
@@ -355,272 +385,4 @@ public class PersonDao {
             return null;
         }
     }
-
-    // Sub-List
-
-    public List<Person> getPersonSubList_InfiniteScroll(ServerSidePaginationRequest serverSidePaginationRequest) {
-        this.logger.trace("PersonDao -> getPersonList_InfiniteScroll");
-
-        int pageStart = (serverSidePaginationRequest.getPageIndex() - 1) * (serverSidePaginationRequest.getPageSize() + 1);
-        int pageEnd = (pageStart + serverSidePaginationRequest.getPageSize() - 1);
-        String filter = serverSidePaginationRequest.getFilter() != null ? serverSidePaginationRequest.getFilter() : "";
-
-        StringBuilder query = new StringBuilder();
-        query.append("  -- PAGINATION QUERY\n");
-        query.append("  SELECT\n");
-        query.append("      FILTER_SORT_QUERY.*\n");
-        query.append("  FROM\n");
-
-        query.append("      -- FILTER/SORT QUERY\n");
-        query.append("      (\n");
-        query.append("          SELECT\n");
-        query.append("              *\n");
-        query.append("          FROM\n");
-
-        query.append("          -- ROOT QUERY\n");
-        query.append("          (\n");
-        query.append(getPersonSubList_InfiniteScroll_RootQuery());
-        query.append("              WHERE\n");
-        query.append("              (\n");
-        query.append(getPersonSubList_InfiniteScroll_WhereClause(filter));
-        query.append("              )\n");
-        query.append("          ) AS ROOT_QUERY\n");
-        query.append("          -- END ROOT QUERY\n");
-
-        query.append("          ORDER BY\n");
-        query.append("              PERSON_LAST_NAME,\n");
-        query.append("              PERSON_FIRST_NAME\n");
-        query.append("      ) AS FILTER_SORT_QUERY\n");
-        query.append("      -- END FILTER/SORT QUERY\n");
-
-        query.append("  LIMIT ?, ?\n");
-        query.append("  -- END PAGINATION QUERY\n");
-
-        this.logger.trace("SQL:\n" + query.toString());
-        this.logger.trace("pageStart: " + pageStart + " - pageEnd: " + pageEnd);
-        this.logger.trace("filter: " + filter);
-        try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{
-                    pageStart,
-                    pageEnd
-            }, (rs, rowNum) -> {
-                Person item = new Person();
-                item.setGuid(rs.getString("PERSON_GUID"));
-                item.setFirstName(rs.getString("PERSON_FIRST_NAME"));
-                item.setLastName(rs.getString("PERSON_LAST_NAME"));
-                return item;
-            });
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("PersonDao -> getPersonSubList_InfiniteScroll -> EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("PersonDao -> getPersonSubList_InfiniteScroll -> Exception: " + e);
-            return null;
-        }
-    }
-
-    private String getPersonSubList_InfiniteScroll_RootQuery() {
-        return "" +
-                "           SELECT\n" +
-                "               PERSON_FRIENDS.PERSON_FRIENDS_GUID,\n" +
-                "               PERSON_FRIENDS.PERSON_GUID,\n" +
-                "               PERSON_FRIENDS.FRIEND_GUID,\n" +
-                "               PERSON.PERSON_FIRST_NAME,\n" +
-                "               PERSON.PERSON_LAST_NAME\n" +
-                "           FROM\n" +
-                "               SAMPLE_DATA.PERSON_FRIENDS\n" +
-                "               LEFT JOIN SAMPLE_DATA.PERSON ON PERSON_FRIENDS.FRIEND_GUID = PERSON.PERSON_GUID\n";
-    }
-
-    private String getPersonSubList_InfiniteScroll_WhereClause(String filter) {
-        this.logger.trace("PersonDao -> getPersonSubList_InfiniteScroll_WhereClause: filter=" + filter);
-        StringBuilder sb_whereClause = new StringBuilder();
-
-        // If a table-wide filter string exists, search all 'searchable' fields.
-        if (!"".equalsIgnoreCase(filter)) {
-            sb_whereClause.append("         (\n");
-            sb_whereClause.append("             PERSON_FRIENDS.PERSON_GUID = '").append(filter).append("'\n");
-            sb_whereClause.append("         )");
-        } else {
-            // Otherwise, return a meaningless search filter.
-            sb_whereClause.append("         (1=1)");
-        }
-        return sb_whereClause.toString();
-    }
-
-    // FRIEND ADD/REMOVE
-
-    public List<Person> getCurrentFriends(String personGuid) {
-        this.logger.trace("getCurrentFriends: personGuid=" + personGuid);
-        StringBuilder query = new StringBuilder();
-        query.append("  SELECT DISTINCT\n");
-        query.append("      PERSON.PERSON_GUID,\n");
-        query.append("      PERSON.PERSON_LAST_NAME,\n");
-        query.append("      PERSON.PERSON_FIRST_NAME\n");
-        query.append("  FROM\n");
-        query.append("      SAMPLE_DATA.PERSON_FRIENDS\n");
-        query.append("      LEFT JOIN SAMPLE_DATA.PERSON ON SAMPLE_DATA.PERSON_FRIENDS.FRIEND_GUID = SAMPLE_DATA.PERSON.PERSON_GUID\n");
-        query.append("  WHERE\n");
-        query.append("      PERSON_FRIENDS.PERSON_GUID = ?\n");
-        query.append("      AND PERSON.STATUS NOT IN ('Deleted')\n");
-        query.append("      AND PERSON_FRIENDS.STATUS NOT IN ('Deleted', 'Removed')\n");
-        query.append("  ORDER BY\n");
-        query.append("      PERSON.PERSON_LAST_NAME,\n");
-        query.append("      PERSON.PERSON_FIRST_NAME\n");
-        this.logger.trace("SQL:\n" + query.toString());
-        try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{personGuid}, (rs, rowNum) -> {
-                Person item = new Person();
-                item.setGuid(rs.getString("PERSON_GUID"));
-                item.setFirstName(rs.getString("PERSON_FIRST_NAME"));
-                item.setLastName(rs.getString("PERSON_LAST_NAME"));
-                return item;
-            });
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("PersonDao -> getCurrentFriends -> EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("PersonDao -> getCurrentFriends -> Exception: " + e);
-            return null;
-        }
-    }
-
-    public List<Person> getAvailableFriends(String personGuid) {
-        this.logger.trace("getAvailableFriends: personGuid=" + personGuid);
-        StringBuilder query = new StringBuilder();
-        query.append("  SELECT DISTINCT\n");
-        query.append("      PERSON_GUID,\n");
-        query.append("      PERSON.PERSON_LAST_NAME,\n");
-        query.append("      PERSON.PERSON_FIRST_NAME\n");
-        query.append("  FROM\n");
-        query.append("      SAMPLE_DATA.PERSON\n");
-        query.append("  WHERE\n");
-        query.append("      PERSON.STATUS NOT IN ('Deleted')\n");
-        query.append("      AND PERSON_GUID != ?\n");
-        query.append("      AND PERSON_GUID NOT IN\n");
-        query.append("      (\n");
-        query.append("          SELECT DISTINCT\n");
-        query.append("              PERSON_FRIENDS.FRIEND_GUID\n");
-        query.append("          FROM\n");
-        query.append("              SAMPLE_DATA.PERSON_FRIENDS\n");
-        query.append("          WHERE\n");
-        query.append("              PERSON_FRIENDS.PERSON_GUID = ?\n");
-        query.append("              AND PERSON_FRIENDS.STATUS NOT IN ('Deleted', 'Removed')\n");
-        query.append("      )\n");
-        query.append("  ORDER BY\n");
-        query.append("      PERSON.PERSON_LAST_NAME,\n");
-        query.append("      PERSON.PERSON_FIRST_NAME\n");
-        this.logger.trace("SQL:\n" + query.toString());
-        try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{personGuid, personGuid}, (rs, rowNum) -> {
-                Person item = new Person();
-                item.setGuid(rs.getString("PERSON_GUID"));
-                item.setFirstName(rs.getString("PERSON_FIRST_NAME"));
-                item.setLastName(rs.getString("PERSON_LAST_NAME"));
-                return item;
-            });
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("PersonDao -> getAvailableFriends -> EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("PersonDao -> getAvailableFriends -> Exception: " + e);
-            return null;
-        }
-    }
-
-    public int[] addFriends(String personGuid, List<Person> friendList) {
-        // Define SQL for batch
-        StringBuilder query = new StringBuilder();
-        query.append("  MERGE INTO\n");
-        query.append("      SAMPLE_DATA.PERSON_FRIENDS A\n");
-        query.append("  USING\n");
-        query.append("  (\n");
-        query.append("      SELECT\n");
-        query.append("          ? AS PERSON_GUID,\n");
-        query.append("          ? AS FRIEND_GUID\n");
-        query.append("      FROM\n");
-        query.append("          DUAL\n");
-        query.append("  ) B\n");
-        query.append("  ON\n");
-        query.append("  (\n");
-        query.append("      A.PERSON_GUID = B.PERSON_GUID\n");
-        query.append("      AND A.FRIEND_GUID = B.FRIEND_GUID\n");
-        query.append("  )\n");
-        query.append("  WHEN MATCHED THEN\n");
-        query.append("      INSERT\n");
-        query.append("      (\n");
-        query.append("          PERSON_FRIENDS_GUID,\n");
-        query.append("          PERSON_GUID,\n");
-        query.append("          FRIEND_GUID\n");
-        query.append("      )\n");
-        query.append("      VALUES\n");
-        query.append("      (\n");
-        query.append("          ?,\n");
-        query.append("          B.PERSON_GUID,\n");
-        query.append("          B.FRIEND_GUID,\n");
-        query.append("          'Active'\n");
-        query.append("      )\n");
-
-        String uuid = this.generateUuidService.GenerateUuid();
-
-        try {
-            return this.mySqlAuthJdbcTemplate.batchUpdate(query.toString(),
-                    new BatchPreparedStatementSetter() {
-                        @Override
-                        public void setValues(PreparedStatement ps, int i) throws SQLException {
-                            ps.setString(1, personGuid);
-                            ps.setString(2, friendList.get(i).getGuid());
-                            ps.setString(3, uuid);
-                        }
-
-                        @Override
-                        public int getBatchSize() {
-                            return friendList.size();
-                        }
-                    });
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("PersonDao -> addFriends -> EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("PersonDao -> addFriends -> Exception: " + e);
-            return null;
-        }
-    }
-
-    public int[] removeFriends(String personGuid, List<Person> friendList) {
-        // Define SQL for batch
-        StringBuilder query = new StringBuilder();
-        query.append("  UPDATE\n");
-        query.append("      SAMPLE_DATA.PERSON_FRIENDS A\n");
-        query.append("  SET\n");
-        query.append("      STATUS = 'Deleted'\n");
-        query.append("  WHERE\n");
-        query.append("      PERSON_GUID = ?\n");
-        query.append("      AND FRIEND_GUID = ?\n");
-
-        try {
-            return this.mySqlAuthJdbcTemplate.batchUpdate(query.toString(),
-                    new BatchPreparedStatementSetter() {
-                        @Override
-                        public void setValues(PreparedStatement ps, int i) throws SQLException {
-                            ps.setString(1, personGuid);
-                            ps.setString(2, friendList.get(i).getGuid());
-                        }
-
-                        @Override
-                        public int getBatchSize() {
-                            return friendList.size();
-                        }
-                    });
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("PersonDao -> addFriends -> EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("PersonDao -> addFriends -> Exception: " + e);
-            return null;
-        }
-
-
-    }
-
 }

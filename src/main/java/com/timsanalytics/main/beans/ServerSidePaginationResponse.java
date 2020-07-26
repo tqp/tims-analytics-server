@@ -4,7 +4,8 @@ import java.util.List;
 
 public class ServerSidePaginationResponse {
     private Long requestTime;
-    private Integer length;
+    private Integer loadedRecords;
+    private Integer totalRecords;
     private List<Person> data;
     private ServerSidePaginationRequest serverSidePaginationRequest;
 
@@ -16,12 +17,20 @@ public class ServerSidePaginationResponse {
         this.requestTime = requestTime;
     }
 
-    public Integer getLength() {
-        return length;
+    public Integer getLoadedRecords() {
+        return loadedRecords;
     }
 
-    public void setLength(Integer length) {
-        this.length = length;
+    public void setLoadedRecords(Integer loadedRecords) {
+        this.loadedRecords = loadedRecords;
+    }
+
+    public Integer getTotalRecords() {
+        return totalRecords;
+    }
+
+    public void setTotalRecords(Integer totalRecords) {
+        this.totalRecords = totalRecords;
     }
 
     public List<Person> getData() {
