@@ -120,4 +120,8 @@ public class PersonService {
         int[] recordsUpdated = this.personFriendDao.removeFriends(personGuid, friendList);
         return friendList;
     }
+
+    public List<String> getStateDropDownOptions() {
+        return this.personDao.getStateDropDownOptions();
+    }
 }

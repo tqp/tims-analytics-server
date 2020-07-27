@@ -123,6 +123,9 @@ public class PersonDao {
         query.append("      SAMPLE_DATA.PERSON\n");
         query.append("  WHERE\n");
         query.append("      PERSON.STATUS = 'Active'\n");
+        query.append("  ORDER BY\n");
+        query.append("      PERSON.PERSON_LAST_NAME,\n");
+        query.append("      PERSON.PERSON_FIRST_NAME\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, new PersonRowMapper());
@@ -382,6 +385,27 @@ public class PersonDao {
             return null;
         } catch (Exception e) {
             this.logger.error("PersonDao -> deletePerson -> Exception: " + e);
+            return null;
+        }
+    }
+
+    public List<String> getStateDropDownOptions() {
+        this.logger.trace("PersonDao -> getStateDropDownOptions");
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT DISTINCT\n");
+        query.append("      PERSON_STATE\n");
+        query.append("  FROM\n");
+        query.append("      SAMPLE_DATA.PERSON\n");
+        query.append("  ORDER BY\n");
+        query.append("      PERSON_STATE;\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.queryForList(query.toString(), new Object[]{}, String.class);
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("PersonDao -> getPersonList_All -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("PersonDao -> getPersonList_All -> Exception: " + e);
             return null;
         }
     }

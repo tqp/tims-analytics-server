@@ -51,7 +51,7 @@ public class PersonController {
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get Person List (All)", tags = {"Person"}, description = "Get all Person records.", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<Person>> getPersonList_All() {
-        this.logger.debug("PersonController -> getPersonList_All");
+        this.logger.trace("PersonController -> getPersonList_All");
         try {
             return ResponseEntity.ok()
                     .body(this.personService.getPersonList_All());
@@ -204,6 +204,21 @@ public class PersonController {
             this.personService.removeFriends(personGuid, friendList);
             return ResponseEntity.ok()
                     .body(friendList);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/state-list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get State List", tags = {"Person"}, description = "Get state list from Person records.", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<String>> getStateDropDownOptions() {
+        this.logger.trace("PersonController -> getStateDropDownOptions");
+        try {
+            return ResponseEntity.ok()
+                    .body(this.personService.getStateDropDownOptions());
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
