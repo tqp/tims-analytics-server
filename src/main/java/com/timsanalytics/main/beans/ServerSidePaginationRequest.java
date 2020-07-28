@@ -1,19 +1,28 @@
 package com.timsanalytics.main.beans;
 
 public class ServerSidePaginationRequest {
-    private String filter;
+    private String nameFilter;
+    private String stateFilter;
     private String sortColumn;
     private String sortDirection;
     private int pageIndex;
     private int pageSize;
     private Person advancedFilters;
 
-    public String getFilter() {
-        return filter;
+    public String getNameFilter() {
+        return nameFilter;
     }
 
-    public void setFilter(String filter) {
-        this.filter = filter;
+    public void setNameFilter(String nameFilter) {
+        this.nameFilter = nameFilter;
+    }
+
+    public String getStateFilter() {
+        return stateFilter;
+    }
+
+    public void setStateFilter(String stateFilter) {
+        this.stateFilter = stateFilter;
     }
 
     public String getSortColumn() {

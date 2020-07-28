@@ -52,7 +52,9 @@ public class GoogleAuthDao {
                     }
             );
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("AppUserDao -> updateLastLogin -> EmptyResultDataAccessException: " + e);
+            this.logger.error("GoogleAuthDao -> updateUserRecordFromGoogleAuth -> EmptyResultDataAccessException: " + e);
+        } catch (Exception e) {
+            this.logger.error("GoogleAuthDao -> updateUserRecordFromGoogleAuth -> Exception: " + e);
         }
     }
 }

@@ -33,6 +33,10 @@ public class FuelTrackerDao {
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{}, (rs, rowNum) -> rs.getDouble("MAX_DISTANCE"));
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("FuelTrackerDao -> getLongestDistance -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("FuelTrackerDao -> getLongestDistance -> Exception: " + e);
             return null;
         }
     }
@@ -53,6 +57,10 @@ public class FuelTrackerDao {
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> new KeyValueDouble(rs.getString("FILL_DATE"), rs.getDouble("FILL_ODOMETER")));
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("FuelTrackerDao -> getOdometerData -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("FuelTrackerDao -> getOdometerData -> Exception: " + e);
             return null;
         }
     }
@@ -73,6 +81,10 @@ public class FuelTrackerDao {
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> new KeyValueDouble(rs.getString("FILL_DATE"), rs.getDouble("MPG")));
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("FuelTrackerDao -> getMpgData -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("FuelTrackerDao -> getMpgData -> Exception: " + e);
             return null;
         }
     }

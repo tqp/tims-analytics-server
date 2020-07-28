@@ -1,11 +1,9 @@
 package com.timsanalytics.main.dao;
 
-import com.timsanalytics.auth.authCommon.beans.User;
 import com.timsanalytics.main.beans.Person;
 import com.timsanalytics.main.beans.PersonFriend;
 import com.timsanalytics.main.beans.ServerSidePaginationRequest;
 import com.timsanalytics.utils.GenerateUuidService;
-import com.timsanalytics.utils.PrintObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,23 +21,19 @@ public class PersonFriendDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final JdbcTemplate mySqlAuthJdbcTemplate;
     private final GenerateUuidService generateUuidService;
-    private final PrintObjectService printObjectService;
 
     @Autowired
     public PersonFriendDao(JdbcTemplate mySqlAuthJdbcTemplate,
-                           GenerateUuidService generateUuidService,
-                           PrintObjectService printObjectService) {
+                           GenerateUuidService generateUuidService) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
         this.generateUuidService = generateUuidService;
-        this.printObjectService = printObjectService;
     }
 
     public List<Person> getPersonFriendList_InfiniteScroll(ServerSidePaginationRequest serverSidePaginationRequest) {
         this.logger.trace("PersonFriendDao -> getPersonFriendList_InfiniteScroll");
-
         int pageStart = (serverSidePaginationRequest.getPageIndex() - 1) * (serverSidePaginationRequest.getPageSize() + 1);
         int pageEnd = (pageStart + serverSidePaginationRequest.getPageSize() - 1);
-        String filter = serverSidePaginationRequest.getFilter() != null ? serverSidePaginationRequest.getFilter() : "";
+        String filter = serverSidePaginationRequest.getNameFilter() != null ? serverSidePaginationRequest.getNameFilter() : "";
 
         StringBuilder query = new StringBuilder();
         query.append("  -- PAGINATION QUERY\n");
@@ -55,7 +49,7 @@ public class PersonFriendDao {
 
         query.append("          -- ROOT QUERY\n");
         query.append("          (\n");
-        query.append(getPersonFriendList_InfiniteScroll_RootQuery(filter));
+        query.append(getPersonFriendList_InfiniteScroll_RootQuery(serverSidePaginationRequest));
         query.append("          ) AS ROOT_QUERY\n");
         query.append("          -- END ROOT QUERY\n");
 
@@ -91,7 +85,7 @@ public class PersonFriendDao {
         }
     }
 
-    private String getPersonFriendList_InfiniteScroll_RootQuery(String filter) {
+    private String getPersonFriendList_InfiniteScroll_RootQuery(ServerSidePaginationRequest serverSidePaginationRequest) {
         StringBuilder rootQuery = new StringBuilder();
         rootQuery.append("              SELECT\n");
         rootQuery.append("                  PERSON_FRIENDS.PERSON_FRIENDS_GUID,\n");
@@ -102,24 +96,24 @@ public class PersonFriendDao {
         rootQuery.append("              FROM\n");
         rootQuery.append("                  SAMPLE_DATA.PERSON_FRIENDS\n");
         rootQuery.append("                  LEFT JOIN SAMPLE_DATA.PERSON ON PERSON_FRIENDS.FRIEND_GUID = PERSON.PERSON_GUID\n");
-
         rootQuery.append("              WHERE\n");
         rootQuery.append("              (\n");
         rootQuery.append("                  PERSON_FRIENDS.STATUS = 'Active'\n");
         rootQuery.append("                  AND\n");
-        rootQuery.append(getPersonFriendList_InfiniteScroll_AdditionalWhereClause(filter));
+        rootQuery.append(getPersonFriendList_InfiniteScroll_AdditionalWhereClause(serverSidePaginationRequest));
         rootQuery.append("              )\n");
         return rootQuery.toString();
     }
 
-    private String getPersonFriendList_InfiniteScroll_AdditionalWhereClause(String filter) {
-        this.logger.trace("PersonFriendDao -> getPersonFriendList_InfiniteScroll_WhereClause: filter=" + filter);
+    private String getPersonFriendList_InfiniteScroll_AdditionalWhereClause(ServerSidePaginationRequest serverSidePaginationRequest) {
+        this.logger.trace("PersonFriendDao -> getPersonFriendList_InfiniteScroll_WhereClause");
         StringBuilder additionalWhereClause = new StringBuilder();
 
-        // If a table-wide filter string exists, search all 'searchable' fields.
-        if (!"".equalsIgnoreCase(filter)) {
+        String nameFilter = serverSidePaginationRequest.getNameFilter() != null ? serverSidePaginationRequest.getNameFilter() : "";
+
+        if (!"".equalsIgnoreCase(nameFilter)) {
             additionalWhereClause.append("         (\n");
-            additionalWhereClause.append("             PERSON_FRIENDS.PERSON_GUID = '").append(filter).append("'\n");
+            additionalWhereClause.append("             PERSON_FRIENDS.PERSON_GUID = '").append(nameFilter).append("'\n");
             additionalWhereClause.append("         )");
         } else {
             // Otherwise, return a meaningless search filter.
@@ -156,12 +150,15 @@ public class PersonFriendDao {
                         item.setStatus(rs.getString("STATUS"));
                         return item;
                     });
-        } catch (EmptyResultDataAccessException e) {
+//        } catch (EmptyResultDataAccessException e) {
+//            this.logger.error("PersonDao -> getPersonList_InfiniteScroll -> EmptyResultDataAccessException: " + e);
+//            return null;
+        } catch (Exception e) {
+            this.logger.error("PersonDao -> getPersonList_InfiniteScroll -> Exception: " + e);
             return null;
         }
 
     }
-
 
     public List<Person> getCurrentFriends(String personGuid) {
         this.logger.trace("getCurrentFriends: personGuid=" + personGuid);
@@ -317,7 +314,6 @@ public class PersonFriendDao {
             this.logger.error("PersonFriendDao -> addFriends -> Exception: " + e);
             return null;
         }
-
 
     }
 }

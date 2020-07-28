@@ -20,15 +20,12 @@ public class PersonDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final JdbcTemplate mySqlAuthJdbcTemplate;
     private final GenerateUuidService generateUuidService;
-    private final PrintObjectService printObjectService;
 
     @Autowired
     public PersonDao(JdbcTemplate mySqlAuthJdbcTemplate,
-                     GenerateUuidService generateUuidService,
-                     PrintObjectService printObjectService) {
+                     GenerateUuidService generateUuidService) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
         this.generateUuidService = generateUuidService;
-        this.printObjectService = printObjectService;
     }
 
     public Person createPerson(Person person) {
@@ -140,21 +137,18 @@ public class PersonDao {
 
     public int getPersonList_InfiniteScroll_TotalRecords(ServerSidePaginationRequest serverSidePaginationRequest) {
         this.logger.trace("PersonDao -> getPersonList_InfiniteScroll_TotalRecords");
-        String filter = serverSidePaginationRequest.getFilter() != null ? serverSidePaginationRequest.getFilter() : "";
-
         StringBuilder query = new StringBuilder();
         query.append("          SELECT\n");
         query.append("              COUNT(*)\n");
         query.append("          FROM\n");
-
         query.append("          -- ROOT QUERY\n");
         query.append("          (\n");
-        query.append(getPersonList_InfiniteScroll_RootQuery(filter));
+        query.append(getPersonList_InfiniteScroll_RootQuery(serverSidePaginationRequest));
         query.append("          ) AS ROOT_QUERY\n");
         query.append("          -- END ROOT QUERY\n");
-
         try {
-            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{}, Integer.class);
+            Integer count = this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{}, Integer.class);
+            return count == null ? 0 : count;
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("PersonDao -> getPersonList_InfiniteScroll -> EmptyResultDataAccessException: " + e);
             return 0;
@@ -169,7 +163,8 @@ public class PersonDao {
 
         int pageStart = (serverSidePaginationRequest.getPageIndex() - 1) * (serverSidePaginationRequest.getPageSize() + 1);
         int pageEnd = (pageStart + serverSidePaginationRequest.getPageSize() - 1);
-        String filter = serverSidePaginationRequest.getFilter() != null ? serverSidePaginationRequest.getFilter() : "";
+        String sortColumn = serverSidePaginationRequest.getSortColumn();
+        String sortDirection = serverSidePaginationRequest.getSortDirection();
 
         StringBuilder query = new StringBuilder();
         query.append("  -- PAGINATION QUERY\n");
@@ -185,11 +180,12 @@ public class PersonDao {
 
         query.append("          -- ROOT QUERY\n");
         query.append("          (\n");
-        query.append(getPersonList_InfiniteScroll_RootQuery(filter));
+        query.append(getPersonList_InfiniteScroll_RootQuery(serverSidePaginationRequest));
         query.append("          ) AS ROOT_QUERY\n");
         query.append("          -- END ROOT QUERY\n");
 
         query.append("          ORDER BY\n");
+        query.append(sortColumn).append(" ").append(sortDirection.toUpperCase()).append(",\n");
         query.append("              PERSON_LAST_NAME,\n");
         query.append("              PERSON_FIRST_NAME\n");
         query.append("      ) AS FILTER_SORT_QUERY\n");
@@ -200,7 +196,6 @@ public class PersonDao {
 
         this.logger.trace("SQL:\n" + query.toString());
         this.logger.trace("pageStart=" + pageStart + ", pageEnd=" + pageEnd);
-        this.logger.trace("filter: " + filter);
 
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{
@@ -232,7 +227,7 @@ public class PersonDao {
         }
     }
 
-    private String getPersonList_InfiniteScroll_RootQuery(String filter) {
+    private String getPersonList_InfiniteScroll_RootQuery(ServerSidePaginationRequest serverSidePaginationRequest) {
         StringBuilder rootQuery = new StringBuilder();
         rootQuery.append("              SELECT DISTINCT");
         rootQuery.append("                  PERSON.PERSON_GUID,\n");
@@ -254,25 +249,38 @@ public class PersonDao {
         rootQuery.append("              (\n");
         rootQuery.append("                  PERSON.STATUS = 'Active'\n");
         rootQuery.append("                  AND\n");
-        rootQuery.append(getPersonList_InfiniteScroll_AdditionalWhereClause(filter));
+        rootQuery.append(getPersonList_InfiniteScroll_AdditionalWhereClause(serverSidePaginationRequest));
         rootQuery.append("              )\n");
         return rootQuery.toString();
     }
 
-    private String getPersonList_InfiniteScroll_AdditionalWhereClause(String filter) {
-        this.logger.trace("PersonDao -> getPersonList_InfiniteScroll_WhereClause: filter=" + filter);
+    private String getPersonList_InfiniteScroll_AdditionalWhereClause(ServerSidePaginationRequest serverSidePaginationRequest) {
         StringBuilder whereClause = new StringBuilder();
+        String nameFilter = serverSidePaginationRequest.getNameFilter() != null ? serverSidePaginationRequest.getNameFilter() : "";
+        String stateFilter = serverSidePaginationRequest.getStateFilter() != null ? serverSidePaginationRequest.getStateFilter() : "";
 
-        // IF a table-wide filter exists, search all 'searchable' fields.
-        if (!"".equalsIgnoreCase(filter)) {
-            whereClause.append("(\n");
-            whereClause.append("    UPPER(PERSON.PERSON_LAST_NAME) LIKE UPPER('%").append(filter).append("%')\n");
-            whereClause.append("    OR");
-            whereClause.append("    UPPER(PERSON.PERSON_FIRST_NAME) LIKE UPPER('%").append(filter).append("%')\n");
-            whereClause.append(")\n");
+        // NAME FILTER CLAUSE
+        if (!"".equalsIgnoreCase(nameFilter)) {
+            whereClause.append("                  (\n");
+            whereClause.append("                    UPPER(PERSON.PERSON_LAST_NAME) LIKE UPPER('%").append(nameFilter).append("%')\n");
+            whereClause.append("                    OR");
+            whereClause.append("                    UPPER(PERSON.PERSON_FIRST_NAME) LIKE UPPER('%").append(nameFilter).append("%')\n");
+            whereClause.append("                  )\n");
         } else {
-            whereClause.append("(1=1)");
+            whereClause.append("                  (1=1)");
         }
+
+        whereClause.append("                  AND");
+
+        // STATE FILTER CLAUSE
+        if (!"".equalsIgnoreCase(stateFilter)) {
+            whereClause.append("                  (\n");
+            whereClause.append("                    UPPER(PERSON.PERSON_STATE) = UPPER('").append(stateFilter).append("')\n");
+            whereClause.append("                  )\n");
+        } else {
+            whereClause.append("                  (1=1)");
+        }
+
         return whereClause.toString();
     }
 

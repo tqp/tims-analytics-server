@@ -74,20 +74,28 @@ public class UserDao {
         this.logger.debug("Password: " + user.getPassword());
         this.logger.debug("Logged-In User: " + loggedInUser.getUsername());
 
-        this.mySqlAuthJdbcTemplate.update(
-                connection -> {
-                    PreparedStatement ps = connection.prepareStatement(query.toString(), Statement.RETURN_GENERATED_KEYS);
-                    ps.setString(1, userGuid);
-                    ps.setString(2, user.getUsername());
-                    ps.setString(3, user.getSurname());
-                    ps.setString(4, user.getGivenName());
-                    ps.setString(5, this.bCryptEncoderService.encode(user.getPassword()));
-                    ps.setString(6, user.getTheme());
-                    ps.setString(7, loggedInUser.getUsername());
-                    ps.setString(8, loggedInUser.getUsername());
-                    return ps;
-                });
-        return this.getUser(userGuid);
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString(), Statement.RETURN_GENERATED_KEYS);
+                        ps.setString(1, userGuid);
+                        ps.setString(2, user.getUsername());
+                        ps.setString(3, user.getSurname());
+                        ps.setString(4, user.getGivenName());
+                        ps.setString(5, this.bCryptEncoderService.encode(user.getPassword()));
+                        ps.setString(6, user.getTheme());
+                        ps.setString(7, loggedInUser.getUsername());
+                        ps.setString(8, loggedInUser.getUsername());
+                        return ps;
+                    });
+            return this.getUser(userGuid);
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("UserDao -> createUser -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("UserDao -> createUser -> Exception: " + e);
+            return null;
+        }
     }
 
     public User getUser(String userGuid) {
@@ -117,6 +125,10 @@ public class UserDao {
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{userGuid}, new UserRowMapper());
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("UserDao -> getUser -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("UserDao -> getUser -> Exception: " + e);
             return null;
         }
     }
@@ -147,6 +159,10 @@ public class UserDao {
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{row_id}, new UserRowMapper());
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("UserDao -> getUserByRowId -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("UserDao -> getUserByRowId -> Exception: " + e);
             return null;
         }
     }
@@ -174,6 +190,10 @@ public class UserDao {
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, new UserRowMapper());
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("UserDao -> getUserList -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("UserDao -> getUserList -> Exception: " + e);
             return null;
         }
     }
@@ -200,6 +220,10 @@ public class UserDao {
             );
             return this.getUser(User.getUserGuid());
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("UserDao -> updateUser -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("UserDao -> updateUser -> Exception: " + e);
             return null;
         }
     }
@@ -223,6 +247,10 @@ public class UserDao {
             );
             return this.getUser(userGuid);
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("UserDao -> deleteUser -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("UserDao -> deleteUser -> Exception: " + e);
             return null;
         }
     }
@@ -250,6 +278,10 @@ public class UserDao {
             );
             return this.getUser(userGuid);
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("UserDao -> disableUser -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("UserDao -> disableUser -> Exception: " + e);
             return null;
         }
     }
@@ -275,6 +307,10 @@ public class UserDao {
             );
             return this.getUser(userGuid);
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("UserDao -> enableUser -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("UserDao -> enableUser -> Exception: " + e);
             return null;
         }
     }
@@ -303,6 +339,10 @@ public class UserDao {
             );
             return this.getUser(User.getUserGuid());
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("UserDao -> updateMyProfile -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("UserDao -> updateMyProfile -> Exception: " + e);
             return null;
         }
     }
@@ -334,6 +374,10 @@ public class UserDao {
             );
             return this.getUser(user.getUserGuid());
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("UserDao -> changePassword -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("UserDao -> changePassword -> Exception: " + e);
             return null;
         }
     }
@@ -359,6 +403,10 @@ public class UserDao {
             );
             return this.getUser(userGuid);
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("UserDao -> updateLastLogin -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("UserDao -> updateLastLogin -> Exception: " + e);
             return null;
         }
     }
@@ -393,6 +441,10 @@ public class UserDao {
             );
             return this.getUser(userGuid);
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("UserDao -> incrementLoginCount -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("UserDao -> incrementLoginCount -> Exception: " + e);
             return null;
         }
     }
@@ -412,6 +464,10 @@ public class UserDao {
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{username}, String.class);
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("UserDao -> getUserGuidByUsername -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("UserDao -> getUserGuidByUsername -> Exception: " + e);
             return null;
         }
     }
@@ -434,6 +490,10 @@ public class UserDao {
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{userGuid}, new RoleRowMapper());
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("UserDao -> getUserRoles -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("UserDao -> getUserRoles -> Exception: " + e);
             return null;
         }
     }

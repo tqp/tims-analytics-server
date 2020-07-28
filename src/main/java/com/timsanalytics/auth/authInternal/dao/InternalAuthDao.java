@@ -22,7 +22,7 @@ public class InternalAuthDao {
     }
 
     public void updateUserRecordFromInternalAuth(User appUser) {
-        this.logger.trace("AppUserDao -> updateUserRecord: userGuid=" + appUser.getUserGuid());
+        this.logger.trace("InternalAuthDao -> updateUserRecord: userGuid=" + appUser.getUserGuid());
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
         query.append("      AUTH.USER\n");
@@ -42,7 +42,9 @@ public class InternalAuthDao {
                     }
             );
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("AppUserDao -> updateLastLogin -> EmptyResultDataAccessException: " + e);
+            this.logger.error("InternalAuthDao -> updateUserRecordFromInternalAuth -> EmptyResultDataAccessException: " + e);
+        } catch (Exception e) {
+            this.logger.error("InternalAuthDao -> updateUserRecordFromInternalAuth -> Exception: " + e);
         }
     }
 }

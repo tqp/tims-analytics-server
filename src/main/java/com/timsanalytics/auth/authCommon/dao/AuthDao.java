@@ -61,12 +61,16 @@ public class AuthDao {
                         return item;
                     });
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("AuthDao -> getUserForAuthentication -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("AuthDao -> getUserForAuthentication -> Exception: " + e);
             return null;
         }
     }
 
     public List<Role> getRolesByUser(String userGuid) {
-        this.logger.debug("AuthDao -> getAppRolesByUserGuid: userGuid=" + userGuid);
+        this.logger.debug("AuthDao -> getRolesByUser: userGuid=" + userGuid);
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      ROLE.ROLE_GUID,\n");
@@ -99,12 +103,16 @@ public class AuthDao {
                         return item;
                     });
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("AuthDao -> getRolesByUser -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("AuthDao -> getRolesByUser -> Exception: " + e);
             return null;
         }
     }
 
     public void updateUserRecordFromGoogleAuth(User appUser, GoogleUser googleUser) {
-        this.logger.debug("AppUserDao -> updateUserRecord: userGuid=" + appUser.getUserGuid());
+        this.logger.debug("AppUserDao -> updateUserRecordFromGoogleAuth: userGuid=" + appUser.getUserGuid());
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
         query.append("      USER\n");
@@ -135,7 +143,9 @@ public class AuthDao {
                     }
             );
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("AppUserDao -> updateLastLogin -> EmptyResultDataAccessException: " + e);
+            this.logger.error("AuthDao -> updateUserRecordFromGoogleAuth -> EmptyResultDataAccessException: " + e);
+        } catch (Exception e) {
+            this.logger.error("AuthDao -> updateUserRecordFromGoogleAuth -> Exception: " + e);
         }
     }
 }

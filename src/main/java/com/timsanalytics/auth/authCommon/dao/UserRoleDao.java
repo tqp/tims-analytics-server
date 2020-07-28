@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -56,19 +57,26 @@ public class UserRoleDao {
         this.logger.debug("appUserRoleGuid: " + userRoleGuid);
         this.logger.debug("userGuid: " + userGuid);
         this.logger.debug("roleGuid: " + roleGuid);
-
-        this.mySqlAuthJdbcTemplate.update(
-                connection -> {
-                    PreparedStatement ps = connection.prepareStatement(query.toString());
-                    ps.setString(1, userRoleGuid);
-                    ps.setString(2, userGuid);
-                    ps.setString(3, roleGuid);
-                    ps.setString(4, status);
-                    ps.setString(5, loggedInUser.getUsername());
-                    ps.setString(6, loggedInUser.getUsername());
-                    return ps;
-                });
-        return userRoleGuid;
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setString(1, userRoleGuid);
+                        ps.setString(2, userGuid);
+                        ps.setString(3, roleGuid);
+                        ps.setString(4, status);
+                        ps.setString(5, loggedInUser.getUsername());
+                        ps.setString(6, loggedInUser.getUsername());
+                        return ps;
+                    });
+            return userRoleGuid;
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("UserRoleDao -> createUserRole -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("UserRoleDao -> createUserRole -> Exception: " + e);
+            return null;
+        }
     }
 
     public String updateUserRole(String userGuid, String roleGuid, String status, User loggedInUser) {
@@ -88,16 +96,23 @@ public class UserRoleDao {
         this.logger.debug("userRoleGuid: " + userRoleGuid);
         this.logger.debug("userGuid: " + userGuid);
         this.logger.debug("roleGuid: " + roleGuid);
-
-        this.mySqlAuthJdbcTemplate.update(
-                connection -> {
-                    PreparedStatement ps = connection.prepareStatement(query.toString());
-                    ps.setString(1, status);
-                    ps.setString(2, loggedInUser.getUsername());
-                    ps.setString(3, userGuid);
-                    ps.setString(4, roleGuid);
-                    return ps;
-                });
-        return "success";
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setString(1, status);
+                        ps.setString(2, loggedInUser.getUsername());
+                        ps.setString(3, userGuid);
+                        ps.setString(4, roleGuid);
+                        return ps;
+                    });
+            return "success";
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("UserRoleDao -> updateUserRole -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("UserRoleDao -> updateUserRole -> Exception: " + e);
+            return null;
+        }
     }
 }

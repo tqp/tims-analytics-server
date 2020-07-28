@@ -29,6 +29,10 @@ public class DatabaseConnectionDao {
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{}, (rs, rowNum) -> new KeyValueString("response", rs.getString("TIMESTAMP")));
         } catch (EmptyResultDataAccessException e) {
+            this.logger.error("DatabaseConnectionDao -> getDatabaseResponse -> EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("DatabaseConnectionDao -> getDatabaseResponse -> Exception: " + e);
             return null;
         }
     }
