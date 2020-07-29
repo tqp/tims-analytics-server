@@ -45,15 +45,7 @@ public class PersonService {
     }
 
     public ServerSidePaginationResponse getPersonList_InfiniteScroll(ServerSidePaginationRequest serverSidePaginationRequest) {
-        if (serverSidePaginationRequest.getPageIndex() == 0) {
-            serverSidePaginationRequest.setPageIndex(1);
-        }
-        if (serverSidePaginationRequest.getPageSize() == 0) {
-            serverSidePaginationRequest.setPageSize(50);
-        }
-        this.logger.trace("Page Index=" + serverSidePaginationRequest.getPageIndex());
-        this.logger.trace("Page Size =" + serverSidePaginationRequest.getPageSize());
-
+        serverSidePaginationRequest.setPageIndex(serverSidePaginationRequest.getPageSize() + 1);
         ServerSidePaginationResponse serverSidePaginationResponse = new ServerSidePaginationResponse();
         serverSidePaginationResponse.setServerSidePaginationRequest(serverSidePaginationRequest);
         List<Person> personList = this.personDao.getPersonList_InfiniteScroll(serverSidePaginationRequest);

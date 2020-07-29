@@ -20,12 +20,15 @@ public class PersonDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final JdbcTemplate mySqlAuthJdbcTemplate;
     private final GenerateUuidService generateUuidService;
+    private final PrintObjectService printObjectService;
 
     @Autowired
     public PersonDao(JdbcTemplate mySqlAuthJdbcTemplate,
-                     GenerateUuidService generateUuidService) {
+                     GenerateUuidService generateUuidService,
+                     PrintObjectService printObjectService) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
         this.generateUuidService = generateUuidService;
+        this.printObjectService = printObjectService;
     }
 
     public Person createPerson(Person person) {
@@ -160,8 +163,9 @@ public class PersonDao {
 
     public List<Person> getPersonList_InfiniteScroll(ServerSidePaginationRequest serverSidePaginationRequest) {
         this.logger.trace("PersonDao -> getPersonList_InfiniteScroll");
+        this.printObjectService.PrintObject("serverSidePaginationRequest", serverSidePaginationRequest);
 
-        int pageStart = (serverSidePaginationRequest.getPageIndex() - 1) * (serverSidePaginationRequest.getPageSize() + 1);
+        int pageStart = (serverSidePaginationRequest.getPageIndex() - 1) * serverSidePaginationRequest.getPageSize() + 1;
         int pageEnd = (pageStart + serverSidePaginationRequest.getPageSize() - 1);
         String sortColumn = serverSidePaginationRequest.getSortColumn();
         String sortDirection = serverSidePaginationRequest.getSortDirection();
@@ -195,7 +199,7 @@ public class PersonDao {
         query.append("  -- END PAGINATION QUERY\n");
 
         this.logger.trace("SQL:\n" + query.toString());
-        this.logger.trace("pageStart=" + pageStart + ", pageEnd=" + pageEnd);
+        this.logger.debug("pageStart=" + pageStart + ", pageEnd=" + pageEnd);
 
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{

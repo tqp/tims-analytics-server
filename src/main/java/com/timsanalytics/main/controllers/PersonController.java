@@ -125,14 +125,6 @@ public class PersonController {
     @Operation(summary = "Get Friend List (Infinite Scroll)", tags = {"Person"}, description = "Get Friend records using infinite scroll.", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ServerSidePaginationResponse> getPersonSubList_InfiniteScroll(@RequestBody ServerSidePaginationRequest serverSidePaginationRequest) {
         long startTime = new Date().getTime();
-        if (serverSidePaginationRequest.getPageIndex() == 0) {
-            serverSidePaginationRequest.setPageIndex(1);
-        }
-        if (serverSidePaginationRequest.getPageSize() == 0) {
-            serverSidePaginationRequest.setPageSize(50);
-        }
-        this.logger.trace("Page Index=" + serverSidePaginationRequest.getPageIndex());
-        this.logger.trace("Page Size =" + serverSidePaginationRequest.getPageSize());
         try {
             ServerSidePaginationResponse container = new ServerSidePaginationResponse();
             List<Person> personList = this.personService.getPersonFriendList_InfiniteScroll(serverSidePaginationRequest);
