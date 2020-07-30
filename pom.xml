@@ -38,6 +38,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>5.2.2.RELEASE</version>
+        </dependency>
         <!-- / SPRINGFRAMEWORK -->
 
         <!-- SPRING SOCIAL -->
