@@ -163,7 +163,7 @@ public class PersonDao {
 
     public List<Person> getPersonList_InfiniteScroll(ServerSidePaginationRequest serverSidePaginationRequest) {
         this.logger.trace("PersonDao -> getPersonList_InfiniteScroll");
-        this.printObjectService.PrintObject("serverSidePaginationRequest", serverSidePaginationRequest);
+//        this.printObjectService.PrintObject("serverSidePaginationRequest", serverSidePaginationRequest);
 
         int pageStart = (serverSidePaginationRequest.getPageIndex() - 1) * serverSidePaginationRequest.getPageSize() + 1;
         int pageEnd = (pageStart + serverSidePaginationRequest.getPageSize() - 1);
@@ -199,7 +199,7 @@ public class PersonDao {
         query.append("  -- END PAGINATION QUERY\n");
 
         this.logger.trace("SQL:\n" + query.toString());
-        this.logger.debug("pageStart=" + pageStart + ", pageEnd=" + pageEnd);
+        this.logger.trace("pageStart=" + pageStart + ", pageEnd=" + pageEnd);
 
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{
