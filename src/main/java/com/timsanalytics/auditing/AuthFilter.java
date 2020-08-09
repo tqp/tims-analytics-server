@@ -1,4 +1,4 @@
-package com.timsanalytics.config;
+package com.timsanalytics.auditing;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class AuthFilter implements Filter {
         try {
             chain.doFilter(requestWrapper, responseWrapper);
         } finally {
-            this.logger.trace("Starting Transacetion for req: {}", requestWrapper.getRequestURI());
+            this.logger.trace("Starting Transaction for req: {}", requestWrapper.getRequestURI());
 
             String method = requestWrapper.getMethod();
             String path = requestWrapper.getRequestURI();
@@ -42,11 +42,11 @@ public class AuthFilter implements Filter {
 
             if (Arrays.stream(ignoredMethods).noneMatch(method::equals)) {
                 if (Arrays.stream(ignoredPaths).noneMatch(path::equals)) {
-                    System.out.println("Audit: " + method + " " + path);
+                    System.out.println("Auth Filter: " + method + " " + path);
                 }
             }
 
-            System.out.println("Response getStatus: " + responseWrapper.getStatus());
+//            System.out.println("Response getStatus: " + responseWrapper.getStatus());
         }
     }
 

@@ -1,4 +1,4 @@
-package com.timsanalytics.config;
+package com.timsanalytics.auditing;
 
 
 import org.slf4j.Logger;
@@ -43,11 +43,11 @@ public class ApiFilter implements Filter {
 
             if (Arrays.stream(ignoredMethods).noneMatch(method::equals)) {
                 if (Arrays.stream(ignoredPaths).noneMatch(path::equals)) {
-                    System.out.println("Audit: " + method + " " + path);
+                    System.out.println("Api Filter: " + method + " " + path);
                 }
             }
 
-            System.out.println("Response getStatus: " + responseWrapper.getStatus());
+//            System.out.println("Response getStatus: " + responseWrapper.getStatus());
 
 //            // Get Username, if one is available
 //            if (requestWrapper.getHeader("Authorization") != null) {
