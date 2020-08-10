@@ -163,10 +163,14 @@ public class PersonDao {
 
     public List<Person> getPersonList_InfiniteScroll(ServerSidePaginationRequest serverSidePaginationRequest) {
         this.logger.trace("PersonDao -> getPersonList_InfiniteScroll");
-//        this.printObjectService.PrintObject("serverSidePaginationRequest", serverSidePaginationRequest);
+        //this.printObjectService.PrintObject("serverSidePaginationRequest", serverSidePaginationRequest);
 
-        int pageStart = (serverSidePaginationRequest.getPageIndex() - 1) * serverSidePaginationRequest.getPageSize() + 1;
-        int pageEnd = (pageStart + serverSidePaginationRequest.getPageSize() - 1);
+        this.logger.trace("pageIndex  : " + serverSidePaginationRequest.getPageIndex());
+        int pageStart = (serverSidePaginationRequest.getPageIndex()) * serverSidePaginationRequest.getPageSize();
+        int pageSize = serverSidePaginationRequest.getPageSize();
+        this.logger.trace("pageStart  : " + pageStart);
+        this.logger.trace("pageSize(2): " + pageSize);
+
         String sortColumn = serverSidePaginationRequest.getSortColumn();
         String sortDirection = serverSidePaginationRequest.getSortDirection();
 
@@ -199,12 +203,12 @@ public class PersonDao {
         query.append("  -- END PAGINATION QUERY\n");
 
         this.logger.trace("SQL:\n" + query.toString());
-        this.logger.trace("pageStart=" + pageStart + ", pageEnd=" + pageEnd);
+        this.logger.trace("pageStart=" + pageStart + ", pageSize=" + pageSize);
 
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{
                     pageStart,
-                    pageEnd
+                    pageSize
             }, (rs, rowNum) -> {
                 Person item = new Person();
                 item.setGuid(rs.getString("PERSON_GUID"));
