@@ -77,6 +77,7 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-ui.html").permitAll()
 
                 // API Endpoints OPEN
+                .antMatchers("/app/**").permitAll()
                 .antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("/api/v1/token-exchange/**").permitAll()
                 .antMatchers("/api/v1/intuit-token/**").permitAll()
