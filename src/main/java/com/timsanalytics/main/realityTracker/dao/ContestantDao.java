@@ -1,7 +1,10 @@
 package com.timsanalytics.main.realityTracker.dao;
 
+import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.main.realityTracker.beans.Contestant;
+import com.timsanalytics.main.thisApp.beans.Person;
 import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
+import com.timsanalytics.utils.GenerateUuidService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,16 +12,62 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Service
 public class ContestantDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final JdbcTemplate mySqlAuthJdbcTemplate;
+    private final GenerateUuidService generateUuidService;
 
     @Autowired
-    public ContestantDao(JdbcTemplate mySqlAuthJdbcTemplate) {
+    public ContestantDao(JdbcTemplate mySqlAuthJdbcTemplate, GenerateUuidService generateUuidService) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
+        this.generateUuidService = generateUuidService;
+    }
+
+    public Contestant createContestant(Contestant contestant) {
+        StringBuilder query = new StringBuilder();
+        query.append("  INSERT INTO\n");
+        query.append("      REALITY_TRACKER.CONTESTANT\n");
+        query.append("      (\n");
+        query.append("          CONTESTANT.CONTESTANT_GUID,\n");
+        query.append("          CONTESTANT.CONTESTANT_LAST_NAME,\n");
+        query.append("          CONTESTANT.CONTESTANT_FIRST_NAME,\n");
+        query.append("          CONTESTANT.CONTESTANT_GENDER,\n");
+        query.append("          CONTESTANT.STATUS\n");
+        query.append("      )\n");
+        query.append("      VALUES\n");
+        query.append("      (\n");
+        query.append("          ?,\n"); // 1
+        query.append("          ?,\n"); // 2
+        query.append("          ?,\n"); // 3
+        query.append("          ?,\n");  // 4
+        query.append("          'Active'\n");
+        query.append("      )\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        contestant.setGuid(this.generateUuidService.GenerateUuid());
+                        this.logger.trace("New Contestant GUID: " + contestant.getGuid());
+                        ps.setString(1, contestant.getGuid());
+                        ps.setString(2, contestant.getLastName());
+                        ps.setString(3, contestant.getFirstName());
+                        ps.setString(4, contestant.getGender());
+                        return ps;
+                    }
+            );
+            return this.getContestantDetail(contestant.getGuid());
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
     }
 
     public int getContestantList_SSP_TotalRecords(ServerSidePaginationRequest serverSidePaginationRequest) {
@@ -35,10 +84,10 @@ public class ContestantDao {
             Integer count = this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{}, Integer.class);
             return count == null ? 0 : count;
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("getContestantList_SSP_TotalRecords -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return 0;
         } catch (Exception e) {
-            this.logger.error("getContestantList_SSP_TotalRecords -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return 0;
         }
     }
@@ -87,16 +136,16 @@ public class ContestantDao {
                     pageSize
             }, (rs, rowNum) -> {
                 Contestant item = new Contestant();
-                item.setContestantGuid(rs.getString("CONTESTANT_GUID"));
-                item.setContestantLastName(rs.getString("CONTESTANT_LAST_NAME"));
-                item.setContestantFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
+                item.setGuid(rs.getString("CONTESTANT_GUID"));
+                item.setLastName(rs.getString("CONTESTANT_LAST_NAME"));
+                item.setFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
                 return item;
             });
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("getContestantList_SSP -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("getContestantList_SSP -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -141,6 +190,89 @@ public class ContestantDao {
         }
 
         return whereClause.toString();
+    }
+
+    public Contestant getContestantDetail(String contestantGuid) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      CONTESTANT_GUID,\n");
+        query.append("      CONTESTANT_LAST_NAME,\n");
+        query.append("      CONTESTANT_FIRST_NAME,\n");
+        query.append("      CONTESTANT_GENDER\n");
+        query.append("  FROM\n");
+        query.append("      REALITY_TRACKER.CONTESTANT\n");
+        query.append("  WHERE\n");
+        query.append("      CONTESTANT_GUID = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{contestantGuid}, new ContestantRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public Contestant updateContestant(Contestant contestant) {
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      REALITY_TRACKER.CONTESTANT\n");
+        query.append("  SET\n");
+        query.append("      CONTESTANT.CONTESTANT_LAST_NAME = ?,\n");       // 1
+        query.append("      CONTESTANT.CONTESTANT_FIRST_NAME = ?,\n");      // 2
+        query.append("      CONTESTANT.CONTESTANT_GENDER = ?\n");           // 3
+        query.append("  WHERE\n");
+        query.append("      CONTESTANT.CONTESTANT_GUID = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setString(1, contestant.getLastName());
+                        ps.setString(2, contestant.getFirstName());
+                        ps.setString(3, contestant.getGender());
+                        ps.setString(4, contestant.getGuid());
+                        return ps;
+                    }
+            );
+            return this.getContestantDetail(contestant.getGuid());
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public KeyValue deleteContestant(String contestantGuid) {
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      REALITY_TRACKER.CONTESTANT\n");
+        query.append("  SET\n");
+        query.append("      STATUS = 'Deleted'\n");
+        query.append("  WHERE\n");
+        query.append("      CONTESTANT_GUID = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        this.logger.trace("CONTESTANT_GUID=" + contestantGuid);
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setString(1, contestantGuid);
+                        return ps;
+                    }
+            );
+            return new KeyValue("contestantGuid", contestantGuid);
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
     }
 }
 

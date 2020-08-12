@@ -71,10 +71,10 @@ public class UserRoleDao {
                     });
             return userRoleGuid;
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("UserRoleDao -> createUserRole -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("UserRoleDao -> createUserRole -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -108,10 +108,10 @@ public class UserRoleDao {
                     });
             return "success";
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("UserRoleDao -> updateUserRole -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("UserRoleDao -> updateUserRole -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }

@@ -35,7 +35,7 @@ public class PersonController {
 
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Create Person", tags = {"Person"}, description = "Update Person record.", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Create Person", tags = {"Person"}, description = "Create Person", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Person> createPerson(@RequestBody Person person) {
         this.logger.debug("PersonController -> createPerson");
         try {
@@ -94,7 +94,7 @@ public class PersonController {
 
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Update Person", tags = {"Person"}, description = "Update Person record.", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Update Person", tags = {"Person"}, description = "Update Person", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<Person> updatePerson(@RequestBody Person person) {
         try {
             return ResponseEntity.ok()
@@ -107,7 +107,7 @@ public class PersonController {
 
     @ResponseBody
     @RequestMapping(value = "/{personGuid}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Delete Person", tags = {"Person"}, description = "Delete Person record.", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Delete Person", tags = {"Person"}, description = "Delete Person", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<KeyValue> deletePerson(@Parameter(description = "Person GUID", required = true) @PathVariable String personGuid) {
         try {
             return ResponseEntity.ok()

@@ -61,10 +61,10 @@ public class AuthDao {
                         return item;
                     });
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("AuthDao -> getUserForAuthentication -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("AuthDao -> getUserForAuthentication -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -103,10 +103,10 @@ public class AuthDao {
                         return item;
                     });
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("AuthDao -> getRolesByUser -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("AuthDao -> getRolesByUser -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -143,9 +143,9 @@ public class AuthDao {
                     }
             );
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("AuthDao -> updateUserRecordFromGoogleAuth -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
         } catch (Exception e) {
-            this.logger.error("AuthDao -> updateUserRecordFromGoogleAuth -> Exception: " + e);
+            this.logger.error("Exception: " + e);
         }
     }
 }

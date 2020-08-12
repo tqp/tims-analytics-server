@@ -1,10 +1,14 @@
 package com.timsanalytics.main.realityTracker.controllers;
 
+import com.timsanalytics.auth.authCommon.beans.KeyValue;
+import com.timsanalytics.main.realityTracker.beans.Contestant;
 import com.timsanalytics.main.realityTracker.beans.ServerSidePaginationResponseContestant;
 import com.timsanalytics.main.realityTracker.beans.ServerSidePaginationResponseSeries;
 import com.timsanalytics.main.realityTracker.services.ContestantService;
+import com.timsanalytics.main.thisApp.beans.Person;
 import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
@@ -31,6 +35,19 @@ public class ContestantController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Create Contestant", tags = {"Contestant"}, description = "Create Contestant", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Contestant> createContestant(@RequestBody Contestant contestant) {
+        try {
+            return ResponseEntity.ok()
+                    .body(contestantService.createContestant(contestant));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/ssp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get Person List (SSP)", tags = {"Person"}, description = "Get Person List (SSP)", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ServerSidePaginationResponseContestant> getPersonList_SSP(@RequestBody ServerSidePaginationRequest serverSidePaginationRequest) {
@@ -44,6 +61,45 @@ public class ContestantController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/{contestantGuid}", method = RequestMethod.GET)
+    @Operation(summary = "Get Contestant Detail", tags = {"Contestant"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Contestant> getContestantDetail(@Parameter(description = "Contestant GUID", required = true) @PathVariable String contestantGuid) {
+        try {
+            Contestant contestant = contestantService.getContestantDetail(contestantGuid);
+            return ResponseEntity.ok()
+                    .body(contestant);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Update Contestant", tags = {"Contestant"}, description = "Update Contestant", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Contestant> updateContestant(@RequestBody Contestant contestant) {
+        try {
+            return ResponseEntity.ok()
+                    .body(contestantService.updateContestant(contestant));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/{contestantGuid}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Delete Contestant", tags = {"Contestant"}, description = "Delete Contestant", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<KeyValue> deleteContestant(@Parameter(description = "Contestant GUID", required = true) @PathVariable String contestantGuid) {
+        try {
+            return ResponseEntity.ok()
+                    .body(contestantService.deleteContestant(contestantGuid));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

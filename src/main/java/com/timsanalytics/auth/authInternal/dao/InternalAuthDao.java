@@ -42,9 +42,9 @@ public class InternalAuthDao {
                     }
             );
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("InternalAuthDao -> updateUserRecordFromInternalAuth -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
         } catch (Exception e) {
-            this.logger.error("InternalAuthDao -> updateUserRecordFromInternalAuth -> Exception: " + e);
+            this.logger.error("Exception: " + e);
         }
     }
 }

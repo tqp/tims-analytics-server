@@ -35,10 +35,10 @@ public class SeriesDao {
             Integer count = this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{}, Integer.class);
             return count == null ? 0 : count;
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("getSeriesList_SSP_TotalRecords -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return 0;
         } catch (Exception e) {
-            this.logger.error("getSeriesList_SSP_TotalRecords -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return 0;
         }
     }
@@ -86,15 +86,15 @@ public class SeriesDao {
                     pageSize
             }, (rs, rowNum) -> {
                 Series item = new Series();
-                item.setSeriesGuid(rs.getString("SERIES_GUID"));
-                item.setSeriesName(rs.getString("SERIES_NAME"));
+                item.setGuid(rs.getString("SERIES_GUID"));
+                item.setName(rs.getString("SERIES_NAME"));
                 return item;
             });
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("getSeriesList_SSP -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("getSeriesList_SSP -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }

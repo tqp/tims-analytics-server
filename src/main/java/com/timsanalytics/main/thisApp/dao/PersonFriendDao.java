@@ -76,10 +76,10 @@ public class PersonFriendDao {
                 return item;
             });
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("getPersonFriendList_SSP -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("getPersonFriendList_SSP -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -150,10 +150,10 @@ public class PersonFriendDao {
                         return item;
                     });
 //        } catch (EmptyResultDataAccessException e) {
-//            this.logger.error("getPersonFriendByPersonAndFriendGuid -> EmptyResultDataAccessException: " + e);
+//            this.logger.error("EmptyResultDataAccessException: " + e);
 //            return null;
         } catch (Exception e) {
-            this.logger.error("getPersonFriendByPersonAndFriendGuid -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
 
@@ -186,10 +186,10 @@ public class PersonFriendDao {
                 return item;
             });
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("PersonFriendDao -> getCurrentFriends -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("PersonFriendDao -> getCurrentFriends -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -229,10 +229,10 @@ public class PersonFriendDao {
                 return item;
             });
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("PersonFriendDao -> getAvailableFriends -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("PersonFriendDao -> getAvailableFriends -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -273,10 +273,10 @@ public class PersonFriendDao {
                         }
                     });
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("PersonDao -> addFriends -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("PersonDao -> addFriends -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -307,10 +307,10 @@ public class PersonFriendDao {
                         }
                     });
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("PersonFriendDao -> addFriends -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("PersonFriendDao -> addFriends -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
 

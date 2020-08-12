@@ -90,10 +90,10 @@ public class PersonDao {
             );
             return this.getPersonDetail(person.getGuid());
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("PersonDao -> createPerson -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("PersonDao -> createPerson -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -126,10 +126,10 @@ public class PersonDao {
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, new PersonRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("PersonDao -> getPersonList_All -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("PersonDao -> getPersonList_All -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -149,10 +149,10 @@ public class PersonDao {
             Integer count = this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{}, Integer.class);
             return count == null ? 0 : count;
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("getPersonList_SSP_TotalRecords -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return 0;
         } catch (Exception e) {
-            this.logger.error("getPersonList_SSP_TotalRecords -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return 0;
         }
     }
@@ -221,10 +221,10 @@ public class PersonDao {
                 return item;
             });
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("getPersonList_SSP -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("getPersonList_SSP -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -288,7 +288,6 @@ public class PersonDao {
     }
 
     public Person getPersonDetail(String personGuid) {
-        this.logger.trace("PersonDao -> getPersonDetail: personGuid=" + personGuid);
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      PERSON_GUID,\n");
@@ -307,21 +306,20 @@ public class PersonDao {
         query.append("  FROM\n");
         query.append("      SAMPLE_DATA.PERSON\n");
         query.append("  WHERE\n");
-        query.append("      PERSON_GUID = ?;\n");
+        query.append("      PERSON_GUID = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{personGuid}, new PersonRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("PersonDao -> getPersonDetail -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("PersonDao -> getPersonDetail -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
 
     public Person updatePerson(Person person) {
-        this.logger.trace("PersonDao -> updatePerson");
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
         query.append("      SAMPLE_DATA.PERSON\n");
@@ -363,16 +361,15 @@ public class PersonDao {
             );
             return this.getPersonDetail(person.getGuid());
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("PersonDao -> updatePerson -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("PersonDao -> updatePerson -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
 
     public KeyValue deletePerson(String personGuid) {
-        this.logger.trace("PersonDao -> deletePerson: personGuid=" + personGuid);
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
         query.append("      SAMPLE_DATA.PERSON\n");
@@ -392,10 +389,10 @@ public class PersonDao {
             );
             return new KeyValue("personGuid", personGuid);
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("PersonDao -> deletePerson -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("PersonDao -> deletePerson -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -413,10 +410,10 @@ public class PersonDao {
         try {
             return this.mySqlAuthJdbcTemplate.queryForList(query.toString(), new Object[]{}, String.class);
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("PersonDao -> getPersonList_All -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("PersonDao -> getPersonList_All -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }

@@ -4,55 +4,55 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Contestant {
-    private String contestantGuid;
-    private String contestantLastName;
-    private String contestantFirstName;
-    private String contestantGender;
-    private String contestantDateOfBirth;
+    private String guid;
+    private String lastName;
+    private String firstName;
+    private String gender;
+    private String dateOfBirth;
     private String status;
     private String createdOn;
     private String createdBy;
     private String updatedOn;
     private String updatedBy;
 
-    public String getContestantGuid() {
-        return contestantGuid;
+    public String getGuid() {
+        return guid;
     }
 
-    public void setContestantGuid(String contestantGuid) {
-        this.contestantGuid = contestantGuid;
+    public void setGuid(String guid) {
+        this.guid = guid;
     }
 
-    public String getContestantLastName() {
-        return contestantLastName;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setContestantLastName(String contestantLastName) {
-        this.contestantLastName = contestantLastName;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public String getContestantFirstName() {
-        return contestantFirstName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setContestantFirstName(String contestantFirstName) {
-        this.contestantFirstName = contestantFirstName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getContestantGender() {
-        return contestantGender;
+    public String getGender() {
+        return gender;
     }
 
-    public void setContestantGender(String contestantGender) {
-        this.contestantGender = contestantGender;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
-    public String getContestantDateOfBirth() {
-        return contestantDateOfBirth;
+    public String getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setContestantDateOfBirth(String contestantDateOfBirth) {
-        this.contestantDateOfBirth = contestantDateOfBirth;
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getStatus() {

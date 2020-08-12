@@ -90,10 +90,10 @@ public class UserDao {
                     });
             return this.getUser(userGuid);
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("UserDao -> createUser -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("UserDao -> createUser -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -125,10 +125,10 @@ public class UserDao {
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{userGuid}, new UserRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("UserDao -> getUser -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("UserDao -> getUser -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -159,10 +159,10 @@ public class UserDao {
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{row_id}, new UserRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("UserDao -> getUserByRowId -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("UserDao -> getUserByRowId -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -190,10 +190,10 @@ public class UserDao {
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, new UserRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("UserDao -> getUserList -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("UserDao -> getUserList -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -220,10 +220,10 @@ public class UserDao {
             );
             return this.getUser(User.getUserGuid());
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("UserDao -> updateUser -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("UserDao -> updateUser -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -247,10 +247,10 @@ public class UserDao {
             );
             return this.getUser(userGuid);
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("UserDao -> deleteUser -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("UserDao -> deleteUser -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -278,10 +278,10 @@ public class UserDao {
             );
             return this.getUser(userGuid);
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("UserDao -> disableUser -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("UserDao -> disableUser -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -307,10 +307,10 @@ public class UserDao {
             );
             return this.getUser(userGuid);
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("UserDao -> enableUser -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("UserDao -> enableUser -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -339,10 +339,10 @@ public class UserDao {
             );
             return this.getUser(User.getUserGuid());
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("UserDao -> updateMyProfile -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("UserDao -> updateMyProfile -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -374,10 +374,10 @@ public class UserDao {
             );
             return this.getUser(user.getUserGuid());
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("UserDao -> changePassword -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("UserDao -> changePassword -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -403,10 +403,10 @@ public class UserDao {
             );
             return this.getUser(userGuid);
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("UserDao -> updateLastLogin -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("UserDao -> updateLastLogin -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -441,10 +441,10 @@ public class UserDao {
             );
             return this.getUser(userGuid);
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("UserDao -> incrementLoginCount -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("UserDao -> incrementLoginCount -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -464,10 +464,10 @@ public class UserDao {
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{username}, String.class);
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("UserDao -> getUserGuidByUsername -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("UserDao -> getUserGuidByUsername -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
@@ -490,10 +490,10 @@ public class UserDao {
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{userGuid}, new RoleRowMapper());
         } catch (EmptyResultDataAccessException e) {
-            this.logger.error("UserDao -> getUserRoles -> EmptyResultDataAccessException: " + e);
+            this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
         } catch (Exception e) {
-            this.logger.error("UserDao -> getUserRoles -> Exception: " + e);
+            this.logger.error("Exception: " + e);
             return null;
         }
     }
