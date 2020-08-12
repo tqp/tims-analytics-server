@@ -37,8 +37,8 @@ public class ApiFilter implements Filter {
 
             String[] ignoredMethods = {"GET"};
             String[] ignoredPaths = {
-                    "/api/v1/person/infinite-scroll",
-                    "/api/v1/person/sub"
+                    "/api/v1/person/ssp",
+                    "/api/v1/person/person-friend-associations-ssp"
             };
 
             if (Arrays.stream(ignoredMethods).noneMatch(method::equals)) {

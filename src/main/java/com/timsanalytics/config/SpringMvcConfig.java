@@ -25,7 +25,8 @@ public class SpringMvcConfig implements WebMvcConfigurer {
     // For Pre-Request Interceptor
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(handlerInterceptor)
-                .addPathPatterns("/api/v1/**");
+                .addPathPatterns("/api/v1/**")
+                .addPathPatterns("/reality-tracker/api/v1/**");
     }
 
 }
