@@ -1,9 +1,13 @@
 package com.timsanalytics.main.realityTracker.controllers;
 
+import com.timsanalytics.auth.authCommon.beans.KeyValue;
+import com.timsanalytics.main.realityTracker.beans.Contestant;
+import com.timsanalytics.main.realityTracker.beans.Series;
 import com.timsanalytics.main.realityTracker.beans.ServerSidePaginationResponseSeries;
 import com.timsanalytics.main.realityTracker.services.SeriesService;
 import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
@@ -30,6 +34,19 @@ public class SeriesController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Create Series", tags = {"Series"}, description = "Create Series", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Series> createSeries(@RequestBody Series series) {
+        try {
+            return ResponseEntity.ok()
+                    .body(seriesService.createSeries(series));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/ssp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get Series List (SSP)", tags = {"Series"}, description = "Get Series List (SSP)", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ServerSidePaginationResponseSeries> getSeriesList_SSP(@RequestBody ServerSidePaginationRequest serverSidePaginationRequest) {
@@ -43,6 +60,45 @@ public class SeriesController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/{seriesGuid}", method = RequestMethod.GET)
+    @Operation(summary = "Get Series Detail", tags = {"Series"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Series> getContestantDetail(@Parameter(description = "Contestant GUID", required = true) @PathVariable String seriesGuid) {
+        try {
+            Series series = seriesService.getSeriesDetail(seriesGuid);
+            return ResponseEntity.ok()
+                    .body(series);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Update Series", tags = {"Series"}, description = "Update Series", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Series> updateSeries(@RequestBody Series series) {
+        try {
+            return ResponseEntity.ok()
+                    .body(seriesService.updateSeries(series));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/{seriesGuid}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Delete Series", tags = {"Series"}, description = "Delete Series", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<KeyValue> deleteSeries(@Parameter(description = "Series GUID", required = true) @PathVariable String seriesGuid) {
+        try {
+            return ResponseEntity.ok()
+                    .body(seriesService.deleteSeries(seriesGuid));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

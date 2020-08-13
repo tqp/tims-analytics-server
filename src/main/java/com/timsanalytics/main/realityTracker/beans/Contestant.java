@@ -9,6 +9,11 @@ public class Contestant {
     private String firstName;
     private String gender;
     private String dateOfBirth;
+    private String occupation;
+    private String hometownCity;
+    private String hometownState;
+    private String twitterHandle;
+    private String comments;
     private String status;
     private String createdOn;
     private String createdBy;
@@ -53,6 +58,46 @@ public class Contestant {
 
     public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getOccupation() {
+        return occupation;
+    }
+
+    public void setOccupation(String occupation) {
+        this.occupation = occupation;
+    }
+
+    public String getHometownCity() {
+        return hometownCity;
+    }
+
+    public void setHometownCity(String hometownCity) {
+        this.hometownCity = hometownCity;
+    }
+
+    public String getHometownState() {
+        return hometownState;
+    }
+
+    public void setHometownState(String hometownState) {
+        this.hometownState = hometownState;
+    }
+
+    public String getTwitterHandle() {
+        return twitterHandle;
+    }
+
+    public void setTwitterHandle(String twitterHandle) {
+        this.twitterHandle = twitterHandle;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
 
     public String getStatus() {

@@ -3,9 +3,7 @@ package com.timsanalytics.main.realityTracker.controllers;
 import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.main.realityTracker.beans.Contestant;
 import com.timsanalytics.main.realityTracker.beans.ServerSidePaginationResponseContestant;
-import com.timsanalytics.main.realityTracker.beans.ServerSidePaginationResponseSeries;
 import com.timsanalytics.main.realityTracker.services.ContestantService;
-import com.timsanalytics.main.thisApp.beans.Person;
 import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -49,7 +47,7 @@ public class ContestantController {
 
     @ResponseBody
     @RequestMapping(value = "/ssp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Person List (SSP)", tags = {"Person"}, description = "Get Person List (SSP)", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Contestant List (SSP)", tags = {"Person"}, description = "Get Contestant List (SSP)", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ServerSidePaginationResponseContestant> getPersonList_SSP(@RequestBody ServerSidePaginationRequest serverSidePaginationRequest) {
         long startTime = new Date().getTime();
         try {

@@ -2,7 +2,6 @@ package com.timsanalytics.main.realityTracker.dao;
 
 import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.main.realityTracker.beans.Contestant;
-import com.timsanalytics.main.thisApp.beans.Person;
 import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
 import com.timsanalytics.utils.GenerateUuidService;
 import org.slf4j.Logger;
@@ -36,14 +35,26 @@ public class ContestantDao {
         query.append("          CONTESTANT.CONTESTANT_LAST_NAME,\n");
         query.append("          CONTESTANT.CONTESTANT_FIRST_NAME,\n");
         query.append("          CONTESTANT.CONTESTANT_GENDER,\n");
+        query.append("          CONTESTANT.CONTESTANT_DATE_OF_BIRTH,\n");
+        query.append("          CONTESTANT.CONTESTANT_OCCUPATION,\n");
+        query.append("          CONTESTANT.CONTESTANT_HOMETOWN_CITY,\n");
+        query.append("          CONTESTANT.CONTESTANT_HOMETOWN_STATE,\n");
+        query.append("          CONTESTANT.CONTESTANT_TWITTER_HANDLE,\n");
+        query.append("          CONTESTANT.CONTESTANT_COMMENTS,\n");
         query.append("          CONTESTANT.STATUS\n");
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
-        query.append("          ?,\n"); // 1
-        query.append("          ?,\n"); // 2
-        query.append("          ?,\n"); // 3
-        query.append("          ?,\n");  // 4
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
         query.append("          'Active'\n");
         query.append("      )\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -57,6 +68,12 @@ public class ContestantDao {
                         ps.setString(2, contestant.getLastName());
                         ps.setString(3, contestant.getFirstName());
                         ps.setString(4, contestant.getGender());
+                        ps.setString(5, contestant.getDateOfBirth());
+                        ps.setString(6, contestant.getOccupation());
+                        ps.setString(7, contestant.getHometownCity());
+                        ps.setString(8, contestant.getHometownState());
+                        ps.setString(9, contestant.getTwitterHandle());
+                        ps.setString(10, contestant.getComments());
                         return ps;
                     }
             );
@@ -198,7 +215,14 @@ public class ContestantDao {
         query.append("      CONTESTANT_GUID,\n");
         query.append("      CONTESTANT_LAST_NAME,\n");
         query.append("      CONTESTANT_FIRST_NAME,\n");
-        query.append("      CONTESTANT_GENDER\n");
+        query.append("      CONTESTANT_GENDER,\n");
+        query.append("      CONTESTANT_DATE_OF_BIRTH,\n");
+        query.append("      CONTESTANT_OCCUPATION,\n");
+        query.append("      CONTESTANT_HOMETOWN_CITY,\n");
+        query.append("      CONTESTANT_HOMETOWN_STATE,\n");
+        query.append("      CONTESTANT_TWITTER_HANDLE,\n");
+        query.append("      CONTESTANT_COMMENTS,\n");
+        query.append("      STATUS\n");
         query.append("  FROM\n");
         query.append("      REALITY_TRACKER.CONTESTANT\n");
         query.append("  WHERE\n");
@@ -220,9 +244,15 @@ public class ContestantDao {
         query.append("  UPDATE\n");
         query.append("      REALITY_TRACKER.CONTESTANT\n");
         query.append("  SET\n");
-        query.append("      CONTESTANT.CONTESTANT_LAST_NAME = ?,\n");       // 1
-        query.append("      CONTESTANT.CONTESTANT_FIRST_NAME = ?,\n");      // 2
-        query.append("      CONTESTANT.CONTESTANT_GENDER = ?\n");           // 3
+        query.append("      CONTESTANT.CONTESTANT_LAST_NAME = ?,\n");
+        query.append("      CONTESTANT.CONTESTANT_FIRST_NAME = ?,\n");
+        query.append("      CONTESTANT.CONTESTANT_GENDER = ?,\n");
+        query.append("      CONTESTANT.CONTESTANT_DATE_OF_BIRTH = ?,\n");
+        query.append("      CONTESTANT.CONTESTANT_OCCUPATION = ?,\n");
+        query.append("      CONTESTANT.CONTESTANT_HOMETOWN_CITY = ?,\n");
+        query.append("      CONTESTANT.CONTESTANT_HOMETOWN_STATE = ?,\n");
+        query.append("      CONTESTANT.CONTESTANT_TWITTER_HANDLE = ?,\n");
+        query.append("      CONTESTANT.CONTESTANT_COMMENTS = ?\n");
         query.append("  WHERE\n");
         query.append("      CONTESTANT.CONTESTANT_GUID = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -233,7 +263,13 @@ public class ContestantDao {
                         ps.setString(1, contestant.getLastName());
                         ps.setString(2, contestant.getFirstName());
                         ps.setString(3, contestant.getGender());
-                        ps.setString(4, contestant.getGuid());
+                        ps.setString(4, contestant.getDateOfBirth());
+                        ps.setString(5, contestant.getOccupation());
+                        ps.setString(6, contestant.getHometownCity());
+                        ps.setString(7, contestant.getHometownState());
+                        ps.setString(8, contestant.getTwitterHandle());
+                        ps.setString(9, contestant.getComments());
+                        ps.setString(10, contestant.getGuid());
                         return ps;
                     }
             );

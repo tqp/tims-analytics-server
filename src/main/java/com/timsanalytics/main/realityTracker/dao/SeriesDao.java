@@ -1,7 +1,11 @@
 package com.timsanalytics.main.realityTracker.dao;
 
+import com.timsanalytics.auth.authCommon.beans.KeyValue;
+import com.timsanalytics.main.realityTracker.beans.Series;
+import com.timsanalytics.main.realityTracker.beans.Series;
 import com.timsanalytics.main.realityTracker.beans.Series;
 import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
+import com.timsanalytics.utils.GenerateUuidService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,18 +13,58 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Service
 public class SeriesDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final JdbcTemplate mySqlAuthJdbcTemplate;
+    private final GenerateUuidService generateUuidService;
 
     @Autowired
-    public SeriesDao(JdbcTemplate mySqlAuthJdbcTemplate) {
+    public SeriesDao(JdbcTemplate mySqlAuthJdbcTemplate, GenerateUuidService generateUuidService) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
+        this.generateUuidService = generateUuidService;
     }
 
+    public Series createSeries(Series series) {
+        StringBuilder query = new StringBuilder();
+        query.append("  INSERT INTO\n");
+        query.append("      REALITY_TRACKER.SERIES\n");
+        query.append("      (\n");
+        query.append("          SERIES.SERIES_GUID,\n");
+        query.append("          SERIES.SERIES_NAME,\n");
+        query.append("          SERIES.STATUS\n");
+        query.append("      )\n");
+        query.append("      VALUES\n");
+        query.append("      (\n");
+        query.append("          ?,\n"); // 1
+        query.append("          ?,\n"); // 2
+        query.append("          'Active'\n");
+        query.append("      )\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        series.setGuid(this.generateUuidService.GenerateUuid());
+                        this.logger.trace("New Series GUID: " + series.getGuid());
+                        ps.setString(1, series.getGuid());
+                        ps.setString(2, series.getName());
+                        return ps;
+                    }
+            );
+            return this.getSeriesDetail(series.getGuid());
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+    
     public int getSeriesList_SSP_TotalRecords(ServerSidePaginationRequest serverSidePaginationRequest) {
         StringBuilder query = new StringBuilder();
         query.append("          SELECT\n");
@@ -136,5 +180,82 @@ public class SeriesDao {
         }
 
         return whereClause.toString();
+    }
+
+    public Series getSeriesDetail(String seriesGuid) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      SERIES_GUID,\n");
+        query.append("      SERIES_NAME\n");
+        query.append("  FROM\n");
+        query.append("      REALITY_TRACKER.SERIES\n");
+        query.append("  WHERE\n");
+        query.append("      SERIES_GUID = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{seriesGuid}, new SeriesRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public Series updateSeries(Series series) {
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      REALITY_TRACKER.SERIES\n");
+        query.append("  SET\n");
+        query.append("      SERIES.SERIES_NAME = ?\n"); // 1
+        query.append("  WHERE\n");
+        query.append("      SERIES.SERIES_GUID = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setString(1, series.getName());
+                        ps.setString(2, series.getGuid());
+                        return ps;
+                    }
+            );
+            return this.getSeriesDetail(series.getGuid());
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public KeyValue deleteSeries(String seriesGuid) {
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      REALITY_TRACKER.SERIES\n");
+        query.append("  SET\n");
+        query.append("      STATUS = 'Deleted'\n");
+        query.append("  WHERE\n");
+        query.append("      SERIES_GUID = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        this.logger.trace("SERIES_GUID=" + seriesGuid);
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setString(1, seriesGuid);
+                        return ps;
+                    }
+            );
+            return new KeyValue("seriesGuid", seriesGuid);
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
     }
 }
