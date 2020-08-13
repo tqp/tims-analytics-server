@@ -2,8 +2,6 @@ package com.timsanalytics.main.realityTracker.dao;
 
 import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.main.realityTracker.beans.Series;
-import com.timsanalytics.main.realityTracker.beans.Series;
-import com.timsanalytics.main.realityTracker.beans.Series;
 import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
 import com.timsanalytics.utils.GenerateUuidService;
 import org.slf4j.Logger;
@@ -64,7 +62,7 @@ public class SeriesDao {
             return null;
         }
     }
-    
+
     public int getSeriesList_SSP_TotalRecords(ServerSidePaginationRequest serverSidePaginationRequest) {
         StringBuilder query = new StringBuilder();
         query.append("          SELECT\n");
