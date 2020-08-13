@@ -2,7 +2,7 @@ package com.timsanalytics.main.realityTracker.controllers;
 
 import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.main.realityTracker.beans.Contestant;
-import com.timsanalytics.main.realityTracker.beans.ServerSidePaginationResponseContestant;
+import com.timsanalytics.main.realityTracker.beans.ServerSidePaginationResponse;
 import com.timsanalytics.main.realityTracker.services.ContestantService;
 import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,10 +48,10 @@ public class ContestantController {
     @ResponseBody
     @RequestMapping(value = "/ssp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get Contestant List (SSP)", tags = {"Person"}, description = "Get Contestant List (SSP)", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<ServerSidePaginationResponseContestant> getPersonList_SSP(@RequestBody ServerSidePaginationRequest serverSidePaginationRequest) {
+    public ResponseEntity<ServerSidePaginationResponse<Contestant>> getPersonList_SSP(@RequestBody ServerSidePaginationRequest serverSidePaginationRequest) {
         long startTime = new Date().getTime();
         try {
-            ServerSidePaginationResponseContestant container = this.contestantService.getContestantList_SSP(serverSidePaginationRequest);
+            ServerSidePaginationResponse<Contestant> container = this.contestantService.getContestantList_SSP(serverSidePaginationRequest);
             container.setRequestTime(new Date().getTime() - startTime);
             return ResponseEntity.ok()
                     .body(container);

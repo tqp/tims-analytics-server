@@ -4,11 +4,11 @@ import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
 
 import java.util.List;
 
-public class ServerSidePaginationResponseContestant {
+public class ServerSidePaginationResponse<T> {
     private Long requestTime;
     private Integer loadedRecords;
     private Integer totalRecords;
-    private List<Contestant> data;
+    private List<T> data;
     private ServerSidePaginationRequest serverSidePaginationRequest;
 
     public Long getRequestTime() {
@@ -35,11 +35,11 @@ public class ServerSidePaginationResponseContestant {
         this.totalRecords = totalRecords;
     }
 
-    public List<Contestant> getData() {
+    public List<T> getData() {
         return data;
     }
 
-    public void setData(List<Contestant> data) {
+    public void setData(List<T> data) {
         this.data = data;
     }
 

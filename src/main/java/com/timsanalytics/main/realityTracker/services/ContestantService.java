@@ -2,7 +2,7 @@ package com.timsanalytics.main.realityTracker.services;
 
 import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.main.realityTracker.beans.Contestant;
-import com.timsanalytics.main.realityTracker.beans.ServerSidePaginationResponseContestant;
+import com.timsanalytics.main.realityTracker.beans.ServerSidePaginationResponse;
 import com.timsanalytics.main.realityTracker.dao.ContestantDao;
 import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +23,14 @@ public class ContestantService {
         return this.contestantDao.createContestant(contestant);
     }
 
-    public ServerSidePaginationResponseContestant getContestantList_SSP(ServerSidePaginationRequest serverSidePaginationRequest) {
-        ServerSidePaginationResponseContestant serverSidePaginationResponseContestant = new ServerSidePaginationResponseContestant();
-        serverSidePaginationResponseContestant.setServerSidePaginationRequest(serverSidePaginationRequest);
+    public ServerSidePaginationResponse<Contestant> getContestantList_SSP(ServerSidePaginationRequest serverSidePaginationRequest) {
+        ServerSidePaginationResponse<Contestant> serverSidePaginationResponse = new ServerSidePaginationResponse<Contestant>();
+        serverSidePaginationResponse.setServerSidePaginationRequest(serverSidePaginationRequest);
         List<Contestant> contestantList = this.contestantDao.getContestantList_SSP(serverSidePaginationRequest);
-        serverSidePaginationResponseContestant.setData(contestantList);
-        serverSidePaginationResponseContestant.setLoadedRecords(contestantList.size());
-        serverSidePaginationResponseContestant.setTotalRecords(this.contestantDao.getContestantList_SSP_TotalRecords(serverSidePaginationRequest));
-        return serverSidePaginationResponseContestant;
+        serverSidePaginationResponse.setData(contestantList);
+        serverSidePaginationResponse.setLoadedRecords(contestantList.size());
+        serverSidePaginationResponse.setTotalRecords(this.contestantDao.getContestantList_SSP_TotalRecords(serverSidePaginationRequest));
+        return serverSidePaginationResponse;
     }
 
     public Contestant getContestantDetail(String contestantGuid) {

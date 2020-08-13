@@ -2,7 +2,7 @@ package com.timsanalytics.main.realityTracker.controllers;
 
 import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.main.realityTracker.beans.Series;
-import com.timsanalytics.main.realityTracker.beans.ServerSidePaginationResponseSeries;
+import com.timsanalytics.main.realityTracker.beans.ServerSidePaginationResponse;
 import com.timsanalytics.main.realityTracker.services.SeriesService;
 import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,10 +48,10 @@ public class SeriesController {
     @ResponseBody
     @RequestMapping(value = "/ssp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get Series List (SSP)", tags = {"Series"}, description = "Get Series List (SSP)", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<ServerSidePaginationResponseSeries> getSeriesList_SSP(@RequestBody ServerSidePaginationRequest serverSidePaginationRequest) {
+    public ResponseEntity<ServerSidePaginationResponse<Series>> getSeriesList_SSP(@RequestBody ServerSidePaginationRequest serverSidePaginationRequest) {
         long startTime = new Date().getTime();
         try {
-            ServerSidePaginationResponseSeries container = this.seriesService.getSeriesList_SSP(serverSidePaginationRequest);
+            ServerSidePaginationResponse<Series> container = this.seriesService.getSeriesList_SSP(serverSidePaginationRequest);
             container.setRequestTime(new Date().getTime() - startTime);
             return ResponseEntity.ok()
                     .body(container);
