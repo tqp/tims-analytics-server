@@ -7,6 +7,7 @@ public class Contestant {
     private String guid;
     private String lastName;
     private String firstName;
+    private String nickname;
     private String gender;
     private String dateOfBirth;
     private String occupation;
@@ -42,6 +43,14 @@ public class Contestant {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getGender() {

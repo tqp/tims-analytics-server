@@ -34,6 +34,7 @@ public class ContestantDao {
         query.append("          CONTESTANT.CONTESTANT_GUID,\n");
         query.append("          CONTESTANT.CONTESTANT_LAST_NAME,\n");
         query.append("          CONTESTANT.CONTESTANT_FIRST_NAME,\n");
+        query.append("          CONTESTANT.CONTESTANT_NICKNAME,\n");
         query.append("          CONTESTANT.CONTESTANT_GENDER,\n");
         query.append("          CONTESTANT.CONTESTANT_DATE_OF_BIRTH,\n");
         query.append("          CONTESTANT.CONTESTANT_OCCUPATION,\n");
@@ -45,6 +46,7 @@ public class ContestantDao {
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
+        query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
@@ -67,13 +69,14 @@ public class ContestantDao {
                         ps.setString(1, contestant.getGuid());
                         ps.setString(2, contestant.getLastName());
                         ps.setString(3, contestant.getFirstName());
-                        ps.setString(4, contestant.getGender());
-                        ps.setString(5, contestant.getDateOfBirth());
-                        ps.setString(6, contestant.getOccupation());
-                        ps.setString(7, contestant.getHometownCity());
-                        ps.setString(8, contestant.getHometownState());
-                        ps.setString(9, contestant.getTwitterHandle());
-                        ps.setString(10, contestant.getComments());
+                        ps.setString(4, contestant.getNickname());
+                        ps.setString(5, contestant.getGender());
+                        ps.setString(6, contestant.getDateOfBirth());
+                        ps.setString(7, contestant.getOccupation());
+                        ps.setString(8, contestant.getHometownCity());
+                        ps.setString(9, contestant.getHometownState());
+                        ps.setString(10, contestant.getTwitterHandle());
+                        ps.setString(11, contestant.getComments());
                         return ps;
                     }
             );
@@ -156,6 +159,7 @@ public class ContestantDao {
                 item.setGuid(rs.getString("CONTESTANT_GUID"));
                 item.setLastName(rs.getString("CONTESTANT_LAST_NAME"));
                 item.setFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
+                item.setNickname(rs.getString("CONTESTANT_NICKNAME"));
                 return item;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -175,6 +179,7 @@ public class ContestantDao {
         rootQuery.append("                  CONTESTANT.CONTESTANT_GUID,");
         rootQuery.append("                  CONTESTANT.CONTESTANT_LAST_NAME,");
         rootQuery.append("                  CONTESTANT.CONTESTANT_FIRST_NAME,");
+        rootQuery.append("                  CONTESTANT.CONTESTANT_NICKNAME,");
         rootQuery.append("                  CONTESTANT.STATUS,");
         rootQuery.append("                  CONTESTANT.CREATED_ON,");
         rootQuery.append("                  CONTESTANT.CREATED_BY,");
@@ -215,6 +220,7 @@ public class ContestantDao {
         query.append("      CONTESTANT_GUID,\n");
         query.append("      CONTESTANT_LAST_NAME,\n");
         query.append("      CONTESTANT_FIRST_NAME,\n");
+        query.append("      CONTESTANT_NICKNAME,\n");
         query.append("      CONTESTANT_GENDER,\n");
         query.append("      CONTESTANT_DATE_OF_BIRTH,\n");
         query.append("      CONTESTANT_OCCUPATION,\n");
@@ -246,6 +252,7 @@ public class ContestantDao {
         query.append("  SET\n");
         query.append("      CONTESTANT.CONTESTANT_LAST_NAME = ?,\n");
         query.append("      CONTESTANT.CONTESTANT_FIRST_NAME = ?,\n");
+        query.append("      CONTESTANT.CONTESTANT_NICKNAME = ?,\n");
         query.append("      CONTESTANT.CONTESTANT_GENDER = ?,\n");
         query.append("      CONTESTANT.CONTESTANT_DATE_OF_BIRTH = ?,\n");
         query.append("      CONTESTANT.CONTESTANT_OCCUPATION = ?,\n");
@@ -262,14 +269,15 @@ public class ContestantDao {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, contestant.getLastName());
                         ps.setString(2, contestant.getFirstName());
-                        ps.setString(3, contestant.getGender());
-                        ps.setString(4, contestant.getDateOfBirth());
-                        ps.setString(5, contestant.getOccupation());
-                        ps.setString(6, contestant.getHometownCity());
-                        ps.setString(7, contestant.getHometownState());
-                        ps.setString(8, contestant.getTwitterHandle());
-                        ps.setString(9, contestant.getComments());
-                        ps.setString(10, contestant.getGuid());
+                        ps.setString(3, contestant.getNickname());
+                        ps.setString(4, contestant.getGender());
+                        ps.setString(5, contestant.getDateOfBirth());
+                        ps.setString(6, contestant.getOccupation());
+                        ps.setString(7, contestant.getHometownCity());
+                        ps.setString(8, contestant.getHometownState());
+                        ps.setString(9, contestant.getTwitterHandle());
+                        ps.setString(10, contestant.getComments());
+                        ps.setString(11, contestant.getGuid());
                         return ps;
                     }
             );

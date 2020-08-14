@@ -11,8 +11,8 @@ public class SeasonRowMapper implements RowMapper<Season> {
     public Season mapRow(ResultSet rs, int rowNum) throws SQLException {
         Season row = new Season();
         row.setSeriesGuid(rs.getString("SERIES_GUID"));
-        row.setSeasonGuid(rs.getString("SEASON_GUID"));
-        row.setNumber(rs.getInt("SEASON_NUMBER"));
+        row.setGuid(rs.getString("SEASON_GUID"));
+        row.setName(rs.getString("SEASON_NAME"));
         return row;
     }
 }

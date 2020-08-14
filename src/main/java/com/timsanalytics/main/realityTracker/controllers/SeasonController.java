@@ -1,6 +1,7 @@
 package com.timsanalytics.main.realityTracker.controllers;
 
 import com.timsanalytics.main.realityTracker.beans.Season;
+import com.timsanalytics.main.realityTracker.beans.Series;
 import com.timsanalytics.main.realityTracker.services.SeasonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,6 +28,19 @@ public class SeasonController {
     @Autowired
     public SeasonController(SeasonService seasonService) {
         this.seasonService = seasonService;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Create Season", tags = {"Season"}, description = "Create Season", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Season> createSeason(@RequestBody Season season) {
+        try {
+            return ResponseEntity.ok()
+                    .body(seasonService.createSeason(season));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     // Series-Season List

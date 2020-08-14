@@ -4,16 +4,24 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Season {
-    private String seasonGuid;
+    private String guid;
+    private String name;
     private String seriesGuid;
-    private int number;
 
-    public String getSeasonGuid() {
-        return seasonGuid;
+    public String getGuid() {
+        return guid;
     }
 
-    public void setSeasonGuid(String seasonGuid) {
-        this.seasonGuid = seasonGuid;
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getSeriesGuid() {
@@ -22,13 +30,5 @@ public class Season {
 
     public void setSeriesGuid(String seriesGuid) {
         this.seriesGuid = seriesGuid;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
     }
 }

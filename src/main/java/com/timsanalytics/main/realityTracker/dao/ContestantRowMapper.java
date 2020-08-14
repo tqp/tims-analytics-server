@@ -13,6 +13,7 @@ public class ContestantRowMapper implements RowMapper<Contestant> {
         row.setGuid(rs.getString("CONTESTANT_GUID"));
         row.setLastName(rs.getString("CONTESTANT_LAST_NAME"));
         row.setFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
+        row.setNickname(rs.getString("CONTESTANT_NICKNAME"));
         row.setGender(rs.getString("CONTESTANT_GENDER"));
         row.setDateOfBirth(rs.getString("CONTESTANT_DATE_OF_BIRTH"));
         row.setOccupation(rs.getString("CONTESTANT_OCCUPATION"));
