@@ -1,7 +1,6 @@
 package com.timsanalytics.main.realityTracker.controllers;
 
 import com.timsanalytics.main.realityTracker.beans.Season;
-import com.timsanalytics.main.realityTracker.beans.Series;
 import com.timsanalytics.main.realityTracker.services.SeasonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -47,14 +46,27 @@ public class SeasonController {
     @ResponseBody
     @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get Series-Season List", tags = {"Season"}, description = "Get Series-Season List", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<List<Season>> getSeriesSeasonList(@RequestParam(value = "series-guid") String seriesGuid) {
+    public ResponseEntity<List<Season>> getSeasonListBySeriesGuid(@RequestParam(value = "series-guid") String seriesGuid) {
         try {
             return ResponseEntity.ok()
-                    .body(this.seasonService.getSeriesSeasonList(seriesGuid));
+                    .body(this.seasonService.getSeasonListBySeriesGuid(seriesGuid));
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/{seasonGuid}", method = RequestMethod.GET)
+    @Operation(summary = "Get Season Detail", tags = {"Season"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Season> getContestantDetail(@Parameter(description = "Season GUID", required = true) @PathVariable String seasonGuid) {
+        try {
+            Season season = seasonService.getSeasonDetail(seasonGuid);
+            return ResponseEntity.ok()
+                    .body(season);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

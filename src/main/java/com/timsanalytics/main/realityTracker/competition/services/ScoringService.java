@@ -12,13 +12,13 @@ import java.util.stream.Collectors;
 @Service
 public class ScoringService {
     private PickResultService pickResultService;
-    private PlayerService playerService;
+    private CompetitionPlayerService competitionPlayerService;
     private com.timsanalytics.main.realityTracker.competition.services.RoundService roundService;
 
     @Autowired
-    public ScoringService(PickResultService pickResultService, PlayerService playerService, com.timsanalytics.main.realityTracker.competition.services.RoundService roundService) {
+    public ScoringService(PickResultService pickResultService, CompetitionPlayerService competitionPlayerService, com.timsanalytics.main.realityTracker.competition.services.RoundService roundService) {
         this.pickResultService = pickResultService;
-        this.playerService = playerService;
+        this.competitionPlayerService = competitionPlayerService;
         this.roundService = roundService;
     }
 
@@ -62,14 +62,14 @@ public class ScoringService {
     }
 
     public List<Score> getPickResultScoreByTeamGroupByUserRound(String teamKey) {
-        return this.playerService.getUserListByTeamKey(teamKey).stream()
+        return this.competitionPlayerService.getUserListByTeamKey(teamKey).stream()
                 .map(user -> this.getPickResultScoreByTeamUserGroupByRound(teamKey, user.getUserKey()))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 
     public List<Score> getPickResultScoreByTeamGroupByUser(String teamKey) {
-        return this.playerService.getUserListByTeamKey(teamKey).stream()
+        return this.competitionPlayerService.getUserListByTeamKey(teamKey).stream()
                 .map(user -> this.getPickResultScoreByTeamUser(teamKey, user.getUserKey()))
                 .collect(Collectors.toList());
 

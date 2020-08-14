@@ -2,6 +2,7 @@ package com.timsanalytics.main.realityTracker.controllers;
 
 import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.main.realityTracker.beans.Contestant;
+import com.timsanalytics.main.realityTracker.beans.Season;
 import com.timsanalytics.main.realityTracker.beans.ServerSidePaginationResponse;
 import com.timsanalytics.main.realityTracker.services.ContestantService;
 import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/reality-tracker/api/v1/contestant")
@@ -47,7 +49,7 @@ public class ContestantController {
 
     @ResponseBody
     @RequestMapping(value = "/ssp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get Contestant List (SSP)", tags = {"Person"}, description = "Get Contestant List (SSP)", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Get Contestant List (SSP)", tags = {"Contestant"}, description = "Get Contestant List (SSP)", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ServerSidePaginationResponse<Contestant>> getPersonList_SSP(@RequestBody ServerSidePaginationRequest serverSidePaginationRequest) {
         long startTime = new Date().getTime();
         try {

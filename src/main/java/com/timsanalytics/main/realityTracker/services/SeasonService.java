@@ -1,7 +1,6 @@
 package com.timsanalytics.main.realityTracker.services;
 
 import com.timsanalytics.main.realityTracker.beans.Season;
-import com.timsanalytics.main.realityTracker.beans.Series;
 import com.timsanalytics.main.realityTracker.dao.SeasonDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,11 @@ public class SeasonService {
         return this.seasonDao.createSeason(season);
     }
 
-    public List<Season> getSeriesSeasonList(String seriesGuid) {
-        return this.seasonDao.getSeriesSeasonList(seriesGuid);
+    public List<Season> getSeasonListBySeriesGuid(String seriesGuid) {
+        return this.seasonDao.getSeasonListBySeriesGuid(seriesGuid);
+    }
+
+    public Season getSeasonDetail(String seasonGuid) {
+        return this.seasonDao.getSeasonDetail(seasonGuid);
     }
 }

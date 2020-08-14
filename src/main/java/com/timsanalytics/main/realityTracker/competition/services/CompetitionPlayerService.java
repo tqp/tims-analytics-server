@@ -14,11 +14,11 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
-public class PlayerService {
+public class CompetitionPlayerService {
     private com.timsanalytics.main.realityTracker.competition.services.DataService dataService;
 
     @Autowired
-    public PlayerService(com.timsanalytics.main.realityTracker.competition.services.DataService dataService) {
+    public CompetitionPlayerService(com.timsanalytics.main.realityTracker.competition.services.DataService dataService) {
         this.dataService = dataService;
     }
 

@@ -64,7 +64,7 @@ public class SeriesController {
 
     @RequestMapping(value = "/{seriesGuid}", method = RequestMethod.GET)
     @Operation(summary = "Get Series Detail", tags = {"Series"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Series> getContestantDetail(@Parameter(description = "Contestant GUID", required = true) @PathVariable String seriesGuid) {
+    public ResponseEntity<Series> getContestantDetail(@Parameter(description = "Series GUID", required = true) @PathVariable String seriesGuid) {
         try {
             Series series = seriesService.getSeriesDetail(seriesGuid);
             return ResponseEntity.ok()

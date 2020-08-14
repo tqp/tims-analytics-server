@@ -71,10 +71,12 @@ public class SeasonDao {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      SEASON_GUID,\n");
-        query.append("      SERIES_GUID,\n");
-        query.append("      SEASON_NAME\n");
+        query.append("      SEASON.SERIES_GUID,\n");
+        query.append("      SEASON_NAME,\n");
+        query.append("      SERIES.SERIES_NAME\n");
         query.append("  FROM\n");
         query.append("      REALITY_TRACKER.SEASON\n");
+        query.append("      LEFT JOIN REALITY_TRACKER.SERIES ON SEASON.SERIES_GUID = SERIES.SERIES_GUID\n");
         query.append("  WHERE\n");
         query.append("      SEASON_GUID = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -89,22 +91,31 @@ public class SeasonDao {
         }
     }
 
-    public List<Season> getSeriesSeasonList(String seriesGuid) {
+    public List<Season> getSeasonListBySeriesGuid(String seriesGuid) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      SEASON_GUID,\n");
-        query.append("      SERIES_GUID,\n");
-        query.append("      SEASON_NAME\n");
+        query.append("      SEASON_NAME,\n");
+        query.append("      SEASON_START_DATE,\n");
+        query.append("      SERIES_GUID\n");
         query.append("  FROM\n");
         query.append("      REALITY_TRACKER.SEASON\n");
         query.append("  WHERE\n");
         query.append("      STATUS = 'Active'\n");
         query.append("      AND SERIES_GUID = ?\n");
         query.append("  ORDER BY\n");
+        query.append("      SEASON_START_DATE DESC,\n");
         query.append("      SEASON_NAME\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{seriesGuid}, new SeasonRowMapper());
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{seriesGuid}, (rs, rowNum) -> {
+                Season item = new Season();
+                item.setGuid(rs.getString("SEASON_GUID"));
+                item.setName(rs.getString("SEASON_NAME"));
+                item.setStartDate(rs.getDate("SEASON_START_DATE"));
+                item.setSeriesGuid(rs.getString("SERIES_GUID"));
+                return item;
+            });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
