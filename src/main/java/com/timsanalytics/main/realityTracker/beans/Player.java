@@ -7,7 +7,14 @@ public class Player {
     private String guid;
     private String seasonGuid;
     private String contestantGuid;
+    private String occupation;
+    private Integer ageOnEntry;
     // Joined Fields
+    private String seriesGuid;
+    private String seriesName;
+    private String seriesAbbreviation;
+    private String seasonName;
+    private String seasonAbbreviation;
     private String contestantLastName;
     private String contestantFirstName;
     // Metadata
@@ -39,6 +46,62 @@ public class Player {
 
     public void setContestantGuid(String contestantGuid) {
         this.contestantGuid = contestantGuid;
+    }
+
+    public String getOccupation() {
+        return occupation;
+    }
+
+    public void setOccupation(String occupation) {
+        this.occupation = occupation;
+    }
+
+    public Integer getAgeOnEntry() {
+        return ageOnEntry;
+    }
+
+    public void setAgeOnEntry(Integer ageOnEntry) {
+        this.ageOnEntry = ageOnEntry;
+    }
+
+    public String getSeriesGuid() {
+        return seriesGuid;
+    }
+
+    public void setSeriesGuid(String seriesGuid) {
+        this.seriesGuid = seriesGuid;
+    }
+
+    public String getSeriesName() {
+        return seriesName;
+    }
+
+    public void setSeriesName(String seriesName) {
+        this.seriesName = seriesName;
+    }
+
+    public String getSeriesAbbreviation() {
+        return seriesAbbreviation;
+    }
+
+    public void setSeriesAbbreviation(String seriesAbbreviation) {
+        this.seriesAbbreviation = seriesAbbreviation;
+    }
+
+    public String getSeasonName() {
+        return seasonName;
+    }
+
+    public void setSeasonName(String seasonName) {
+        this.seasonName = seasonName;
+    }
+
+    public String getSeasonAbbreviation() {
+        return seasonAbbreviation;
+    }
+
+    public void setSeasonAbbreviation(String seasonAbbreviation) {
+        this.seasonAbbreviation = seasonAbbreviation;
     }
 
     public String getContestantLastName() {

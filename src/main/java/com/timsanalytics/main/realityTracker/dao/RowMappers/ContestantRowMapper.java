@@ -1,4 +1,4 @@
-package com.timsanalytics.main.realityTracker.dao;
+package com.timsanalytics.main.realityTracker.dao.RowMappers;
 
 import com.timsanalytics.main.realityTracker.beans.Contestant;
 import org.springframework.jdbc.core.RowMapper;

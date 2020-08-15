@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class Series {
     private String guid;
     private String name;
+    private String abbreviation;
     private String status;
     private String createdOn;
     private String createdBy;
@@ -26,6 +27,14 @@ public class Series {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAbbreviation() {
+        return abbreviation;
+    }
+
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
     }
 
     public String getStatus() {

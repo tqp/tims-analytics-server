@@ -37,8 +37,8 @@ public class SeriesService {
         return this.seriesDao.getSeriesDetail(seriesGuid);
     }
 
-    public Series updateSeries(Series contestant) {
-        return this.seriesDao.updateSeries(contestant);
+    public Series updateSeries(Series series) {
+        return this.seriesDao.updateSeries(series);
     }
 
     public KeyValue deleteSeries(String seriesGuid) {

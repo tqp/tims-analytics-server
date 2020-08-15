@@ -8,9 +8,11 @@ import java.sql.Date;
 public class Season {
     private String guid;
     private String name;
+    private String abbreviation;
     private Date startDate;
     private String seriesGuid;
     private String seriesName;
+    private String seriesAbbreviation;
 
     public String getGuid() {
         return guid;
@@ -26,6 +28,14 @@ public class Season {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAbbreviation() {
+        return abbreviation;
+    }
+
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
     }
 
     public Date getStartDate() {
@@ -50,5 +60,13 @@ public class Season {
 
     public void setSeriesName(String seriesName) {
         this.seriesName = seriesName;
+    }
+
+    public String getSeriesAbbreviation() {
+        return seriesAbbreviation;
+    }
+
+    public void setSeriesAbbreviation(String seriesAbbreviation) {
+        this.seriesAbbreviation = seriesAbbreviation;
     }
 }

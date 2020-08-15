@@ -2,7 +2,7 @@ package com.timsanalytics.main.realityTracker.dao;
 
 import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.main.realityTracker.beans.Contestant;
-import com.timsanalytics.main.realityTracker.beans.Season;
+import com.timsanalytics.main.realityTracker.dao.RowMappers.ContestantRowMapper;
 import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
 import com.timsanalytics.utils.GenerateUuidService;
 import org.slf4j.Logger;

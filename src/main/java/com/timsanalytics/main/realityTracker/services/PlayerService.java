@@ -16,7 +16,19 @@ public class PlayerService {
         this.playerDao = playerDao;
     }
 
-    public List<Player> getPlayerListBySeasonGuid(String seriesGuid) {
-        return this.playerDao.getPlayerListBySeasonGuid(seriesGuid);
+    public Player getPlayerDetail(String playerGuid) {
+        return this.playerDao.getPlayerDetail(playerGuid);
+    }
+
+    public List<Player> getPlayerListFiltered(String seriesGuid, String contestantGuid) {
+        return this.playerDao.getPlayerListFiltered(seriesGuid, contestantGuid);
+    }
+
+    public List<Player> getPlayerListByContestantGuid(String contestantGuid) {
+        return this.playerDao.getPlayerListByContestantGuid(contestantGuid);
+    }
+
+    public Player updatePlayer(Player player) {
+        return this.playerDao.updatePlayer(player);
     }
 }

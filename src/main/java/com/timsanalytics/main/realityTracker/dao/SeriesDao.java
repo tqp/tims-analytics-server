@@ -2,6 +2,7 @@ package com.timsanalytics.main.realityTracker.dao;
 
 import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.main.realityTracker.beans.Series;
+import com.timsanalytics.main.realityTracker.dao.RowMappers.SeriesRowMapper;
 import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
 import com.timsanalytics.utils.GenerateUuidService;
 import org.slf4j.Logger;
@@ -33,12 +34,14 @@ public class SeriesDao {
         query.append("      (\n");
         query.append("          SERIES.SERIES_GUID,\n");
         query.append("          SERIES.SERIES_NAME,\n");
+        query.append("          SERIES.SERIES_ABBREVIATION,\n");
         query.append("          SERIES.STATUS\n");
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
-        query.append("          ?,\n"); // 1
-        query.append("          ?,\n"); // 2
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
         query.append("          'Active'\n");
         query.append("      )\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -50,6 +53,7 @@ public class SeriesDao {
                         this.logger.trace("New Series GUID: " + series.getGuid());
                         ps.setString(1, series.getGuid());
                         ps.setString(2, series.getName());
+                        ps.setString(3, series.getAbbreviation());
                         return ps;
                     }
             );
@@ -184,7 +188,8 @@ public class SeriesDao {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      SERIES_GUID,\n");
-        query.append("      SERIES_NAME\n");
+        query.append("      SERIES_NAME,\n");
+        query.append("      SERIES_ABBREVIATION\n");
         query.append("  FROM\n");
         query.append("      REALITY_TRACKER.SERIES\n");
         query.append("  WHERE\n");
@@ -206,7 +211,8 @@ public class SeriesDao {
         query.append("  UPDATE\n");
         query.append("      REALITY_TRACKER.SERIES\n");
         query.append("  SET\n");
-        query.append("      SERIES.SERIES_NAME = ?\n"); // 1
+        query.append("      SERIES.SERIES_NAME = ?,\n");
+        query.append("      SERIES.SERIES_ABBREVIATION = ?\n");
         query.append("  WHERE\n");
         query.append("      SERIES.SERIES_GUID = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -215,7 +221,8 @@ public class SeriesDao {
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, series.getName());
-                        ps.setString(2, series.getGuid());
+                        ps.setString(2, series.getAbbreviation());
+                        ps.setString(3, series.getGuid());
                         return ps;
                     }
             );

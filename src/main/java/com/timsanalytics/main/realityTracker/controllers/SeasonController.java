@@ -1,5 +1,7 @@
 package com.timsanalytics.main.realityTracker.controllers;
 
+import com.timsanalytics.auth.authCommon.beans.KeyValue;
+import com.timsanalytics.main.realityTracker.beans.Player;
 import com.timsanalytics.main.realityTracker.beans.Season;
 import com.timsanalytics.main.realityTracker.services.SeasonService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,6 +66,32 @@ public class SeasonController {
             Season season = seasonService.getSeasonDetail(seasonGuid);
             return ResponseEntity.ok()
                     .body(season);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Update Season", tags = {"Season"}, description = "Update Season", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Season> updateSeason(@RequestBody Season season) {
+        try {
+            return ResponseEntity.ok()
+                    .body(seasonService.updateSeason(season));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/{seasonGuid}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Delete Season", tags = {"Season"}, description = "Delete Season", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<KeyValue> deleteSeason(@Parameter(description = "Season GUID", required = true) @PathVariable String seasonGuid) {
+        try {
+            return ResponseEntity.ok()
+                    .body(seasonService.deleteSeason(seasonGuid));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
