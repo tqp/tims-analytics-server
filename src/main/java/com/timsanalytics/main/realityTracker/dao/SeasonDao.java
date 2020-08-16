@@ -1,7 +1,9 @@
 package com.timsanalytics.main.realityTracker.dao;
 
 import com.timsanalytics.auth.authCommon.beans.KeyValue;
+import com.timsanalytics.main.realityTracker.beans.Player;
 import com.timsanalytics.main.realityTracker.beans.Season;
+import com.timsanalytics.main.thisApp.beans.Person;
 import com.timsanalytics.utils.GenerateUuidService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,21 +47,21 @@ public class SeasonDao {
         query.append("      )\n");
         this.logger.trace("SQL:\n" + query.toString());
 
-        this.logger.trace("getName:\n" + season.getName());
+        this.logger.trace("getName:\n" + season.getSeasonName());
 
         try {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        season.setGuid(this.generateUuidService.GenerateUuid());
-                        this.logger.trace("New Season GUID: " + season.getGuid());
-                        ps.setString(1, season.getGuid());
+                        season.setSeasonGuid(this.generateUuidService.GenerateUuid());
+                        this.logger.trace("New Season GUID: " + season.getSeasonGuid());
+                        ps.setString(1, season.getSeasonGuid());
                         ps.setString(2, season.getSeriesGuid());
-                        ps.setString(3, season.getName());
+                        ps.setString(3, season.getSeasonName());
                         return ps;
                     }
             );
-            return this.getSeasonDetail(season.getGuid());
+            return this.getSeasonDetail(season.getSeasonGuid());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -88,13 +90,13 @@ public class SeasonDao {
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{seasonGuid}, (rs, rowNum) -> {
                 Season item = new Season();
-                item.setGuid(rs.getString("SEASON_GUID"));
-                item.setName(rs.getString("SEASON_NAME"));
+                item.setSeasonGuid(rs.getString("SEASON_GUID"));
+                item.setSeasonName(rs.getString("SEASON_NAME"));
                 item.setSeriesAbbreviation(rs.getString("SEASON_ABBREVIATION"));
-                item.setAbbreviation(rs.getString("SERIES_ABBREVIATION"));
+                item.setSeasonAbbreviation(rs.getString("SERIES_ABBREVIATION"));
                 item.setSeriesGuid(rs.getString("SERIES_GUID"));
                 item.setSeriesName(rs.getString("SERIES_NAME"));
-                item.setStartDate(rs.getDate("SEASON_START_DATE"));
+                item.setSeasonStartDate(rs.getDate("SEASON_START_DATE"));
                 return item;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -129,10 +131,10 @@ public class SeasonDao {
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{seriesGuid}, (rs, rowNum) -> {
                 Season item = new Season();
-                item.setGuid(rs.getString("SEASON_GUID"));
-                item.setName(rs.getString("SEASON_NAME"));
-                item.setAbbreviation(rs.getString("SEASON_ABBREVIATION"));
-                item.setStartDate(rs.getDate("SEASON_START_DATE"));
+                item.setSeasonGuid(rs.getString("SEASON_GUID"));
+                item.setSeasonName(rs.getString("SEASON_NAME"));
+                item.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
+                item.setSeasonStartDate(rs.getDate("SEASON_START_DATE"));
                 item.setSeriesGuid(rs.getString("SERIES_GUID"));
                 item.setSeriesName(rs.getString("SERIES_NAME"));
                 item.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
@@ -161,13 +163,13 @@ public class SeasonDao {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setString(1, season.getName());
-                        ps.setString(2, season.getAbbreviation());
-                        ps.setString(3, season.getGuid());
+                        ps.setString(1, season.getSeasonName());
+                        ps.setString(2, season.getSeasonAbbreviation());
+                        ps.setString(3, season.getSeasonGuid());
                         return ps;
                     }
             );
-            return this.getSeasonDetail(season.getGuid());
+            return this.getSeasonDetail(season.getSeasonGuid());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;

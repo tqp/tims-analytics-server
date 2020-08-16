@@ -65,23 +65,23 @@ public class ContestantDao {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        contestant.setGuid(this.generateUuidService.GenerateUuid());
-                        this.logger.trace("New Contestant GUID: " + contestant.getGuid());
-                        ps.setString(1, contestant.getGuid());
-                        ps.setString(2, contestant.getLastName());
-                        ps.setString(3, contestant.getFirstName());
-                        ps.setString(4, contestant.getNickname());
-                        ps.setString(5, contestant.getGender());
-                        ps.setString(6, contestant.getDateOfBirth());
-                        ps.setString(7, contestant.getOccupation());
-                        ps.setString(8, contestant.getHometownCity());
-                        ps.setString(9, contestant.getHometownState());
-                        ps.setString(10, contestant.getTwitterHandle());
-                        ps.setString(11, contestant.getComments());
+                        contestant.setContestantGuid(this.generateUuidService.GenerateUuid());
+                        this.logger.trace("New Contestant GUID: " + contestant.getContestantGuid());
+                        ps.setString(1, contestant.getContestantGuid());
+                        ps.setString(2, contestant.getContestantLastName());
+                        ps.setString(3, contestant.getContestantFirstName());
+                        ps.setString(4, contestant.getContestantNickname());
+                        ps.setString(5, contestant.getContestantGender());
+                        ps.setString(6, contestant.getContestantDateOfBirth());
+                        ps.setString(7, contestant.getContestantOccupation());
+                        ps.setString(8, contestant.getContestantHometownCity());
+                        ps.setString(9, contestant.getContestantHometownState());
+                        ps.setString(10, contestant.getContestantTwitterHandle());
+                        ps.setString(11, contestant.getContestantComments());
                         return ps;
                     }
             );
-            return this.getContestantDetail(contestant.getGuid());
+            return this.getContestantDetail(contestant.getContestantGuid());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -157,10 +157,10 @@ public class ContestantDao {
                     pageSize
             }, (rs, rowNum) -> {
                 Contestant item = new Contestant();
-                item.setGuid(rs.getString("CONTESTANT_GUID"));
-                item.setLastName(rs.getString("CONTESTANT_LAST_NAME"));
-                item.setFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
-                item.setNickname(rs.getString("CONTESTANT_NICKNAME"));
+                item.setContestantGuid(rs.getString("CONTESTANT_GUID"));
+                item.setContestantLastName(rs.getString("CONTESTANT_LAST_NAME"));
+                item.setContestantFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
+                item.setContestantNickname(rs.getString("CONTESTANT_NICKNAME"));
                 return item;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -268,21 +268,21 @@ public class ContestantDao {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setString(1, contestant.getLastName());
-                        ps.setString(2, contestant.getFirstName());
-                        ps.setString(3, contestant.getNickname());
-                        ps.setString(4, contestant.getGender());
-                        ps.setString(5, contestant.getDateOfBirth());
-                        ps.setString(6, contestant.getOccupation());
-                        ps.setString(7, contestant.getHometownCity());
-                        ps.setString(8, contestant.getHometownState());
-                        ps.setString(9, contestant.getTwitterHandle());
-                        ps.setString(10, contestant.getComments());
-                        ps.setString(11, contestant.getGuid());
+                        ps.setString(1, contestant.getContestantLastName());
+                        ps.setString(2, contestant.getContestantFirstName());
+                        ps.setString(3, contestant.getContestantNickname());
+                        ps.setString(4, contestant.getContestantGender());
+                        ps.setString(5, contestant.getContestantDateOfBirth());
+                        ps.setString(6, contestant.getContestantOccupation());
+                        ps.setString(7, contestant.getContestantHometownCity());
+                        ps.setString(8, contestant.getContestantHometownState());
+                        ps.setString(9, contestant.getContestantTwitterHandle());
+                        ps.setString(10, contestant.getContestantComments());
+                        ps.setString(11, contestant.getContestantGuid());
                         return ps;
                     }
             );
-            return this.getContestantDetail(contestant.getGuid());
+            return this.getContestantDetail(contestant.getContestantGuid());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;

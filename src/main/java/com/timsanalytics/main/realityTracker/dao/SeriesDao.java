@@ -49,15 +49,15 @@ public class SeriesDao {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        series.setGuid(this.generateUuidService.GenerateUuid());
-                        this.logger.trace("New Series GUID: " + series.getGuid());
-                        ps.setString(1, series.getGuid());
-                        ps.setString(2, series.getName());
-                        ps.setString(3, series.getAbbreviation());
+                        series.setSeriesGuid(this.generateUuidService.GenerateUuid());
+                        this.logger.trace("New Series GUID: " + series.getSeriesGuid());
+                        ps.setString(1, series.getSeriesGuid());
+                        ps.setString(2, series.getSeriesName());
+                        ps.setString(3, series.getSeriesAbbreviation());
                         return ps;
                     }
             );
-            return this.getSeriesDetail(series.getGuid());
+            return this.getSeriesDetail(series.getSeriesGuid());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -132,8 +132,8 @@ public class SeriesDao {
                     pageSize
             }, (rs, rowNum) -> {
                 Series item = new Series();
-                item.setGuid(rs.getString("SERIES_GUID"));
-                item.setName(rs.getString("SERIES_NAME"));
+                item.setSeriesGuid(rs.getString("SERIES_GUID"));
+                item.setSeriesName(rs.getString("SERIES_NAME"));
                 return item;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -220,13 +220,13 @@ public class SeriesDao {
             this.mySqlAuthJdbcTemplate.update(
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
-                        ps.setString(1, series.getName());
-                        ps.setString(2, series.getAbbreviation());
-                        ps.setString(3, series.getGuid());
+                        ps.setString(1, series.getSeriesName());
+                        ps.setString(2, series.getSeriesAbbreviation());
+                        ps.setString(3, series.getSeriesGuid());
                         return ps;
                     }
             );
-            return this.getSeriesDetail(series.getGuid());
+            return this.getSeriesDetail(series.getSeriesGuid());
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;

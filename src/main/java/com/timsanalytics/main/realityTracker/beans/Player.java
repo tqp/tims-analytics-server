@@ -4,17 +4,17 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Player {
-    private String guid;
-    private String seasonGuid;
-    private String contestantGuid;
-    private String occupation;
-    private Integer ageOnEntry;
+    private String playerGuid;
+    private String playerOccupation;
+    private Integer playerAgeOnEntry;
     // Joined Fields
     private String seriesGuid;
     private String seriesName;
     private String seriesAbbreviation;
+    private String seasonGuid;
     private String seasonName;
     private String seasonAbbreviation;
+    private String contestantGuid;
     private String contestantLastName;
     private String contestantFirstName;
     // Metadata
@@ -24,12 +24,12 @@ public class Player {
     private String updatedOn;
     private String updatedBy;
 
-    public String getGuid() {
-        return guid;
+    public String getPlayerGuid() {
+        return playerGuid;
     }
 
-    public void setGuid(String guid) {
-        this.guid = guid;
+    public void setPlayerGuid(String playerGuid) {
+        this.playerGuid = playerGuid;
     }
 
     public String getSeasonGuid() {
@@ -48,20 +48,20 @@ public class Player {
         this.contestantGuid = contestantGuid;
     }
 
-    public String getOccupation() {
-        return occupation;
+    public String getPlayerOccupation() {
+        return playerOccupation;
     }
 
-    public void setOccupation(String occupation) {
-        this.occupation = occupation;
+    public void setPlayerOccupation(String playerOccupation) {
+        this.playerOccupation = playerOccupation;
     }
 
-    public Integer getAgeOnEntry() {
-        return ageOnEntry;
+    public Integer getPlayerAgeOnEntry() {
+        return playerAgeOnEntry;
     }
 
-    public void setAgeOnEntry(Integer ageOnEntry) {
-        this.ageOnEntry = ageOnEntry;
+    public void setPlayerAgeOnEntry(Integer playerAgeOnEntry) {
+        this.playerAgeOnEntry = playerAgeOnEntry;
     }
 
     public String getSeriesGuid() {

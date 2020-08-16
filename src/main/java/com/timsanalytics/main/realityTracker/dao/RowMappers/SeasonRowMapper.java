@@ -10,9 +10,9 @@ public class SeasonRowMapper implements RowMapper<Season> {
 
     public Season mapRow(ResultSet rs, int rowNum) throws SQLException {
         Season row = new Season();
-        row.setGuid(rs.getString("SEASON_GUID"));
-        row.setName(rs.getString("SEASON_NAME"));
-        row.setAbbreviation(rs.getString("SEASON_ABBREVIATION"));
+        row.setSeasonGuid(rs.getString("SEASON_GUID"));
+        row.setSeasonName(rs.getString("SEASON_NAME"));
+        row.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
         row.setSeriesGuid(rs.getString("SERIES_GUID"));
         row.setSeriesName(rs.getString("SERIES_NAME"));
         return row;

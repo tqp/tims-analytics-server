@@ -10,9 +10,9 @@ public class SeriesRowMapper implements RowMapper<Series> {
 
     public Series mapRow(ResultSet rs, int rowNum) throws SQLException {
         Series row = new Series();
-        row.setGuid(rs.getString("SERIES_GUID"));
-        row.setName(rs.getString("SERIES_NAME"));
-        row.setAbbreviation(rs.getString("SERIES_ABBREVIATION"));
+        row.setSeriesGuid(rs.getString("SERIES_GUID"));
+        row.setSeriesName(rs.getString("SERIES_NAME"));
+        row.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
         return row;
     }
 }

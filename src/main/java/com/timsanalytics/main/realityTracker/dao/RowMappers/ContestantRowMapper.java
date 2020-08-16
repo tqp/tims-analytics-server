@@ -10,17 +10,17 @@ public class ContestantRowMapper implements RowMapper<Contestant> {
 
     public Contestant mapRow(ResultSet rs, int rowNum) throws SQLException {
         Contestant row = new Contestant();
-        row.setGuid(rs.getString("CONTESTANT_GUID"));
-        row.setLastName(rs.getString("CONTESTANT_LAST_NAME"));
-        row.setFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
-        row.setNickname(rs.getString("CONTESTANT_NICKNAME"));
-        row.setGender(rs.getString("CONTESTANT_GENDER"));
-        row.setDateOfBirth(rs.getString("CONTESTANT_DATE_OF_BIRTH"));
-        row.setOccupation(rs.getString("CONTESTANT_OCCUPATION"));
-        row.setHometownCity(rs.getString("CONTESTANT_HOMETOWN_CITY"));
-        row.setHometownState(rs.getString("CONTESTANT_HOMETOWN_STATE"));
-        row.setTwitterHandle(rs.getString("CONTESTANT_TWITTER_HANDLE"));
-        row.setComments(rs.getString("CONTESTANT_COMMENTS"));
+        row.setContestantGuid(rs.getString("CONTESTANT_GUID"));
+        row.setContestantLastName(rs.getString("CONTESTANT_LAST_NAME"));
+        row.setContestantFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
+        row.setContestantNickname(rs.getString("CONTESTANT_NICKNAME"));
+        row.setContestantGender(rs.getString("CONTESTANT_GENDER"));
+        row.setContestantDateOfBirth(rs.getString("CONTESTANT_DATE_OF_BIRTH"));
+        row.setContestantOccupation(rs.getString("CONTESTANT_OCCUPATION"));
+        row.setContestantHometownCity(rs.getString("CONTESTANT_HOMETOWN_CITY"));
+        row.setContestantHometownState(rs.getString("CONTESTANT_HOMETOWN_STATE"));
+        row.setContestantTwitterHandle(rs.getString("CONTESTANT_TWITTER_HANDLE"));
+        row.setContestantComments(rs.getString("CONTESTANT_COMMENTS"));
         row.setStatus(rs.getString("STATUS"));
         return row;
     }

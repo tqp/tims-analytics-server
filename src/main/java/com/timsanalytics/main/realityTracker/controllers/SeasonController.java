@@ -1,7 +1,6 @@
 package com.timsanalytics.main.realityTracker.controllers;
 
 import com.timsanalytics.auth.authCommon.beans.KeyValue;
-import com.timsanalytics.main.realityTracker.beans.Player;
 import com.timsanalytics.main.realityTracker.beans.Season;
 import com.timsanalytics.main.realityTracker.services.SeasonService;
 import io.swagger.v3.oas.annotations.Operation;

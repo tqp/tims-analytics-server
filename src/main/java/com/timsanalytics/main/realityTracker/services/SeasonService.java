@@ -5,6 +5,7 @@ import com.timsanalytics.main.realityTracker.beans.Player;
 import com.timsanalytics.main.realityTracker.beans.Season;
 import com.timsanalytics.main.realityTracker.beans.Series;
 import com.timsanalytics.main.realityTracker.dao.SeasonDao;
+import com.timsanalytics.main.thisApp.beans.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

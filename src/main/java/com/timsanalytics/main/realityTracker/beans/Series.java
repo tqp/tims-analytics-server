@@ -4,37 +4,38 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Series {
-    private String guid;
-    private String name;
-    private String abbreviation;
+    private String seriesGuid;
+    private String seriesName;
+    private String seriesAbbreviation;
+    // Metadata
     private String status;
     private String createdOn;
     private String createdBy;
     private String updatedOn;
     private String updatedBy;
 
-    public String getGuid() {
-        return guid;
+    public String getSeriesGuid() {
+        return seriesGuid;
     }
 
-    public void setGuid(String guid) {
-        this.guid = guid;
+    public void setSeriesGuid(String seriesGuid) {
+        this.seriesGuid = seriesGuid;
     }
 
-    public String getName() {
-        return name;
+    public String getSeriesName() {
+        return seriesName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSeriesName(String seriesName) {
+        this.seriesName = seriesName;
     }
 
-    public String getAbbreviation() {
-        return abbreviation;
+    public String getSeriesAbbreviation() {
+        return seriesAbbreviation;
     }
 
-    public void setAbbreviation(String abbreviation) {
-        this.abbreviation = abbreviation;
+    public void setSeriesAbbreviation(String seriesAbbreviation) {
+        this.seriesAbbreviation = seriesAbbreviation;
     }
 
     public String getStatus() {
