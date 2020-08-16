@@ -106,10 +106,10 @@ public class PlayerController {
     @ResponseBody
     @RequestMapping(value = "/add-seasons/contestant/{contestantGuid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Add Seasons to Contestant", tags = {"Player"}, description = "Add Seasons to Contestant", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<List<ListItem>> addContestantsToSeason(@PathVariable String contestantGuid,
+    public ResponseEntity<List<ListItem>> addSeasonsToContestant(@PathVariable String contestantGuid,
                                                                  @RequestBody List<ListItem> itemsToAdd) {
         try {
-            this.playerService.addContestantsToSeason(contestantGuid, itemsToAdd);
+            this.playerService.addSeasonsToContestant(contestantGuid, itemsToAdd);
             return ResponseEntity.ok()
                     .body(itemsToAdd);
         } catch (IllegalArgumentException e) {
@@ -122,10 +122,74 @@ public class PlayerController {
     @ResponseBody
     @RequestMapping(value = "/remove-seasons/contestant/{contestantGuid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Remove Seasons from Contestant", tags = {"Player"}, description = "Remove Seasons from Contestant", security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<List<ListItem>> removeContestantsFromSeason(@PathVariable String contestantGuid,
+    public ResponseEntity<List<ListItem>> removeSeasonsFromContestant(@PathVariable String contestantGuid,
                                                                       @RequestBody List<ListItem> itemsToRemove) {
         try {
-            this.playerService.removeContestantsFromSeason(contestantGuid, itemsToRemove);
+            this.playerService.removeSeasonsFromContestant(contestantGuid, itemsToRemove);
+            return ResponseEntity.ok()
+                    .body(itemsToRemove);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    // Season-Contestant Add/Remove
+
+    @ResponseBody
+    @RequestMapping(value = "/current-contestants/season/{seasonGuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Current Contestants By Season GUID", tags = {"Player"}, description = "Get Current Contestants By Season GUID", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<Player>> getCurrentContestantsBySeasonGuid(@PathVariable String seasonGuid) {
+        try {
+            List<Player> personList = this.playerService.getCurrentContestantsBySeasonGuid(seasonGuid);
+            return ResponseEntity.ok()
+                    .body(personList);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/available-contestants/season/{seasonGuid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Available Contestants By Season GUID", tags = {"Player"}, description = "Get Available Seasons By Contestant GUID", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<Player>> getAvailableContestantsBySeasonGuid(@PathVariable String seasonGuid) {
+        try {
+            List<Player> personList = this.playerService.getAvailableContestantsBySeasonGuid(seasonGuid);
+            return ResponseEntity.ok()
+                    .body(personList);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/add-contestants/season/{seasonGuid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Add Contestants to Season", tags = {"Player"}, description = "Add Contestants to Season", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<ListItem>> addContestantsToSeason(@PathVariable String seasonGuid,
+                                                                 @RequestBody List<ListItem> itemsToAdd) {
+        try {
+            this.playerService.addContestantsToSeason(seasonGuid, itemsToAdd);
+            return ResponseEntity.ok()
+                    .body(itemsToAdd);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/remove-contestants/season/{seasonGuid}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Remove Contestants from Season", tags = {"Player"}, description = "Remove Contestants from Season", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<ListItem>> removeContestantsFromSeason(@PathVariable String seasonGuid,
+                                                                      @RequestBody List<ListItem> itemsToRemove) {
+        try {
+            this.playerService.removeContestantsFromSeason(seasonGuid, itemsToRemove);
             return ResponseEntity.ok()
                     .body(itemsToRemove);
         } catch (IllegalArgumentException e) {

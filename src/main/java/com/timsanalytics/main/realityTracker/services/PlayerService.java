@@ -56,17 +56,17 @@ public class PlayerService {
         return this.playerDao.getAvailableSeasonsByContestantGuid(contestantGuid);
     }
 
-    public List<Player> addContestantsToSeason(String contestantGuid, List<ListItem> itemsToAdd) {
+    public List<Player> addSeasonsToContestant(String contestantGuid, List<ListItem> itemsToAdd) {
         // Because MySQL doesn't have a MERGE query like Oracle, we are forced to use MySQL's
         // ON DUPLICATE KEY UPDATE query. To make this work for us, we first have to get the key from the
         // association table, if one exists. If the key already exists in the table, the query will update
         // it with a status of 'Active'. If it doesn't exist, the query will create it.
-        List<Player> playerList = this.createPlayerListToAdd(contestantGuid, itemsToAdd);
-        int[] recordsUpdated = this.playerDao.addContestantsToSeason(playerList);
+        List<Player> playerList = this.createPlayerListToAddSeasonToContestant(contestantGuid, itemsToAdd);
+        int[] recordsUpdated = this.playerDao.addPlayer(playerList);
         return playerList;
     }
 
-    private List<Player> createPlayerListToAdd(String contestantGuid, List<ListItem> itemsToAdd) {
+    private List<Player> createPlayerListToAddSeasonToContestant(String contestantGuid, List<ListItem> itemsToAdd) {
         return itemsToAdd.stream()
                 .map(item -> {
                     Player existingPlayer = this.playerDao.getPlayerByPlayerGuid(contestantGuid, item.getGuid());
@@ -74,6 +74,44 @@ public class PlayerService {
                     player.setPlayerGuid(existingPlayer != null ? existingPlayer.getPlayerGuid() : this.generateUuidService.GenerateUuid());
                     player.setContestantGuid(contestantGuid);
                     player.setSeasonGuid(item.getGuid());
+                    return player;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<ListItem> removeSeasonsFromContestant(String contestantGuid, List<ListItem> itemsToRemove) {
+        int[] recordsUpdated = this.playerDao.removeSeasonsFromContestant(contestantGuid, itemsToRemove);
+        return itemsToRemove;
+    }
+
+    // Season-Contestant Add/Remove
+
+    public List<Player> getCurrentContestantsBySeasonGuid(String contestantGuid) {
+        return this.playerDao.getCurrentContestantsBySeasonGuid(contestantGuid);
+    }
+
+    public List<Player> getAvailableContestantsBySeasonGuid(String contestantGuid) {
+        return this.playerDao.getAvailableContestantsBySeasonGuid(contestantGuid);
+    }
+
+    public List<Player> addContestantsToSeason(String seasonGuid, List<ListItem> itemsToAdd) {
+        // Because MySQL doesn't have a MERGE query like Oracle, we are forced to use MySQL's
+        // ON DUPLICATE KEY UPDATE query. To make this work for us, we first have to get the key from the
+        // association table, if one exists. If the key already exists in the table, the query will update
+        // it with a status of 'Active'. If it doesn't exist, the query will create it.
+        List<Player> playerList = this.createPlayerListToAddContestantToSeason(seasonGuid, itemsToAdd);
+        int[] recordsUpdated = this.playerDao.addPlayer(playerList);
+        return playerList;
+    }
+
+    private List<Player> createPlayerListToAddContestantToSeason(String seasonGuid, List<ListItem> itemsToAdd) {
+        return itemsToAdd.stream()
+                .map(item -> {
+                    Player existingPlayer = this.playerDao.getPlayerByPlayerGuid(seasonGuid, item.getGuid());
+                    Player player = new Player();
+                    player.setPlayerGuid(existingPlayer != null ? existingPlayer.getPlayerGuid() : this.generateUuidService.GenerateUuid());
+                    player.setSeasonGuid(seasonGuid);
+                    player.setContestantGuid(item.getGuid());
                     return player;
                 })
                 .collect(Collectors.toList());

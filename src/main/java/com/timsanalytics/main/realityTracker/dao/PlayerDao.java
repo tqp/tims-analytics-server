@@ -2,10 +2,8 @@ package com.timsanalytics.main.realityTracker.dao;
 
 import com.timsanalytics.main.realityTracker.beans.ListItem;
 import com.timsanalytics.main.realityTracker.beans.Player;
-import com.timsanalytics.main.realityTracker.beans.Season;
-import com.timsanalytics.main.thisApp.beans.Person;
-import com.timsanalytics.main.thisApp.beans.PersonFriend;
 import com.timsanalytics.utils.GenerateUuidService;
+import com.timsanalytics.utils.PrintObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +21,18 @@ public class PlayerDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final JdbcTemplate mySqlAuthJdbcTemplate;
     private final GenerateUuidService generateUuidService;
+    private final PrintObjectService printObjectService;
 
     @Autowired
-    public PlayerDao(JdbcTemplate mySqlAuthJdbcTemplate, GenerateUuidService generateUuidService) {
+    public PlayerDao(JdbcTemplate mySqlAuthJdbcTemplate,
+                     GenerateUuidService generateUuidService,
+                     PrintObjectService printObjectService) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
         this.generateUuidService = generateUuidService;
+        this.printObjectService = printObjectService;
     }
 
     public Player getPlayerDetail(String playerGuid) {
-        System.out.println("playerGuid: " + playerGuid);
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      PLAYER_GUID,\n");
@@ -105,7 +106,9 @@ public class PlayerDao {
         query.append("      AND PLAYER.CONTESTANT_GUID LIKE ?\n");
         query.append("  ORDER BY\n");
         query.append("      SERIES.SERIES_NAME,\n");
-        query.append("      SEASON.SEASON_NAME\n");
+        query.append("      SEASON.SEASON_NAME,\n");
+        query.append("      CONTESTANT.CONTESTANT_LAST_NAME,\n");
+        query.append("      CONTESTANT.CONTESTANT_FIRST_NAME\n");
         this.logger.trace("SQL:\n" + query.toString());
         seriesGuid = (seriesGuid != null) ? seriesGuid : "%";
         contestantGuid = (contestantGuid != null) ? contestantGuid : "%";
@@ -201,7 +204,7 @@ public class PlayerDao {
         }
     }
 
-    // Contestant-Player Add/Remove
+    // Contestant-Season Add/Remove
 
     public List<Player> getCurrentSeasonsByContestantGuid(String contestantGuid) {
         StringBuilder query = new StringBuilder();
@@ -219,7 +222,7 @@ public class PlayerDao {
         query.append("      LEFT JOIN REALITY_TRACKER.SERIES ON SEASON.SERIES_GUID = SERIES.SERIES_GUID\n");
         query.append("  WHERE\n");
         query.append("      PLAYER.STATUS = 'Active' \n");
-        query.append("      AND CONTESTANT_GUID = ?\n");
+        query.append("      AND PLAYER.CONTESTANT_GUID = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{contestantGuid}, (rs, rowNum) -> {
@@ -290,7 +293,7 @@ public class PlayerDao {
         }
     }
 
-    public int[] addContestantsToSeason(List<Player> playerList) {
+    public int[] addSeasonsToContestants(List<Player> playerList) {
         StringBuilder query = new StringBuilder();
         query.append("  INSERT INTO\n");
         query.append("      REALITY_TRACKER.PLAYER\n");
@@ -333,7 +336,7 @@ public class PlayerDao {
         }
     }
 
-    public int[] removeContestantsFromSeason(String contestantGuid, List<ListItem> itemsToRemove) {
+    public int[] removeSeasonsFromContestant(String contestantGuid, List<ListItem> itemsToRemove) {
         // Define SQL for batch
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
@@ -398,6 +401,160 @@ public class PlayerDao {
             this.logger.error("Exception: " + e);
             return null;
         }
+    }
 
+    // Season-Contestant Add/Remove
+
+    public List<Player> getCurrentContestantsBySeasonGuid(String seasonGuid) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      PLAYER_GUID,\n");
+        query.append("      PLAYER.CONTESTANT_GUID,\n");
+        query.append("      CONTESTANT.CONTESTANT_LAST_NAME,\n");
+        query.append("      CONTESTANT.CONTESTANT_FIRST_NAME\n");
+        query.append("  FROM\n");
+        query.append("      REALITY_TRACKER.PLAYER\n");
+        query.append("      LEFT JOIN REALITY_TRACKER.CONTESTANT ON PLAYER.CONTESTANT_GUID = CONTESTANT.CONTESTANT_GUID\n");
+        query.append("  WHERE\n");
+        query.append("      PLAYER.STATUS = 'Active'\n");
+        query.append("      AND PLAYER.SEASON_GUID = ?\n");
+        query.append("  ORDER BY\n");
+        query.append("      CONTESTANT.CONTESTANT_LAST_NAME,\n");
+        query.append("      CONTESTANT.CONTESTANT_FIRST_NAME\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{seasonGuid}, (rs, rowNum) -> {
+                Player item = new Player();
+                item.setPlayerGuid(rs.getString("PLAYER_GUID"));
+                item.setContestantGuid(rs.getString("CONTESTANT_GUID"));
+                item.setContestantLastName(rs.getString("CONTESTANT_LAST_NAME"));
+                item.setContestantFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
+                return item;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public List<Player> getAvailableContestantsBySeasonGuid(String seasonGuid) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT DISTINCT\n");
+        query.append("      CONTESTANT.CONTESTANT_GUID,\n");
+        query.append("      CONTESTANT_LAST_NAME,\n");
+        query.append("      CONTESTANT_FIRST_NAME\n");
+        query.append("  FROM\n");
+        query.append("      REALITY_TRACKER.CONTESTANT\n");
+        query.append("  WHERE\n");
+        query.append("      CONTESTANT.STATUS = 'Active'\n");
+        query.append("      AND CONTESTANT_GUID NOT IN\n");
+        query.append("      (\n");
+        query.append("          SELECT DISTINCT\n");
+        query.append("              PLAYER.CONTESTANT_GUID\n");
+        query.append("          FROM\n");
+        query.append("              REALITY_TRACKER.PLAYER\n");
+        query.append("          WHERE\n");
+        query.append("              PLAYER.SEASON_GUID = ?\n");
+        query.append("              AND PLAYER.STATUS = 'Active'\n");
+        query.append("      )\n");
+        query.append("  ORDER BY\n");
+        query.append("      CONTESTANT_LAST_NAME,\n");
+        query.append("      CONTESTANT_FIRST_NAME\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{seasonGuid}, (rs, rowNum) -> {
+                Player item = new Player();
+                item.setContestantGuid(rs.getString("CONTESTANT_GUID"));
+                item.setContestantLastName(rs.getString("CONTESTANT_LAST_NAME"));
+                item.setContestantFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
+                return item;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public int[] addPlayer(List<Player> playerList) {
+        StringBuilder query = new StringBuilder();
+        query.append("  INSERT INTO\n");
+        query.append("      REALITY_TRACKER.PLAYER\n");
+        query.append("      (\n");
+        query.append("          PLAYER_GUID,\n");
+        query.append("          CONTESTANT_GUID,\n");
+        query.append("          SEASON_GUID,\n");
+        query.append("          STATUS\n");
+        query.append("      )\n");
+        query.append("      VALUES\n");
+        query.append("      (\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          'Active'\n");
+        query.append("      )\n");
+        query.append("      ON DUPLICATE KEY UPDATE\n");
+        query.append("          STATUS = 'Active'\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.batchUpdate(query.toString(),
+                    new BatchPreparedStatementSetter() {
+                        @Override
+                        public void setValues(PreparedStatement ps, int i) throws SQLException {
+                            ps.setString(1, playerList.get(i).getPlayerGuid());
+                            ps.setString(2, playerList.get(i).getContestantGuid());
+                            ps.setString(3, playerList.get(i).getSeasonGuid());
+                        }
+
+                        @Override
+                        public int getBatchSize() {
+                            return playerList.size();
+                        }
+                    });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public int[] removeContestantsFromSeason(String seasonGuid, List<ListItem> itemsToRemove) {
+        // Define SQL for batch
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      REALITY_TRACKER.PLAYER A\n");
+        query.append("  SET\n");
+        query.append("      STATUS = 'Removed'\n");
+        query.append("  WHERE\n");
+        query.append("      SEASON_GUID = ?\n");
+        query.append("      AND CONTESTANT_GUID = ?\n");
+        try {
+            return this.mySqlAuthJdbcTemplate.batchUpdate(query.toString(),
+                    new BatchPreparedStatementSetter() {
+                        @Override
+                        public void setValues(PreparedStatement ps, int i) throws SQLException {
+                            ps.setString(1, seasonGuid);
+                            ps.setString(2, itemsToRemove.get(i).getGuid());
+                        }
+
+                        @Override
+                        public int getBatchSize() {
+                            return itemsToRemove.size();
+                        }
+                    });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
     }
 }
