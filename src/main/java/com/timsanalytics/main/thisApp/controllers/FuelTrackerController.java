@@ -1,5 +1,6 @@
 package com.timsanalytics.main.thisApp.controllers;
 
+import com.timsanalytics.common.beans.KeyValue;
 import com.timsanalytics.common.beans.KeyValueDouble;
 import com.timsanalytics.main.thisApp.services.FuelTrackerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,11 +24,33 @@ public class FuelTrackerController {
         this.fuelTrackerService = fuelTrackerService;
     }
 
-    @RequestMapping(value = "/longest-distance", method = RequestMethod.GET)
-    @Operation(summary = "Get Longest Single-Tank Distance", tags = {"Fuel Tracker"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public Double getLongestDistance() {
+    @RequestMapping(value = "/longest-time-between-fills", method = RequestMethod.GET)
+    @Operation(summary = "Get Time Between Fills", tags = {"Fuel Tracker"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public KeyValueDouble getLongestTimeBetweenFills() {
         try {
-            return fuelTrackerService.getLongestDistance();
+            return fuelTrackerService.getLongestTimeBetweenFills();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @RequestMapping(value = "/longest-distance-between-fills", method = RequestMethod.GET)
+    @Operation(summary = "Get Longest Single-Tank Distance", tags = {"Fuel Tracker"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public KeyValueDouble getLongestDistanceBetweenFills() {
+        try {
+            return fuelTrackerService.getLongestDistanceBetweenFills();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @RequestMapping(value = "/estimated-1k-date", method = RequestMethod.GET)
+    @Operation(summary = "Get Estimated 1k Date", tags = {"Fuel Tracker"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public KeyValue getEstimated1kDate() {
+        try {
+            return fuelTrackerService.getEstimated1kDate();
         } catch (Exception e) {
             e.printStackTrace();
             return null;

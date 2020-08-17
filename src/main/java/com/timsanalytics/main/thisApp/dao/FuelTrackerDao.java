@@ -20,8 +20,27 @@ public class FuelTrackerDao {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
     }
 
-    public Double getLongestDistance() {
-        this.logger.trace("FuelTrackerDao -> getLongestDistance");
+    public Double getLongestTimeBetweenFills() {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      MAX(FILL_MILES_TRAVELED) AS MAX_DISTANCE\n");
+        query.append("  FROM\n");
+        query.append("      FUEL_TRACKER.FILL\n");
+        query.append("  WHERE\n");
+        query.append("      FILL_STATUS = 'Active'\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{}, (rs, rowNum) -> rs.getDouble("MAX_DISTANCE"));
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public Double getLongestDistanceBetweenFills() {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      MAX(FILL_MILES_TRAVELED) AS MAX_DISTANCE\n");
@@ -42,7 +61,6 @@ public class FuelTrackerDao {
     }
 
     public List<KeyValueDouble> getOdometerData() {
-        this.logger.trace("FuelTrackerDao -> getOdometerData");
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      FILL_DATE,\n");
@@ -66,7 +84,6 @@ public class FuelTrackerDao {
     }
 
     public List<KeyValueDouble> getMpgData() {
-        this.logger.trace("FuelTrackerDao -> getMpgData");
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
         query.append("      FILL_DATE,\n");
