@@ -4,7 +4,7 @@ import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.main.realityTracker.beans.Series;
 import com.timsanalytics.main.realityTracker.beans.ServerSidePaginationResponse;
 import com.timsanalytics.main.realityTracker.dao.SeriesDao;
-import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
+import com.timsanalytics.common.beans.ServerSidePaginationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

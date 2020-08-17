@@ -1,6 +1,6 @@
 package com.timsanalytics.main.thisApp.controllers;
 
-import com.timsanalytics.main.thisApp.beans.KeyValueDouble;
+import com.timsanalytics.common.beans.KeyValueDouble;
 import com.timsanalytics.main.thisApp.services.FuelTrackerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

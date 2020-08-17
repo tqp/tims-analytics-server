@@ -1,4 +1,6 @@
-package com.timsanalytics.main.thisApp.beans;
+package com.timsanalytics.common.beans;
+
+import com.timsanalytics.main.thisApp.beans.Person;
 
 public class ServerSidePaginationRequest {
     private String nameFilter;

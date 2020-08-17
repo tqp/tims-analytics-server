@@ -1,6 +1,6 @@
 package com.timsanalytics.main.realityTracker.beans;
 
-import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
+import com.timsanalytics.common.beans.ServerSidePaginationRequest;
 
 import java.util.List;
 

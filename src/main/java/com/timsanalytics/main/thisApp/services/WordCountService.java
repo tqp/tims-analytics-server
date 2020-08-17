@@ -1,6 +1,6 @@
 package com.timsanalytics.main.thisApp.services;
 
-import com.timsanalytics.main.thisApp.beans.KeyValueLong;
+import com.timsanalytics.common.beans.KeyValueLong;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

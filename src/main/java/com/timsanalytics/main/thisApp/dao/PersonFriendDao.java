@@ -2,7 +2,7 @@ package com.timsanalytics.main.thisApp.dao;
 
 import com.timsanalytics.main.thisApp.beans.Person;
 import com.timsanalytics.main.thisApp.beans.PersonFriend;
-import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
+import com.timsanalytics.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.utils.GenerateUuidService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

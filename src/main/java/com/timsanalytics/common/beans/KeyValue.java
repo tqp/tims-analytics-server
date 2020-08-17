@@ -1,13 +1,13 @@
-package com.timsanalytics.main.thisApp.beans;
+package com.timsanalytics.common.beans;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class KeyValueString {
+public class KeyValue {
     private String key;
     private String value;
 
-    public KeyValueString(String key, String value) {
+    public KeyValue(String key, String value) {
         this.key = key;
         this.value = value;
     }

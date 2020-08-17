@@ -7,9 +7,10 @@ import java.util.UUID;
 public class GenerateUuidService {
 
     public static void main(String[] args) {
-        GenerateUuidService generateUuidService = new GenerateUuidService();
-        System.out.println(generateUuidService.GenerateUuid());
-
+        for(int i=1; i<=5; i++) {
+            GenerateUuidService generateUuidService = new GenerateUuidService();
+            System.out.println(generateUuidService.GenerateUuid());
+        }
     }
 
     public String GenerateUuid() {

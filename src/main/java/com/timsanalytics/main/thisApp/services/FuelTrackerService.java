@@ -1,6 +1,6 @@
 package com.timsanalytics.main.thisApp.services;
 
-import com.timsanalytics.main.thisApp.beans.KeyValueDouble;
+import com.timsanalytics.common.beans.KeyValueDouble;
 import com.timsanalytics.main.thisApp.dao.FuelTrackerDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

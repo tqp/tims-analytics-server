@@ -1,6 +1,6 @@
 package com.timsanalytics.main.thisApp.dao;
 
-import com.timsanalytics.main.thisApp.beans.KeyValueDouble;
+import com.timsanalytics.common.beans.KeyValueDouble;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

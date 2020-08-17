@@ -1,12 +1,12 @@
-package com.timsanalytics.main.thisApp.beans;
+package com.timsanalytics.common.beans;
 
 import java.util.List;
 
-public class ServerSidePaginationResponse {
+public class ServerSidePaginationResponse<T> {
     private Long requestTime;
     private Integer loadedRecords;
     private Integer totalRecords;
-    private List<Person> data;
+    private List<T> data;
     private ServerSidePaginationRequest serverSidePaginationRequest;
 
     public Long getRequestTime() {
@@ -33,11 +33,11 @@ public class ServerSidePaginationResponse {
         this.totalRecords = totalRecords;
     }
 
-    public List<Person> getData() {
+    public List<T> getData() {
         return data;
     }
 
-    public void setData(List<Person> data) {
+    public void setData(List<T> data) {
         this.data = data;
     }
 

@@ -1,13 +1,13 @@
-package com.timsanalytics.main.thisApp.beans;
+package com.timsanalytics.common.beans;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class KeyValueDouble {
+public class KeyValueLong {
     private String key;
-    private Double value;
+    private Long value;
 
-    public KeyValueDouble(String key, Double value) {
+    public KeyValueLong(String key, Long value) {
         this.key = key;
         this.value = value;
     }
@@ -20,11 +20,11 @@ public class KeyValueDouble {
         this.key = key;
     }
 
-    public Double getValue() {
+    public Long getValue() {
         return value;
     }
 
-    public void setValue(Double value) {
+    public void setValue(Long value) {
         this.value = value;
     }
 }

@@ -1,6 +1,6 @@
 package com.timsanalytics.main.thisApp.controllers;
 
-import com.timsanalytics.main.thisApp.beans.KeyValueLong;
+import com.timsanalytics.common.beans.KeyValueLong;
 import com.timsanalytics.main.thisApp.services.WordCountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

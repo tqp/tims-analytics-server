@@ -1,6 +1,6 @@
 package com.timsanalytics.main.thisApp.controllers;
 
-import com.timsanalytics.main.thisApp.beans.KeyValueString;
+import com.timsanalytics.common.beans.KeyValueString;
 import com.timsanalytics.main.thisApp.services.DatabaseConnectionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

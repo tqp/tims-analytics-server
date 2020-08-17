@@ -4,7 +4,7 @@ import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.main.realityTracker.beans.Series;
 import com.timsanalytics.main.realityTracker.beans.ServerSidePaginationResponse;
 import com.timsanalytics.main.realityTracker.services.SeriesService;
-import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
+import com.timsanalytics.common.beans.ServerSidePaginationRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

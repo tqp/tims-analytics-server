@@ -2,7 +2,7 @@ package com.timsanalytics.auth.authCommon.controllers;
 
 import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.auth.authCommon.services.TestService;
-import com.timsanalytics.main.thisApp.beans.KeyValueString;
+import com.timsanalytics.common.beans.KeyValueString;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

@@ -2,8 +2,8 @@ package com.timsanalytics.main.thisApp.controllers;
 
 import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.main.thisApp.beans.Person;
-import com.timsanalytics.main.thisApp.beans.ServerSidePaginationRequest;
-import com.timsanalytics.main.thisApp.beans.ServerSidePaginationResponse;
+import com.timsanalytics.common.beans.ServerSidePaginationRequest;
+import com.timsanalytics.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.main.thisApp.services.PersonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

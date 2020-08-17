@@ -1,7 +1,7 @@
 package com.timsanalytics.auth.authCommon.services;
 
 import com.timsanalytics.auth.authCommon.beans.KeyValue;
-import com.timsanalytics.main.thisApp.beans.KeyValueString;
+import com.timsanalytics.common.beans.KeyValueString;
 import org.springframework.stereotype.Service;
 
 @Service

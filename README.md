@@ -24,3 +24,29 @@ from
 rename table to oldTable;
 rename newTable to table;
 ```
+
+## AWS Configruation
+
+Deploy server to Elastic Beanstalk (with https)
+
+Elastic Beanstalk -> Environments -> <environment-name> -> Configuration  
+Capacity:
+- Environment Type: Load Balanced
+- Min: 1
+- Max: 1
+Apply, confirm, and wait.
+Re-enter configuration:  
+Load Balancer:  
+- Add Listener. Listener Port: 443, Listerer Protocol: HTTPS, Instance Port: 80, Instance Protocol: HTTP
+- Disable Port 80.
+Apply, confirm, and wait.
+
+Route 53:
+- Create Record
+- Provide URL
+- Alias to Elastic Beanstalk environment
+- Zone: US East
+- Choose Elastic Beanstalk environment
+- Record Type: A - Routes traffic to an IPv4 address and some AWS resources.
+
+MAKE SURE YOU UPDATE CORS ON THE SERVER!!!
