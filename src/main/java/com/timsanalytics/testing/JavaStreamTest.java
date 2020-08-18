@@ -1,6 +1,6 @@
 package com.timsanalytics.testing;
 
-import com.timsanalytics.main.thisApp.beans.Person;
+import com.timsanalytics.apps.main.beans.Person;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
