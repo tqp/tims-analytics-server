@@ -60,7 +60,7 @@ public class SeasonController {
 
     @RequestMapping(value = "/{seasonGuid}", method = RequestMethod.GET)
     @Operation(summary = "Get Season Detail", tags = {"Season"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public ResponseEntity<Season> getContestantDetail(@Parameter(description = "Season GUID", required = true) @PathVariable String seasonGuid) {
+    public ResponseEntity<Season> getSeasonDetail(@Parameter(description = "Season GUID", required = true) @PathVariable String seasonGuid) {
         try {
             Season season = seasonService.getSeasonDetail(seasonGuid);
             return ResponseEntity.ok()

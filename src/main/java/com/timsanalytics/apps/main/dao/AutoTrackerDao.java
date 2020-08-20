@@ -1,8 +1,13 @@
 package com.timsanalytics.apps.main.dao;
 
+import com.timsanalytics.apps.main.beans.Fill;
 import com.timsanalytics.apps.main.beans.FuelActivity;
+import com.timsanalytics.apps.main.beans.Station;
+import com.timsanalytics.common.beans.KeyValue;
 import com.timsanalytics.common.beans.KeyValueDouble;
 import com.timsanalytics.common.beans.ServerSidePaginationRequest;
+import com.timsanalytics.utils.GenerateUuidService;
+import com.timsanalytics.utils.PrintObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,19 +15,85 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Service
 public class AutoTrackerDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final JdbcTemplate mySqlAuthJdbcTemplate;
+    private final GenerateUuidService generateUuidService;
+    private final PrintObjectService printObjectService;
 
     @Autowired
-    public AutoTrackerDao(JdbcTemplate mySqlAuthJdbcTemplate) {
+    public AutoTrackerDao(JdbcTemplate mySqlAuthJdbcTemplate,
+                          GenerateUuidService generateUuidService,
+                          PrintObjectService printObjectService) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
+        this.generateUuidService = generateUuidService;
+        this.printObjectService = printObjectService;
     }
 
-    // Fuel Activity
+    // FUEL ACTIVITY
+
+    public Fill createFuelActivity(Fill fill) {
+        this.printObjectService.PrintObject("fill", fill);
+        StringBuilder query = new StringBuilder();
+        query.append("  INSERT INTO\n");
+        query.append("      AUTO_TRACKER.FILL\n");
+        query.append("      (\n");
+        query.append("          FILL.FILL_GUID,\n");
+        query.append("          FILL.FILL_ODOMETER,\n");
+        query.append("          FILL.FILL_DATE,\n");
+        query.append("          FILL.FILL_GALLONS,\n");
+        query.append("          FILL.FILL_COST_PER_GALLON,\n");
+        query.append("          FILL.FILL_TOTAL_COST,\n");
+        query.append("          FILL.FILL_MILES_TRAVELED,\n");
+        query.append("          FILL.FILL_MILES_PER_GALLON,\n");
+        query.append("          FILL.FILL_COMMENTS,\n");
+        query.append("          FILL.STATUS\n");
+        query.append("      )\n");
+        query.append("      VALUES\n");
+        query.append("      (\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
+        query.append("          'Active'\n");
+        query.append("      )\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        fill.setFillGuid(this.generateUuidService.GenerateUuid());
+                        this.logger.debug("New Fill GUID: " + fill.getFillGuid());
+                        ps.setString(1, fill.getFillGuid());
+                        ps.setDouble(2, fill.getFillOdometer());
+                        ps.setDate(3, fill.getFillDate());
+                        ps.setDouble(4, fill.getFillGallons());
+                        ps.setDouble(5, fill.getFillCostPerGallon());
+                        ps.setDouble(6, fill.getFillTotalCost());
+                        ps.setDouble(7, fill.getFillMilesTraveled());
+                        ps.setDouble(8, fill.getFillMilesPerGallon());
+                        ps.setString(9, fill.getFillComments());
+                        return ps;
+                    }
+            );
+            return fill;
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
 
     public int getFuelActivityList_SSP_TotalRecords(ServerSidePaginationRequest serverSidePaginationRequest) {
         StringBuilder query = new StringBuilder();
@@ -73,7 +144,7 @@ public class AutoTrackerDao {
 
         query.append("          ORDER BY\n");
         query.append(sortColumn).append(" ").append(sortDirection.toUpperCase()).append(",\n");
-        query.append("              FUEL_ACTIVITY_DATE DESC\n");;
+        query.append("              FILL_DATE DESC\n"); // UPDATE THIS WHEN USING AS TEMPLATE!
         query.append("      ) AS FILTER_SORT_QUERY\n");
         query.append("      -- END FILTER/SORT QUERY\n");
 
@@ -88,15 +159,26 @@ public class AutoTrackerDao {
                     pageStart,
                     pageSize
             }, (rs, rowNum) -> {
-                FuelActivity item = new FuelActivity();
-                item.setFuelActivityGuid(rs.getString("FUEL_ACTIVITY_GUID"));
-                item.setFuelActivityDate(rs.getDate("FUEL_ACTIVITY_DATE"));
-                item.setFuelActivityOdometer(rs.getLong("FUEL_ACTIVITY_ODOMETER"));
-                item.setStationGuid(rs.getString("STATION_GUID"));
-                item.setStationAffiliation(rs.getString("STATION_AFFILIATION"));
-                item.setStationCity(rs.getString("STATION_CITY"));
-                item.setStationState(rs.getString("STATION_STATE"));
-                return item;
+                Fill fill = new Fill();
+                fill.setFillGuid(rs.getString("FILL_GUID"));
+                fill.setFillDate(rs.getDate("FILL_DATE"));
+                fill.setFillOdometer(rs.getDouble("FILL_ODOMETER"));
+                fill.setFillMilesTraveled(rs.getDouble("FILL_MILES_TRAVELED"));
+                fill.setFillMilesPerGallon(rs.getDouble("FILL_MILES_PER_GALLON"));
+                fill.setFillGallons(rs.getDouble("FILL_GALLONS"));
+                fill.setFillCostPerGallon(rs.getDouble("FILL_COST_PER_GALLON"));
+                fill.setFillTotalCost(rs.getDouble("FILL_TOTAL_COST"));
+                fill.setFillComments(rs.getString("FILL_COMMENTS"));
+                fill.setStationGuid(rs.getString("FILL_STATION_GUID"));
+
+                Station station = new Station();
+                station.setStationGuid(rs.getString("STATION_STATION_GUID"));
+                station.setStationName(rs.getString("STATION_NAME"));
+                station.setStationAffiliation(rs.getString("STATION_AFFILIATION"));
+                station.setStationCity(rs.getString("STATION_CITY"));
+                station.setStationState(rs.getString("STATION_STATE"));
+
+                return new FuelActivity(fill, station);
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
@@ -112,19 +194,27 @@ public class AutoTrackerDao {
         StringBuilder rootQuery = new StringBuilder();
 
         rootQuery.append("              SELECT");
-        rootQuery.append("                  FUEL_ACTIVITY.FUEL_ACTIVITY_GUID,");
-        rootQuery.append("                  FUEL_ACTIVITY.FUEL_ACTIVITY_DATE,");
-        rootQuery.append("                  FUEL_ACTIVITY.FUEL_ACTIVITY_ODOMETER,");
-        rootQuery.append("                  FUEL_ACTIVITY.STATION_GUID,");
-        rootQuery.append("                  STATION.STATION_AFFILIATION,");
-        rootQuery.append("                  STATION.STATION_CITY,");
-        rootQuery.append("                  STATION.STATION_STATE");
+        rootQuery.append("                  FILL_GUID,\n");
+        rootQuery.append("                  FILL_DATE,\n");
+        rootQuery.append("                  FILL_ODOMETER,\n");
+        rootQuery.append("                  FILL_MILES_TRAVELED,\n");
+        rootQuery.append("                  FILL_MILES_PER_GALLON,\n");
+        rootQuery.append("                  FILL_GALLONS,\n");
+        rootQuery.append("                  FILL_COST_PER_GALLON,\n");
+        rootQuery.append("                  FILL_TOTAL_COST,\n");
+        rootQuery.append("                  FILL_COMMENTS,\n");
+        rootQuery.append("                  FILL.STATION_GUID AS FILL_STATION_GUID,\n");
+        rootQuery.append("                  STATION.STATION_GUID AS STATION_STATION_GUID,\n");
+        rootQuery.append("                  STATION.STATION_NAME,\n");
+        rootQuery.append("                  STATION.STATION_AFFILIATION,\n");
+        rootQuery.append("                  STATION.STATION_CITY,\n");
+        rootQuery.append("                  STATION.STATION_STATE\n");
         rootQuery.append("              FROM");
-        rootQuery.append("                  AUTO_TRACKER.FUEL_ACTIVITY");
-        rootQuery.append("                  LEFT JOIN AUTO_TRACKER.STATION ON FUEL_ACTIVITY.STATION_GUID = STATION.STATION_GUID");
+        rootQuery.append("                  AUTO_TRACKER.FILL");
+        rootQuery.append("                  LEFT JOIN AUTO_TRACKER.STATION ON FILL.STATION_GUID = STATION.STATION_GUID");
         rootQuery.append("              WHERE");
         rootQuery.append("              (");
-        rootQuery.append("                  FUEL_ACTIVITY.STATUS = 'Active'");
+        rootQuery.append("                  FILL.STATUS = 'Active'");
         rootQuery.append("                  AND\n");
         rootQuery.append(getFuelActivityList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
         rootQuery.append("              )");
@@ -153,51 +243,56 @@ public class AutoTrackerDao {
     public FuelActivity getFuelActivityDetail(String fuelActivityGuid) {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      FUEL_ACTIVITY_GUID,\n");
-        query.append("      FUEL_ACTIVITY_ODOMETER,\n");
-        query.append("      FUEL_ACTIVITY_DATE,\n");
-        query.append("      FUEL_ACTIVITY_GALLONS,\n");
-        query.append("      FUEL_ACTIVITY_COST_PER_GALLON,\n");
-        query.append("      FUEL_ACTIVITY_TOTAL_COST,\n");
-        query.append("      FUEL_ACTIVITY_MILES_TRAVELED,\n");
-        query.append("      FUEL_ACTIVITY_MILES_PER_GALLON,\n");
-        query.append("      FUEL_ACTIVITY_COMMENTS,\n");
-        query.append("      FUEL_ACTIVITY.STATION_GUID,\n");
+        query.append("      FILL_GUID,\n");
+        query.append("      FILL_ODOMETER,\n");
+        query.append("      FILL_DATE,\n");
+        query.append("      FILL_GALLONS,\n");
+        query.append("      FILL_COST_PER_GALLON,\n");
+        query.append("      FILL_TOTAL_COST,\n");
+        query.append("      FILL_MILES_TRAVELED,\n");
+        query.append("      FILL_MILES_PER_GALLON,\n");
+        query.append("      FILL_COMMENTS,\n");
+        query.append("      FILL.STATION_GUID AS FILL_STATION_GUID,\n");
+        query.append("      STATION.STATION_GUID AS STATION_STATION_GUID,\n");
         query.append("      STATION.STATION_NAME,\n");
         query.append("      STATION.STATION_AFFILIATION,\n");
-        query.append("      STATION.STATION_ADDRESS1,\n");
+        query.append("      STATION.STATION_ADDRESS,\n");
         query.append("      STATION.STATION_CITY,\n");
         query.append("      STATION.STATION_STATE,\n");
         query.append("      STATION.STATION_ZIP,\n");
         query.append("      STATION.STATION_PHONE,\n");
         query.append("      STATUS\n");
         query.append("  FROM\n");
-        query.append("      AUTO_TRACKER.FUEL_ACTIVITY\n");
-        query.append("      LEFT JOIN AUTO_TRACKER.STATION ON FUEL_ACTIVITY.STATION_GUID = STATION.STATION_GUID\n");
+        query.append("      AUTO_TRACKER.FILL\n");
+        query.append("      LEFT JOIN AUTO_TRACKER.STATION ON FILL.STATION_GUID = STATION.STATION_GUID\n");
         query.append("  WHERE\n");
-        query.append("      FUEL_ACTIVITY_GUID = ?\n");
+        query.append("      FILL_GUID = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{fuelActivityGuid}, (rs, rowNum) -> {
-                FuelActivity item = new FuelActivity();
-                item.setFuelActivityGuid(rs.getString("FUEL_ACTIVITY_GUID"));
-                item.setFuelActivityOdometer(rs.getLong("FUEL_ACTIVITY_ODOMETER"));
-                item.setFuelActivityDate(rs.getDate("FUEL_ACTIVITY_DATE"));
-                item.setFuelActivityGallons(rs.getDouble("FUEL_ACTIVITY_GALLONS"));
-                item.setFuelActivityCostPerGallon(rs.getDouble("FUEL_ACTIVITY_COST_PER_GALLON"));
-                item.setFuelActivityTotalCost(rs.getDouble("FUEL_ACTIVITY_TOTAL_COST"));
-                item.setFuelActivityMilesTraveled(rs.getDouble("FUEL_ACTIVITY_MILES_TRAVELED"));
-                item.setFuelActivityMilesPerGallon(rs.getDouble("FUEL_ACTIVITY_MILES_PER_GALLON"));
-                item.setFuelActivityComments(rs.getString("FUEL_ACTIVITY_COMMENTS"));
-                item.setStationGuid(rs.getString("STATION_GUID"));
-                item.setStationName(rs.getString("STATION_NAME"));
-                item.setStationAffiliation(rs.getString("STATION_AFFILIATION"));
-                item.setStationAddress(rs.getString("STATION_ADDRESS1"));
-                item.setStationCity(rs.getString("STATION_CITY"));
-                item.setStationState(rs.getString("STATION_STATE"));
-                item.setStationZip(rs.getString("STATION_ZIP"));
-                item.setStationPhone(rs.getString("STATION_PHONE"));
-                return item;
+                Fill fill = new Fill();
+                fill.setFillGuid(rs.getString("FILL_GUID"));
+                fill.setFillDate(rs.getDate("FILL_DATE"));
+                fill.setFillOdometer(rs.getDouble("FILL_ODOMETER"));
+                fill.setFillMilesTraveled(rs.getDouble("FILL_MILES_TRAVELED"));
+                fill.setFillMilesPerGallon(rs.getDouble("FILL_MILES_PER_GALLON"));
+                fill.setFillGallons(rs.getDouble("FILL_GALLONS"));
+                fill.setFillCostPerGallon(rs.getDouble("FILL_COST_PER_GALLON"));
+                fill.setFillTotalCost(rs.getDouble("FILL_TOTAL_COST"));
+                fill.setFillComments(rs.getString("FILL_COMMENTS"));
+                fill.setStationGuid(rs.getString("FILL_STATION_GUID"));
+
+                Station station = new Station();
+                station.setStationGuid(rs.getString("STATION_STATION_GUID"));
+                station.setStationName(rs.getString("STATION_NAME"));
+                station.setStationAffiliation(rs.getString("STATION_AFFILIATION"));
+                station.setStationAddress(rs.getString("STATION_ADDRESS"));
+                station.setStationCity(rs.getString("STATION_CITY"));
+                station.setStationState(rs.getString("STATION_STATE"));
+                station.setStationZip(rs.getString("STATION_ZIP"));
+                station.setStationPhone(rs.getString("STATION_PHONE"));
+
+                return new FuelActivity(fill, station);
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
@@ -208,14 +303,126 @@ public class AutoTrackerDao {
         }
     }
 
-    // Dashboard
+    public Fill updateFuelActivity(Fill fill) {
+        this.printObjectService.PrintObject("fill", fill);
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      AUTO_TRACKER.FILL\n");
+        query.append("  SET\n");
+        query.append("      FILL.FILL_ODOMETER = ?,\n");
+        query.append("      FILL.FILL_DATE = ?,\n");
+        query.append("      FILL.FILL_GALLONS = ?,\n");
+        query.append("      FILL.FILL_COST_PER_GALLON = ?,\n");
+        query.append("      FILL.FILL_TOTAL_COST = ?,\n");
+        query.append("      FILL.FILL_MILES_TRAVELED = ?,\n");
+        query.append("      FILL.FILL_MILES_PER_GALLON = ?,\n");
+        query.append("      FILL.FILL_COMMENTS = ?\n");
+        query.append("  WHERE\n");
+        query.append("      FILL.FILL_GUID = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setDouble(1, fill.getFillOdometer());
+                        ps.setDate(2, fill.getFillDate());
+                        ps.setDouble(3, fill.getFillGallons());
+                        ps.setDouble(4, fill.getFillCostPerGallon());
+                        ps.setDouble(5, fill.getFillTotalCost());
+                        ps.setDouble(6, fill.getFillMilesTraveled());
+                        ps.setDouble(7, fill.getFillMilesPerGallon());
+                        ps.setString(8, fill.getFillComments());
+                        ps.setString(9, fill.getFillGuid());
+                        return ps;
+                    }
+            );
+            return fill;
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    public KeyValue deleteFuelActivity(String fuelActivityGuid) {
+        StringBuilder query = new StringBuilder();
+        query.append("  UPDATE\n");
+        query.append("      AUTO_TRACKER.FILL\n");
+        query.append("  SET\n");
+        query.append("      STATUS = 'Deleted'\n");
+        query.append("  WHERE\n");
+        query.append("      FILL_GUID = ?\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        this.logger.trace("FILL_GUID=" + fuelActivityGuid);
+        try {
+            this.mySqlAuthJdbcTemplate.update(
+                    connection -> {
+                        PreparedStatement ps = connection.prepareStatement(query.toString());
+                        ps.setString(1, fuelActivityGuid);
+                        return ps;
+                    }
+            );
+            return new KeyValue("fuelActivityGuid", fuelActivityGuid);
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return null;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return null;
+        }
+    }
+
+    // STATION
+
+    public List<Station> getAutoCompleteStationName(String filter) {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      STATION_GUID,\n");
+        query.append("      STATION_NAME,\n");
+        query.append("      STATION_AFFILIATION,\n");
+        query.append("      STATION_ADDRESS1,\n");
+        query.append("      STATION_CITY,\n");
+        query.append("      STATION_STATE,\n");
+        query.append("      STATION_ZIP,\n");
+        query.append("      STATION_PHONE\n");
+        query.append("  FROM\n");
+        query.append("      FUEL_TRACKER.STATION\n");
+        query.append("  WHERE\n");
+        query.append("      LOWER(STATION_NAME) LIKE LOWER(?)\n");
+        query.append("      AND STATION_STATUS = 'Active'\n");
+        query.append("  ORDER BY\n");
+        query.append("      STATION_NAME\n");
+        query.append("  LIMIT 5\n");
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{filter + "%"},
+                    (rs, rowNum) -> {
+                        Station fuelStation = new Station();
+                        fuelStation.setStationGuid(rs.getString("STATION_GUID"));
+                        fuelStation.setStationName(rs.getString("STATION_NAME"));
+                        fuelStation.setStationAffiliation(rs.getString("STATION_AFFILIATION"));
+                        fuelStation.setStationAddress(rs.getString("STATION_ADDRESS"));
+                        fuelStation.setStationCity(rs.getString("STATION_CITY"));
+                        fuelStation.setStationState(rs.getString("STATION_STATE"));
+                        fuelStation.setStationZip(rs.getString("STATION_ZIP"));
+                        fuelStation.setStationPhone(rs.getString("STATION_PHONE"));
+                        return fuelStation;
+                    });
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("FuelStationDao -> getAutoCompleteStationName -> EmptyResultDataAccessException: " + e);
+            return null;
+        }
+    }
+
+    // DASHBOARD
 
     public Double getLongestTimeBetweenFills() {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      MAX(FUEL_ACTIVITY_MILES_TRAVELED) AS MAX_DISTANCE\n");
+        query.append("      MAX(FILL_MILES_TRAVELED) AS MAX_DISTANCE\n");
         query.append("  FROM\n");
-        query.append("      AUTO_TRACKER.FUEL_ACTIVITY\n");
+        query.append("      AUTO_TRACKER.FILL\n");
         query.append("  WHERE\n");
         query.append("      STATUS = 'Active'\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -233,9 +440,9 @@ public class AutoTrackerDao {
     public Double getLongestDistanceBetweenFills() {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      MAX(FUEL_ACTIVITY_MILES_TRAVELED) AS MAX_DISTANCE\n");
+        query.append("      MAX(FILL_MILES_TRAVELED) AS MAX_DISTANCE\n");
         query.append("  FROM\n");
-        query.append("      AUTO_TRACKER.FUEL_ACTIVITY\n");
+        query.append("      AUTO_TRACKER.FILL\n");
         query.append("  WHERE\n");
         query.append("      STATUS = 'Active'\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -253,17 +460,17 @@ public class AutoTrackerDao {
     public List<KeyValueDouble> getOdometerData() {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      FUEL_ACTIVITY_DATE,\n");
-        query.append("      FUEL_ACTIVITY_ODOMETER\n");
+        query.append("      FILL_DATE,\n");
+        query.append("      FILL_ODOMETER\n");
         query.append("  FROM\n");
-        query.append("      AUTO_TRACKER.FUEL_ACTIVITY\n");
+        query.append("      AUTO_TRACKER.FILL\n");
         query.append("  WHERE\n");
         query.append("      STATUS = 'Active'\n");
         query.append("  ORDER BY\n");
-        query.append("      FUEL_ACTIVITY_ODOMETER\n");
+        query.append("      FILL_ODOMETER\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> new KeyValueDouble(rs.getString("FUEL_ACTIVITY_DATE"), rs.getDouble("FUEL_ACTIVITY_ODOMETER")));
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> new KeyValueDouble(rs.getString("FILL_DATE"), rs.getDouble("FILL_ODOMETER")));
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -276,17 +483,17 @@ public class AutoTrackerDao {
     public List<KeyValueDouble> getMpgData() {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      FUEL_ACTIVITY_DATE,\n");
-        query.append("      FUEL_ACTIVITY_MILES_TRAVELED / FUEL_ACTIVITY_GALLONS AS MPG\n");
+        query.append("      FILL_DATE,\n");
+        query.append("      FILL_MILES_TRAVELED / FILL_GALLONS AS MPG\n");
         query.append("  FROM\n");
-        query.append("      AUTO_TRACKER.FUEL_ACTIVITY\n");
+        query.append("      AUTO_TRACKER.FILL\n");
         query.append("  WHERE\n");
         query.append("      STATUS = 'Active'\n");
         query.append("  ORDER BY\n");
-        query.append("      FUEL_ACTIVITY_DATE;\n");
+        query.append("      FILL_DATE;\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> new KeyValueDouble(rs.getString("FUEL_ACTIVITY_DATE"), rs.getDouble("MPG")));
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> new KeyValueDouble(rs.getString("FILL_DATE"), rs.getDouble("MPG")));
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;

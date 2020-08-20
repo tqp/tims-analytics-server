@@ -1,7 +1,10 @@
 package com.timsanalytics.apps.main.controllers;
 
+import com.timsanalytics.apps.main.beans.Fill;
 import com.timsanalytics.apps.main.beans.FuelActivity;
+import com.timsanalytics.apps.main.beans.Station;
 import com.timsanalytics.apps.main.services.AutoTrackerService;
+import com.timsanalytics.apps.realityTracker.beans.Season;
 import com.timsanalytics.common.beans.KeyValue;
 import com.timsanalytics.common.beans.KeyValueDouble;
 import com.timsanalytics.common.beans.ServerSidePaginationRequest;
@@ -32,7 +35,18 @@ public class AutoTrackerController {
         this.autoTrackerService = autoTrackerService;
     }
 
-    // Fuel Activity
+    // FUEL ACTIVITY
+
+    @RequestMapping(value = "/fuel-activity", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @Operation(summary = "Create Fuel Activity", tags = {"Auto Tracker"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public Fill createFuelActivity(@RequestBody Fill fill) {
+        try {
+            return autoTrackerService.createFuelActivity(fill);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     @ResponseBody
     @RequestMapping(value = "/fuel-activity/ssp", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -64,7 +78,49 @@ public class AutoTrackerController {
         }
     }
 
-    // Dashboard
+    @ResponseBody
+    @RequestMapping(value = "/fuel-activity/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Update Fuel Activity", tags = {"Auto Tracker"}, description = "Update Fuel Activity", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<Fill> updateFuelActivity(@RequestBody Fill fill) {
+        try {
+            return ResponseEntity.ok()
+                    .body(autoTrackerService.updateFuelActivity(fill));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/fuel-activity/{fuelActivityGuid}", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Delete Fuel Activity", tags = {"Auto Tracker"}, description = "Delete Fuel Activity", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<KeyValue> deleteFuelActivity(@Parameter(description = "Contestant GUID", required = true) @PathVariable String fuelActivityGuid) {
+        try {
+            return ResponseEntity.ok()
+                    .body(autoTrackerService.deleteFuelActivity(fuelActivityGuid));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // STATION
+
+    @ResponseBody
+    @RequestMapping(value = "/station/auto-complete/station-name", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Auto-Complete Fuel Station Name", tags = {"Auto Tracker"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<Station>> getAutoCompleteStationName(@RequestParam(value = "filter") String filter) {
+        try {
+            return ResponseEntity.ok()
+                    .body(this.autoTrackerService.getAutoCompleteStationName(filter));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    // DASHBOARD
 
     @RequestMapping(value = "/dashboard/longest-time-between-fills", method = RequestMethod.GET)
     @Operation(summary = "Get Time Between Fills", tags = {"Auto Tracker"}, security = @SecurityRequirement(name = "bearerAuth"))

@@ -37,7 +37,7 @@ public class ContestantDao {
         query.append("          CONTESTANT.CONTESTANT_FIRST_NAME,\n");
         query.append("          CONTESTANT.CONTESTANT_NICKNAME,\n");
         query.append("          CONTESTANT.CONTESTANT_GENDER,\n");
-        query.append("          CONTESTANT.CONTESTANT_DATE_OF_BIRTH,\n");
+//        query.append("          CONTESTANT.CONTESTANT_DATE_OF_BIRTH,\n");
         query.append("          CONTESTANT.CONTESTANT_OCCUPATION,\n");
         query.append("          CONTESTANT.CONTESTANT_HOMETOWN_CITY,\n");
         query.append("          CONTESTANT.CONTESTANT_HOMETOWN_STATE,\n");
@@ -51,7 +51,7 @@ public class ContestantDao {
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
-        query.append("          ?,\n");
+//        query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
@@ -72,12 +72,12 @@ public class ContestantDao {
                         ps.setString(3, contestant.getContestantFirstName());
                         ps.setString(4, contestant.getContestantNickname());
                         ps.setString(5, contestant.getContestantGender());
-                        ps.setString(6, contestant.getContestantDateOfBirth());
-                        ps.setString(7, contestant.getContestantOccupation());
-                        ps.setString(8, contestant.getContestantHometownCity());
-                        ps.setString(9, contestant.getContestantHometownState());
-                        ps.setString(10, contestant.getContestantTwitterHandle());
-                        ps.setString(11, contestant.getContestantComments());
+//                        ps.setString(6, contestant.getContestantDateOfBirth());
+                        ps.setString(6, contestant.getContestantOccupation());
+                        ps.setString(7, contestant.getContestantHometownCity());
+                        ps.setString(8, contestant.getContestantHometownState());
+                        ps.setString(9, contestant.getContestantTwitterHandle());
+                        ps.setString(10, contestant.getContestantComments());
                         return ps;
                     }
             );

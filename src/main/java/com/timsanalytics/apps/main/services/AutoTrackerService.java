@@ -1,6 +1,8 @@
 package com.timsanalytics.apps.main.services;
 
+import com.timsanalytics.apps.main.beans.Fill;
 import com.timsanalytics.apps.main.beans.FuelActivity;
+import com.timsanalytics.apps.main.beans.Station;
 import com.timsanalytics.apps.main.dao.AutoTrackerDao;
 import com.timsanalytics.apps.realityTracker.beans.Contestant;
 import com.timsanalytics.common.beans.KeyValue;
@@ -28,6 +30,10 @@ public class AutoTrackerService {
 
     // Fuel Activity
 
+    public Fill createFuelActivity(Fill fill) {
+        return this.autoTrackerDao.createFuelActivity(fill);
+    }
+
     public ServerSidePaginationResponse<FuelActivity> getFuelActivityList_SSP(ServerSidePaginationRequest serverSidePaginationRequest) {
         ServerSidePaginationResponse<FuelActivity> serverSidePaginationResponse = new ServerSidePaginationResponse<FuelActivity>();
         serverSidePaginationResponse.setServerSidePaginationRequest(serverSidePaginationRequest);
@@ -40,6 +46,21 @@ public class AutoTrackerService {
 
     public FuelActivity getFuelActivityDetail(String fuelActivityGuid) {
         return this.autoTrackerDao.getFuelActivityDetail(fuelActivityGuid);
+    }
+
+    public Fill updateFuelActivity(Fill fill) {
+        return this.autoTrackerDao.updateFuelActivity(fill);
+    }
+
+    public KeyValue deleteFuelActivity(String fuelActivityGuid) {
+        return this.autoTrackerDao.deleteFuelActivity(fuelActivityGuid);
+    }
+
+    // STATION
+
+    // Auto-Complete
+    public List<Station> getAutoCompleteStationName(String filter) {
+        return this.autoTrackerDao.getAutoCompleteStationName(filter);
     }
 
     // Dashboard
