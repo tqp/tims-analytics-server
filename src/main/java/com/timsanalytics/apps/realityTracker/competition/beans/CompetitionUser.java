@@ -1,10 +1,10 @@
 package com.timsanalytics.apps.realityTracker.competition.beans;
 
-public class Player {
+public class CompetitionUser {
     private String userKey;
     private String userName;
 
-    public Player(String userKey, String userName) {
+    public CompetitionUser(String userKey, String userName) {
         this.userKey = userKey;
         this.userName = userName;
     }

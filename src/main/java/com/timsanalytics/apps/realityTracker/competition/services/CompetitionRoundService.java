@@ -1,22 +1,22 @@
 package com.timsanalytics.apps.realityTracker.competition.services;
 
-import com.timsanalytics.apps.realityTracker.competition.beans.Result;
-import com.timsanalytics.apps.realityTracker.competition.beans.Round;
+import com.timsanalytics.apps.realityTracker.competition.beans.CompetitionResult;
+import com.timsanalytics.apps.realityTracker.competition.beans.CompetitionRound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 
 @Service
-public class RoundService {
-    private DataService dataService;
+public class CompetitionRoundService {
+    private CompetitionDataService dataService;
 
     @Autowired
-    public RoundService(DataService dataService) {
+    public CompetitionRoundService(CompetitionDataService dataService) {
         this.dataService = dataService;
     }
 
-    public Round getRoundByRoundNumber(int roundNumber) {
+    public CompetitionRound getRoundByRoundNumber(int roundNumber) {
         return this.dataService.getRounds().stream()
                 .filter(round -> round.getRoundNumber().equals(roundNumber))
                 .findFirst()
@@ -25,14 +25,14 @@ public class RoundService {
 
     public Integer getLastPlayedRound() {
         return this.dataService.getResults().stream()
-                .map(Result::getRoundNumber)
+                .map(CompetitionResult::getRoundNumber)
                 .max(Comparator.comparing(x -> x))
                 .orElse(null);
     }
 
     public Integer getFinalRound() {
         return this.dataService.getRounds().stream()
-                .map(Round::getRoundNumber)
+                .map(CompetitionRound::getRoundNumber)
                 .max(Comparator.comparing(x -> x))
                 .orElse(null);
     }

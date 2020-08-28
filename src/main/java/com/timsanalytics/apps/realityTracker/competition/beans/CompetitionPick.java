@@ -1,12 +1,12 @@
 package com.timsanalytics.apps.realityTracker.competition.beans;
 
-public class Pick {
+public class CompetitionPick {
     private String teamKey;
     private String userKey;
     private String contestantKey;
     private Integer pickPosition;
 
-    public Pick(String teamKey, String userKey, Integer pickPosition, String contestantKey) {
+    public CompetitionPick(String teamKey, String userKey, Integer pickPosition, String contestantKey) {
         this.teamKey = teamKey;
         this.userKey = userKey;
         this.pickPosition = pickPosition;

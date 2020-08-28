@@ -14,6 +14,10 @@ public class Episode {
     // Episode
     private String episodeGuid;
     private String episodeName;
+    private String episodeDate;
+    private Integer episodeNumberInSeason;
+    private Integer episodeNumberInSeries;
+    private String episodeComments;
     // Metadata
     private String status;
     private String createdOn;
@@ -83,6 +87,38 @@ public class Episode {
 
     public void setEpisodeName(String episodeName) {
         this.episodeName = episodeName;
+    }
+
+    public String getEpisodeDate() {
+        return episodeDate;
+    }
+
+    public void setEpisodeDate(String episodeDate) {
+        this.episodeDate = episodeDate;
+    }
+
+    public Integer getEpisodeNumberInSeason() {
+        return episodeNumberInSeason;
+    }
+
+    public void setEpisodeNumberInSeason(Integer episodeNumberInSeason) {
+        this.episodeNumberInSeason = episodeNumberInSeason;
+    }
+
+    public Integer getEpisodeNumberInSeries() {
+        return episodeNumberInSeries;
+    }
+
+    public void setEpisodeNumberInSeries(Integer episodeNumberInSeries) {
+        this.episodeNumberInSeries = episodeNumberInSeries;
+    }
+
+    public String getEpisodeComments() {
+        return episodeComments;
+    }
+
+    public void setEpisodeComments(String episodeComments) {
+        this.episodeComments = episodeComments;
     }
 
     public String getStatus() {

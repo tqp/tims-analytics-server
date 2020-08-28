@@ -1,9 +1,10 @@
 package com.timsanalytics.apps.realityTracker.competition.controllers;
 
-import com.timsanalytics.apps.realityTracker.competition.beans.Pick;
-import com.timsanalytics.apps.realityTracker.competition.services.PickService;
+import com.timsanalytics.apps.realityTracker.competition.beans.CompetitionPick;
+import com.timsanalytics.apps.realityTracker.competition.services.CompetitionPickService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,19 +20,19 @@ import java.util.List;
 @RestController
 @RequestMapping("/reality-tracker/api/v1/competition/picks")
 @Tag(name = "Reality-Tracker Comp: Pick Controller", description = "Pick Endpoints")
-public class PickController {
-    private final PickService pickService;
+public class CompetitionPickController {
+    private final CompetitionPickService pickService;
 
     @Autowired
-    public PickController(PickService pickService) {
+    public CompetitionPickController(CompetitionPickService pickService) {
         this.pickService = pickService;
     }
 
     @GetMapping(value = "/{a_teamKey}/{b_userKey}/{c_roundNumber}", produces = "application/json")
-    @Operation(summary = "getUserPicksByRound", description = "Get Result List")
-    public ResponseEntity<List<Pick>> getUserPicksByRound(@Parameter(description = "Team Key", example = "key_team1") @PathVariable("a_teamKey") String a_teamKey,
-                                                          @Parameter(description = "User Key", example = "key_user1") @PathVariable("b_userKey") String b_userKey,
-                                                          @Parameter(description = "Round Number", example = "2") @PathVariable("c_roundNumber") Integer c_roundNumber) {
+    @Operation(summary = "getUserPicksByRound", description = "Get Result List", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<CompetitionPick>> getUserPicksByRound(@Parameter(description = "Team Key", example = "key_team1") @PathVariable("a_teamKey") String a_teamKey,
+                                                                     @Parameter(description = "User Key", example = "key_user1") @PathVariable("b_userKey") String b_userKey,
+                                                                     @Parameter(description = "Round Number", example = "2") @PathVariable("c_roundNumber") Integer c_roundNumber) {
         try {
             return ResponseEntity.ok().body(this.pickService.getUserPicksByRound(a_teamKey, b_userKey, c_roundNumber));
         } catch (IllegalArgumentException e) {
@@ -42,7 +43,7 @@ public class PickController {
     }
 
     @GetMapping(value = "/in-round-cutoff/{a_pickPosition}/{b_roundNumber}", produces = "application/json")
-    @Operation(summary = "isPickPositionWithinRoundCutoffThreshold", description = "Is Pick Position Within Round Cutoff Threshold")
+    @Operation(summary = "isPickPositionWithinRoundCutoffThreshold", description = "Is Pick Position Within Round Cutoff Threshold", security = @SecurityRequirement(name = "bearerAuth"))
     public Boolean isPickPositionWithinRoundCutoffThreshold(@Parameter(description = "Team Key", example = "key_team1") @PathVariable("a_pickPosition") Integer a_pickPosition,
                                                             @Parameter(description = "Team Key", example = "key_team1") @PathVariable("b_roundNumber") Integer b_roundNumber) {
         return this.pickService.isPickPositionValid(a_pickPosition, b_roundNumber);

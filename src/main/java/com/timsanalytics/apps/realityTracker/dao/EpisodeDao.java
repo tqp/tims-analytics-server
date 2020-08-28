@@ -111,7 +111,12 @@ public class EpisodeDao {
         query.append("      SEASON.SEASON_NAME,\n");
         query.append("      SEASON.SEASON_ABBREVIATION,\n");
         query.append("      EPISODE_GUID,\n");
-        query.append("      EPISODE_NAME\n");
+        query.append("      EPISODE_NAME,\n");
+        query.append("      EPISODE_ORIGINAL_AIR_DATE,\n");
+        query.append("      EPISODE_NUMBER_IN_SEASON,\n");
+        query.append("      EPISODE_NUMBER_IN_SERIES,\n");
+        query.append("      EPISODE_COMMENTS,\n");
+        query.append("      EPISODE.STATUS\n");
         query.append("  FROM\n");
         query.append("      REALITY_TRACKER.EPISODE\n");
         query.append("      LEFT JOIN REALITY_TRACKER.SEASON ON SEASON.SEASON_GUID = EPISODE.SEASON_GUID\n");
@@ -130,6 +135,10 @@ public class EpisodeDao {
                 item.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
                 item.setEpisodeGuid(rs.getString("EPISODE_GUID"));
                 item.setEpisodeName(rs.getString("EPISODE_NAME"));
+                item.setEpisodeDate(rs.getString("EPISODE_ORIGINAL_AIR_DATE"));
+                item.setEpisodeNumberInSeason(rs.getInt("EPISODE_NUMBER_IN_SEASON"));
+                item.setEpisodeNumberInSeries(rs.getInt("EPISODE_NUMBER_IN_SERIES"));
+                item.setEpisodeComments(rs.getString("EPISODE_COMMENTS"));
                 return item;
             });
         } catch (EmptyResultDataAccessException e) {
@@ -146,7 +155,11 @@ public class EpisodeDao {
         query.append("  UPDATE\n");
         query.append("      REALITY_TRACKER.EPISODE\n");
         query.append("  SET\n");
-        query.append("      EPISODE.EPISODE_NAME = ?\n");
+        query.append("      EPISODE.EPISODE_NAME = ?,\n");
+        query.append("      EPISODE.EPISODE_ORIGINAL_AIR_DATE = ?,\n");
+        query.append("      EPISODE.EPISODE_NUMBER_IN_SEASON = ?,\n");
+        query.append("      EPISODE.EPISODE_NUMBER_IN_SERIES = ?,\n");
+        query.append("      EPISODE.EPISODE_COMMENTS = ?\n");
         query.append("  WHERE\n");
         query.append("      EPISODE.EPISODE_GUID = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -155,7 +168,11 @@ public class EpisodeDao {
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, episode.getEpisodeName());
-                        ps.setString(2, episode.getEpisodeGuid());
+                        ps.setString(2, episode.getEpisodeDate());
+                        ps.setInt(3, episode.getEpisodeNumberInSeason());
+                        ps.setInt(4, episode.getEpisodeNumberInSeries());
+                        ps.setString(5, episode.getEpisodeComments());
+                        ps.setString(6, episode.getEpisodeGuid());
                         return ps;
                     }
             );

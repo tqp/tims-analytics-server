@@ -1,11 +1,11 @@
 package com.timsanalytics.apps.realityTracker.competition.beans;
 
-public class Round {
+public class CompetitionRound {
     private Integer roundNumber;
     private Integer roundCutoffCount;
     private Integer roundPoints;
 
-    public Round(Integer roundNumber, Integer roundCutoffCount, Integer roundPoints) {
+    public CompetitionRound(Integer roundNumber, Integer roundCutoffCount, Integer roundPoints) {
         this.roundNumber = roundNumber;
         this.roundCutoffCount = roundCutoffCount;
         this.roundPoints = roundPoints;

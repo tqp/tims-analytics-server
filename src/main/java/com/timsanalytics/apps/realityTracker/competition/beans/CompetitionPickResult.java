@@ -1,8 +1,8 @@
 package com.timsanalytics.apps.realityTracker.competition.beans;
 
-public class PickResult {
-    private Pick pick;
-    private Result result;
+public class CompetitionPickResult {
+    private CompetitionPick pick;
+    private CompetitionResult result;
     private Integer roundNumber;
     private Status status;
 
@@ -10,26 +10,26 @@ public class PickResult {
         CORRECT, WRONG, NOT_PICKED, UNKNOWN, INVALID, PROJECTED;
     }
 
-    public PickResult(Pick pick, Result result, Integer roundNumber, Status status) {
+    public CompetitionPickResult(CompetitionPick pick, CompetitionResult result, Integer roundNumber, Status status) {
         this.pick = pick;
         this.result = result;
         this.roundNumber = roundNumber;
         this.status = status;
     }
 
-    public Pick getPick() {
+    public CompetitionPick getPick() {
         return pick;
     }
 
-    public void setPick(Pick pick) {
+    public void setPick(CompetitionPick pick) {
         this.pick = pick;
     }
 
-    public Result getResult() {
+    public CompetitionResult getResult() {
         return result;
     }
 
-    public void setResult(Result result) {
+    public void setResult(CompetitionResult result) {
         this.result = result;
     }
 

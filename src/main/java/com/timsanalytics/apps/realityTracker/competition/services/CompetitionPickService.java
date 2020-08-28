@@ -1,6 +1,6 @@
 package com.timsanalytics.apps.realityTracker.competition.services;
 
-import com.timsanalytics.apps.realityTracker.competition.beans.Pick;
+import com.timsanalytics.apps.realityTracker.competition.beans.CompetitionPick;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class PickService {
-    private DataService dataService;
-    private RoundService roundService;
+public class CompetitionPickService {
+    private CompetitionDataService dataService;
+    private CompetitionRoundService roundService;
 
     @Autowired
-    public PickService(DataService dataService, RoundService roundService) {
+    public CompetitionPickService(CompetitionDataService dataService, CompetitionRoundService roundService) {
         this.dataService = dataService;
         this.roundService = roundService;
     }
@@ -23,7 +23,7 @@ public class PickService {
         return true;
     }
 
-    public List<Pick> getUserPicksByRound(String teamKey, String userKey, Integer roundNumber) {
+    public List<CompetitionPick> getUserPicksByRound(String teamKey, String userKey, Integer roundNumber) {
         if (!this.roundService.isRoundNumberValid(roundNumber)) {
             throw new IllegalArgumentException("The round number is invalid.");
         } else {
@@ -31,7 +31,7 @@ public class PickService {
                     .filter(pick -> pick.getTeamKey().equalsIgnoreCase(teamKey)) // Filter picks by Team
                     .filter(pick -> pick.getUserKey().equalsIgnoreCase(userKey)) // Filter picks by User
                     .filter(pick -> isPickPositionValid(pick.getPickPosition(), roundNumber))
-                    .sorted(Comparator.comparing(Pick::getPickPosition))
+                    .sorted(Comparator.comparing(CompetitionPick::getPickPosition))
                     .peek(pick -> System.out.println(pick.getContestantKey()))
                     .collect(Collectors.toList());
         }

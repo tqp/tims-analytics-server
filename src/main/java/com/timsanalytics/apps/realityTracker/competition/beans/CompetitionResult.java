@@ -1,11 +1,11 @@
 package com.timsanalytics.apps.realityTracker.competition.beans;
 
-public class Result {
+public class CompetitionResult {
     private Integer roundNumber;
     private String contestantKey;
     private Integer callOutOrder;
 
-    public Result(Integer roundNumber, String contestantKey, Integer callOutOrder) {
+    public CompetitionResult(Integer roundNumber, String contestantKey, Integer callOutOrder) {
         this.roundNumber = roundNumber;
         this.contestantKey = contestantKey;
         this.callOutOrder = callOutOrder;

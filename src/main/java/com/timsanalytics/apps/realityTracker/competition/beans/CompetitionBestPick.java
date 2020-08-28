@@ -1,9 +1,9 @@
 package com.timsanalytics.apps.realityTracker.competition.beans;
 
-public class BestPick {
+public class CompetitionBestPick {
     private String contestantKey;
 
-    public BestPick(String contestantKey) {
+    public CompetitionBestPick(String contestantKey) {
         this.contestantKey = contestantKey;
     }
 

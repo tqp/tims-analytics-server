@@ -9,10 +9,10 @@ import java.util.List;
 
 @Service
 public class CompetitionContestantService {
-    private DataService dataService;
+    private CompetitionDataService dataService;
 
     @Autowired
-    public CompetitionContestantService(DataService dataService) {
+    public CompetitionContestantService(CompetitionDataService dataService) {
         this.dataService = dataService;
     }
 

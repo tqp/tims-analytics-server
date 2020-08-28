@@ -3,15 +3,15 @@ package com.timsanalytics.apps.realityTracker.competition.beans;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Score {
+public class CompetitionScore {
     private String teamKey;
     private String userKey;
     private Integer roundNumber;
     private Integer pickPosition;
     private Integer score;
-    private PickResult.Status status;
+    private CompetitionPickResult.Status status;
 
-    public Score(String teamKey, String userKey, Integer roundNumber, Integer pickPosition, Integer score, PickResult.Status status) {
+    public CompetitionScore(String teamKey, String userKey, Integer roundNumber, Integer pickPosition, Integer score, CompetitionPickResult.Status status) {
         this.teamKey = teamKey;
         this.userKey = userKey;
         this.roundNumber = roundNumber;
@@ -60,11 +60,11 @@ public class Score {
         this.score = score;
     }
 
-    public PickResult.Status getStatus() {
+    public CompetitionPickResult.Status getStatus() {
         return status;
     }
 
-    public void setStatus(PickResult.Status status) {
+    public void setStatus(CompetitionPickResult.Status status) {
         this.status = status;
     }
 }

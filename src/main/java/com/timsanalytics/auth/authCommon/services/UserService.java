@@ -3,6 +3,8 @@ package com.timsanalytics.auth.authCommon.services;
 import com.timsanalytics.auth.authCommon.beans.Role;
 import com.timsanalytics.auth.authCommon.beans.User;
 import com.timsanalytics.auth.authCommon.dao.UserDao;
+import com.timsanalytics.common.beans.ServerSidePaginationRequest;
+import com.timsanalytics.common.beans.ServerSidePaginationResponse;
 import com.timsanalytics.utils.PrintObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,17 +20,17 @@ import java.util.List;
 @Service
 public class UserService {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
-    private final UserDao UserDao;
+    private final UserDao userDao;
     private final PlatformTransactionManager mySqlAuthTransactionManager;
     private PrintObjectService printObjectService;
     private final UserRoleService userRoleService;
 
     @Autowired
-    public UserService(UserDao UserDao,
+    public UserService(UserDao userDao,
                        PlatformTransactionManager mySqlAuthTransactionManager,
                        PrintObjectService printObjectService,
                        UserRoleService userRoleService) {
-        this.UserDao = UserDao;
+        this.userDao = userDao;
         this.mySqlAuthTransactionManager = mySqlAuthTransactionManager;
         this.userRoleService = userRoleService;
     }
@@ -40,7 +42,7 @@ public class UserService {
         User item;
         try {
             // Create the new User.
-            item = this.UserDao.createUser(User, loggedInUser);
+            item = this.userDao.createUser(User, loggedInUser);
             this.printObjectService.PrintObject("UserService -> createUser: User", item);
 
             // Add the Roles to the new User.
@@ -66,13 +68,17 @@ public class UserService {
 
     public User getUser(String userGuid) {
         this.logger.debug("UserService -> getUser: userGuid=" + userGuid);
-        return this.UserDao.getUser(userGuid);
+        return this.userDao.getUser(userGuid);
     }
 
-    public List<User> getUserList() {
-        this.logger.debug("UserService -> getUserList");
-        List<User> list = this.UserDao.getUserList();
-        return list;
+    public ServerSidePaginationResponse<User> getUserList_SSP(ServerSidePaginationRequest serverSidePaginationRequest) {
+        ServerSidePaginationResponse<User> serverSidePaginationResponse = new ServerSidePaginationResponse<User>();
+        serverSidePaginationResponse.setServerSidePaginationRequest(serverSidePaginationRequest);
+        List<User> userList = this.userDao.getUserList_SSP(serverSidePaginationRequest);
+        serverSidePaginationResponse.setData(userList);
+        serverSidePaginationResponse.setLoadedRecords(userList.size());
+        serverSidePaginationResponse.setTotalRecords(this.userDao.getUserList_SSP_TotalRecords(serverSidePaginationRequest));
+        return serverSidePaginationResponse;
     }
 
     public User updateUser(User User, User loggedInUser) {
@@ -82,7 +88,7 @@ public class UserService {
         User item;
         try {
             // Update the User.
-            item = this.UserDao.updateUser(User, loggedInUser);
+            item = this.userDao.updateUser(User, loggedInUser);
             this.printObjectService.PrintObject("UserService -> updateUser: User", item);
 
             // Update the User's Roles
@@ -109,7 +115,7 @@ public class UserService {
     // DELETE
     public User deleteUser(String userGuid) {
         this.logger.debug("UserService -> deleteUser: userGuid=" + userGuid);
-        User deletedUser = this.UserDao.deleteUser(userGuid);
+        User deletedUser = this.userDao.deleteUser(userGuid);
         this.logger.debug("UserService -> deleteUser: deletedUser=" + deletedUser.getUserGuid());
         return deletedUser;
     }
@@ -118,12 +124,12 @@ public class UserService {
 
     public User disableUser(String userGuid) {
         this.logger.debug("UserService -> disableUser: userGuid=" + userGuid);
-        return this.UserDao.disableUser(userGuid);
+        return this.userDao.disableUser(userGuid);
     }
 
     public User enableUser(String userGuid) {
         this.logger.debug("UserService -> enableUser: userGuid=" + userGuid);
-        return this.UserDao.enableUser(userGuid);
+        return this.userDao.enableUser(userGuid);
     }
 
     public User updateMyProfile(User User, User loggedInUser) {
@@ -133,7 +139,7 @@ public class UserService {
         User item;
         try {
             // Update the User.
-            item = this.UserDao.updateMyProfile(User, loggedInUser);
+            item = this.userDao.updateMyProfile(User, loggedInUser);
             this.printObjectService.PrintObject("UserService -> updateMyProfile: User", item);
 
             // If everything was successful, commit to the database.
@@ -156,7 +162,7 @@ public class UserService {
         User item;
         try {
             // Update the User.
-            item = this.UserDao.changePassword(User, loggedInUser);
+            item = this.userDao.changePassword(User, loggedInUser);
             this.printObjectService.PrintObject("UserService -> changePassword: User", item);
 
             // If everything was successful, commit to the database.
@@ -172,12 +178,12 @@ public class UserService {
 
     public String getUserGuidByUsername(String username) {
         this.logger.debug("UserService -> getUserGuidByUsername: username=" + username);
-        return this.UserDao.getUserGuidByUsername(username);
+        return this.userDao.getUserGuidByUsername(username);
     }
 
     public List<Role> getUserRoles(String userGuid) {
         this.logger.debug("UserService -> getUserRoles: userGuid=" + userGuid);
-        return this.UserDao.getUserRoles(userGuid);
+        return this.userDao.getUserRoles(userGuid);
     }
 
 }

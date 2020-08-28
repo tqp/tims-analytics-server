@@ -1,7 +1,7 @@
 package com.timsanalytics.apps.realityTracker.competition.services;
 
-import com.timsanalytics.apps.realityTracker.competition.beans.Pick;
-import com.timsanalytics.apps.realityTracker.competition.beans.Player;
+import com.timsanalytics.apps.realityTracker.competition.beans.CompetitionPick;
+import com.timsanalytics.apps.realityTracker.competition.beans.CompetitionUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,29 +15,29 @@ import java.util.stream.Collectors;
 
 @Service
 public class CompetitionPlayerService {
-    private DataService dataService;
+    private CompetitionDataService dataService;
 
     @Autowired
-    public CompetitionPlayerService(DataService dataService) {
+    public CompetitionPlayerService(CompetitionDataService dataService) {
         this.dataService = dataService;
     }
 
-    public List<Player> getUserList() {
+    public List<CompetitionUser> getUserList() {
         return new ArrayList<>(this.dataService.getUsers());
     }
 
-    public Player getUserByUserKey(String userKey) {
+    public CompetitionUser getUserByUserKey(String userKey) {
         return this.dataService.getUsers().stream()
                 .filter(player -> player.getUserKey().equalsIgnoreCase(userKey))
                 .findFirst()
                 .orElse(null);
     }
 
-    public List<Player> getUserListByTeamKey(String teamKey) {
+    public List<CompetitionUser> getUserListByTeamKey(String teamKey) {
         // Gets a list of Users for a given Team, using Picks
         return this.dataService.getPicks().stream()
                 .filter(pick -> pick.getTeamKey().equalsIgnoreCase(teamKey))
-                .map(Pick::getUserKey)
+                .map(CompetitionPick::getUserKey)
                 .distinct()
                 .map(this::getUserByUserKey)
                 .collect(Collectors.toList());

@@ -4,6 +4,7 @@ import com.timsanalytics.auth.authCommon.beans.Role;
 import com.timsanalytics.auth.authCommon.beans.User;
 import com.timsanalytics.auth.authCommon.dao.rowMappers.RoleRowMapper;
 import com.timsanalytics.auth.authCommon.dao.rowMappers.UserRowMapper;
+import com.timsanalytics.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.utils.BCryptEncoderService;
 import com.timsanalytics.utils.GenerateUuidService;
 import org.slf4j.Logger;
@@ -167,28 +168,78 @@ public class UserDao {
         }
     }
 
-    public List<User> getUserList() {
-        this.logger.debug("UserDao -> getUserList");
+    public int getUserList_SSP_TotalRecords(ServerSidePaginationRequest serverSidePaginationRequest) {
         StringBuilder query = new StringBuilder();
-        query.append("  SELECT\n");
-        query.append("      USER.USER_GUID,\n");
-        query.append("      USER.USER_USERNAME,\n");
-        query.append("      USER.USER_SURNAME,\n");
-        query.append("      USER.USER_GIVEN_NAME,\n");
-        query.append("      USER.USER_PASSWORD,\n");
-        query.append("      USER.USER_LAST_LOGIN,\n");
-        query.append("      USER.USER_LOGIN_COUNT,\n");
-        query.append("      USER.USER_PROFILE_PHOTO_URL,\n");
-        query.append("      USER.STATUS,\n");
-        query.append("      USER.CREATED_ON,\n");
-        query.append("      USER.CREATED_BY,\n");
-        query.append("      USER.UPDATED_ON,\n");
-        query.append("      USER.UPDATED_BY\n");
-        query.append("  FROM\n");
-        query.append("      USER\n");
-        this.logger.debug("SQL:\n" + query.toString());
+        query.append("          SELECT\n");
+        query.append("              COUNT(*)\n");
+        query.append("          FROM\n");
+        query.append("          -- ROOT QUERY\n");
+        query.append("          (\n");
+        query.append(getUserList_SSP_RootQuery(serverSidePaginationRequest));
+        query.append("          ) AS ROOT_QUERY\n");
+        query.append("          -- END ROOT QUERY\n");
         try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, new UserRowMapper());
+            Integer count = this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{}, Integer.class);
+            return count == null ? 0 : count;
+        } catch (EmptyResultDataAccessException e) {
+            this.logger.error("EmptyResultDataAccessException: " + e);
+            return 0;
+        } catch (Exception e) {
+            this.logger.error("Exception: " + e);
+            return 0;
+        }
+    }
+
+    public List<User> getUserList_SSP(ServerSidePaginationRequest serverSidePaginationRequest) {
+        int pageStart = (serverSidePaginationRequest.getPageIndex()) * serverSidePaginationRequest.getPageSize();
+        int pageSize = serverSidePaginationRequest.getPageSize();
+
+        String sortColumn = serverSidePaginationRequest.getSortColumn();
+        String sortDirection = serverSidePaginationRequest.getSortDirection();
+
+        StringBuilder query = new StringBuilder();
+        query.append("  -- PAGINATION QUERY\n");
+        query.append("  SELECT\n");
+        query.append("      FILTER_SORT_QUERY.*\n");
+        query.append("  FROM\n");
+
+        query.append("      -- FILTER/SORT QUERY\n");
+        query.append("      (\n");
+        query.append("          SELECT\n");
+        query.append("              *\n");
+        query.append("          FROM\n");
+
+        query.append("          -- ROOT QUERY\n");
+        query.append("          (\n");
+        query.append(getUserList_SSP_RootQuery(serverSidePaginationRequest));
+        query.append("          ) AS ROOT_QUERY\n");
+        query.append("          -- END ROOT QUERY\n");
+
+        query.append("          ORDER BY\n");
+        query.append(sortColumn).append(" ").append(sortDirection.toUpperCase()).append(",\n");
+        query.append("              USER_SURNAME,\n");
+        query.append("              USER_GIVEN_NAME\n");
+        query.append("      ) AS FILTER_SORT_QUERY\n");
+        query.append("      -- END FILTER/SORT QUERY\n");
+
+        query.append("  LIMIT ?, ?\n");
+        query.append("  -- END PAGINATION QUERY\n");
+
+        this.logger.trace("SQL:\n" + query.toString());
+        this.logger.trace("pageStart=" + pageStart + ", pageSize=" + pageSize);
+
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{
+                    pageStart,
+                    pageSize
+            }, (rs, rowNum) -> {
+                User item = new User();
+                item.setUserGuid(rs.getString("USER_GUID"));
+                item.setUsername(rs.getString("USER_USERNAME"));
+                item.setSurname(rs.getString("USER_SURNAME"));
+                item.setGivenName(rs.getString("USER_GIVEN_NAME"));
+                return item;
+            });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -196,6 +247,47 @@ public class UserDao {
             this.logger.error("Exception: " + e);
             return null;
         }
+    }
+
+    private String getUserList_SSP_RootQuery(ServerSidePaginationRequest serverSidePaginationRequest) {
+        //noinspection StringBufferReplaceableByString
+        StringBuilder rootQuery = new StringBuilder();
+
+        rootQuery.append("              SELECT");
+        rootQuery.append("                  USER_GUID,");
+        rootQuery.append("                  USER_USERNAME,");
+        rootQuery.append("                  USER_LOGIN_COUNT,");
+        rootQuery.append("                  USER_LAST_LOGIN,");
+        rootQuery.append("                  USER_SURNAME,");
+        rootQuery.append("                  USER_GIVEN_NAME");
+        rootQuery.append("              FROM");
+        rootQuery.append("                  AUTH.USER");
+        rootQuery.append("              WHERE");
+        rootQuery.append("              (");
+        rootQuery.append("                  STATUS = 'Active'");
+        rootQuery.append("                  AND\n");
+
+        rootQuery.append(getUserList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
+        rootQuery.append("              )");
+        return rootQuery.toString();
+    }
+
+    private String getUserList_SSP_AdditionalWhereClause(ServerSidePaginationRequest serverSidePaginationRequest) {
+        StringBuilder whereClause = new StringBuilder();
+        String nameFilter = serverSidePaginationRequest.getNameFilter() != null ? serverSidePaginationRequest.getNameFilter() : "";
+
+        // NAME FILTER CLAUSE
+        if (!"".equalsIgnoreCase(nameFilter)) {
+            whereClause.append("                  (\n");
+            whereClause.append("                    UPPER(USER.USER_SURNAME) LIKE UPPER('%").append(nameFilter).append("%')\n");
+            whereClause.append("                    OR");
+            whereClause.append("                    UPPER(USER.USER_GIVEN_NAME) LIKE UPPER('%").append(nameFilter).append("%')\n");
+            whereClause.append("                  )\n");
+        } else {
+            whereClause.append("                  (1=1)");
+        }
+
+        return whereClause.toString();
     }
 
     public User updateUser(User User, User loggedInUser) {

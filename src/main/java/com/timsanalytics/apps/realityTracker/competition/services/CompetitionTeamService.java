@@ -1,6 +1,6 @@
 package com.timsanalytics.apps.realityTracker.competition.services;
 
-import com.timsanalytics.apps.realityTracker.competition.beans.Team;
+import com.timsanalytics.apps.realityTracker.competition.beans.CompetitionTeam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,19 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class TeamService {
-    private DataService dataService;
+public class CompetitionTeamService {
+    private CompetitionDataService dataService;
 
     @Autowired
-    public TeamService(DataService dataService) {
+    public CompetitionTeamService(CompetitionDataService dataService) {
         this.dataService = dataService;
     }
 
-    public List<Team> getTeamList() {
+    public List<CompetitionTeam> getTeamList() {
         return new ArrayList<>(this.dataService.getTeams());
     }
 
-    public Team getTeamByTeamKey(String teamKey) {
+    public CompetitionTeam getTeamByTeamKey(String teamKey) {
         return this.dataService.getTeams().stream()
                 .filter(team -> team.getTeamKey().equalsIgnoreCase(teamKey))
                 .findFirst()
