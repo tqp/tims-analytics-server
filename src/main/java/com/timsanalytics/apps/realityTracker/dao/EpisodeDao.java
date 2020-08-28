@@ -77,11 +77,14 @@ public class EpisodeDao {
         query.append("  SELECT\n");
         query.append("      EPISODE_GUID,\n");
         query.append("      EPISODE_NAME,\n");
+        query.append("      EPISODE_ORIGINAL_AIR_DATE,\n");
         query.append("      SEASON_GUID\n");
         query.append("  FROM\n");
         query.append("      REALITY_TRACKER.EPISODE\n");
         query.append("  WHERE\n");
         query.append("      SEASON_GUID LIKE ?\n");
+        query.append("  ORDER BY\n");
+        query.append("      EPISODE_ORIGINAL_AIR_DATE DESC\n");
         this.logger.trace("SQL:\n" + query.toString());
         this.logger.trace("seasonGuid: " + seasonGuid);
         try {
@@ -89,6 +92,7 @@ public class EpisodeDao {
                 Episode item = new Episode();
                 item.setEpisodeGuid(rs.getString("EPISODE_GUID"));
                 item.setEpisodeName(rs.getString("EPISODE_NAME"));
+                item.setEpisodeDate(rs.getString("EPISODE_ORIGINAL_AIR_DATE"));
                 item.setSeasonGuid(rs.getString("SEASON_GUID"));
                 return item;
             });

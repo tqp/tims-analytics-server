@@ -1,8 +1,8 @@
 package com.timsanalytics.apps.realityTracker.dao;
 
-import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.apps.realityTracker.beans.Contestant;
 import com.timsanalytics.apps.realityTracker.dao.RowMappers.ContestantRowMapper;
+import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.utils.GenerateUuidService;
 import org.slf4j.Logger;
@@ -22,7 +22,8 @@ public class ContestantDao {
     private final GenerateUuidService generateUuidService;
 
     @Autowired
-    public ContestantDao(JdbcTemplate mySqlAuthJdbcTemplate, GenerateUuidService generateUuidService) {
+    public ContestantDao(JdbcTemplate mySqlAuthJdbcTemplate,
+                         GenerateUuidService generateUuidService) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
         this.generateUuidService = generateUuidService;
     }
