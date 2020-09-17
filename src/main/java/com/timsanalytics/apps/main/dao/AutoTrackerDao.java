@@ -15,10 +15,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -120,6 +117,59 @@ public class AutoTrackerDao {
         }
     }
 
+    public List<FuelActivity> getFuelActivityList() {
+        StringBuilder query = new StringBuilder();
+        query.append("  SELECT\n");
+        query.append("      FILL_GUID,\n");
+        query.append("      FILL_DATE_TIME,\n");
+        query.append("      FILL_ODOMETER,\n");
+        query.append("      FILL_MILES_TRAVELED,\n");
+        query.append("      FILL_MILES_PER_GALLON,\n");
+        query.append("      FILL_GALLONS,\n");
+        query.append("      FILL_COST_PER_GALLON,\n");
+        query.append("      FILL_TOTAL_COST,\n");
+        query.append("      FILL_COMMENTS,\n");
+        query.append("      FILL.STATION_GUID AS FILL_STATION_GUID,\n");
+        query.append("      STATION.STATION_GUID AS STATION_STATION_GUID,\n");
+        query.append("      STATION.STATION_NAME,\n");
+        query.append("      STATION.STATION_AFFILIATION,\n");
+        query.append("      STATION.STATION_CITY,\n");
+        query.append("      STATION.STATION_STATE\n");
+        query.append("  FROM\n");
+        query.append("      AUTO_TRACKER.FILL\n");
+        query.append("      LEFT JOIN AUTO_TRACKER.STATION ON FILL.STATION_GUID = STATION.STATION_GUID\n");
+        query.append("  WHERE\n");
+        query.append("      STATUS = 'Active'\n");
+        this.logger.trace("SQL:\n" + query.toString());
+        try {
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{},
+                    (rs, rowNum) -> {
+                        Fill fill = new Fill();
+                        fill.setFillGuid(rs.getString("FILL_GUID"));
+                        fill.setFillDateTime(rs.getTimestamp("FILL_DATE_TIME"));
+                        fill.setFillOdometer(rs.getDouble("FILL_ODOMETER"));
+                        fill.setFillMilesTraveled(rs.getDouble("FILL_MILES_TRAVELED"));
+                        fill.setFillMilesPerGallon(rs.getDouble("FILL_MILES_PER_GALLON"));
+                        fill.setFillGallons(rs.getDouble("FILL_GALLONS"));
+                        fill.setFillCostPerGallon(rs.getDouble("FILL_COST_PER_GALLON"));
+                        fill.setFillTotalCost(rs.getDouble("FILL_TOTAL_COST"));
+                        fill.setFillComments(rs.getString("FILL_COMMENTS"));
+                        fill.setStationGuid(rs.getString("FILL_STATION_GUID"));
+
+                        Station station = new Station();
+                        station.setStationGuid(rs.getString("STATION_STATION_GUID"));
+                        station.setStationName(rs.getString("STATION_NAME"));
+                        station.setStationAffiliation(rs.getString("STATION_AFFILIATION"));
+                        station.setStationCity(rs.getString("STATION_CITY"));
+                        station.setStationState(rs.getString("STATION_STATE"));
+
+                        return new FuelActivity(fill, station);
+                    });
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
     public List<FuelActivity> getFuelActivityList_SSP(ServerSidePaginationRequest serverSidePaginationRequest) {
         int pageStart = (serverSidePaginationRequest.getPageIndex()) * serverSidePaginationRequest.getPageSize();
         int pageSize = serverSidePaginationRequest.getPageSize();
@@ -195,8 +245,7 @@ public class AutoTrackerDao {
     private String getFuelActivityList_SSP_RootQuery(ServerSidePaginationRequest serverSidePaginationRequest) {
         //noinspection StringBufferReplaceableByString
         StringBuilder rootQuery = new StringBuilder();
-
-        rootQuery.append("              SELECT");
+        rootQuery.append("              SELECT\n");
         rootQuery.append("                  FILL_GUID,\n");
         rootQuery.append("                  FILL_DATE_TIME,\n");
         rootQuery.append("                  FILL_ODOMETER,\n");
@@ -212,12 +261,12 @@ public class AutoTrackerDao {
         rootQuery.append("                  STATION.STATION_AFFILIATION,\n");
         rootQuery.append("                  STATION.STATION_CITY,\n");
         rootQuery.append("                  STATION.STATION_STATE\n");
-        rootQuery.append("              FROM");
-        rootQuery.append("                  AUTO_TRACKER.FILL");
-        rootQuery.append("                  LEFT JOIN AUTO_TRACKER.STATION ON FILL.STATION_GUID = STATION.STATION_GUID");
-        rootQuery.append("              WHERE");
-        rootQuery.append("              (");
-        rootQuery.append("                  FILL.STATUS = 'Active'");
+        rootQuery.append("              FROM\n");
+        rootQuery.append("                  AUTO_TRACKER.FILL\n");
+        rootQuery.append("                  LEFT JOIN AUTO_TRACKER.STATION ON FILL.STATION_GUID = STATION.STATION_GUID\n");
+        rootQuery.append("              WHERE\n");
+        rootQuery.append("              (\n");
+        rootQuery.append("                  FILL.STATUS = 'Active'\n");
         rootQuery.append("                  AND\n");
         rootQuery.append(getFuelActivityList_SSP_AdditionalWhereClause(serverSidePaginationRequest));
         rootQuery.append("              )");

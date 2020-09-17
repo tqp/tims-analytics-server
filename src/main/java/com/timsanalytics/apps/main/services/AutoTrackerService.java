@@ -4,17 +4,13 @@ import com.timsanalytics.apps.main.beans.Fill;
 import com.timsanalytics.apps.main.beans.FuelActivity;
 import com.timsanalytics.apps.main.beans.Station;
 import com.timsanalytics.apps.main.dao.AutoTrackerDao;
-import com.timsanalytics.apps.realityTracker.beans.Contestant;
-import com.timsanalytics.common.beans.KeyValue;
-import com.timsanalytics.common.beans.KeyValueDouble;
-import com.timsanalytics.common.beans.ServerSidePaginationRequest;
-import com.timsanalytics.common.beans.ServerSidePaginationResponse;
-import com.timsanalytics.utils.PrintObjectService;
+import com.timsanalytics.common.beans.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -34,8 +30,12 @@ public class AutoTrackerService {
         return this.autoTrackerDao.createFuelActivity(fill);
     }
 
+    public List<FuelActivity> getFuelActivityList() {
+        return this.autoTrackerDao.getFuelActivityList();
+    }
+
     public ServerSidePaginationResponse<FuelActivity> getFuelActivityList_SSP(ServerSidePaginationRequest serverSidePaginationRequest) {
-        ServerSidePaginationResponse<FuelActivity> serverSidePaginationResponse = new ServerSidePaginationResponse<FuelActivity>();
+        ServerSidePaginationResponse<FuelActivity> serverSidePaginationResponse = new ServerSidePaginationResponse<>();
         serverSidePaginationResponse.setServerSidePaginationRequest(serverSidePaginationRequest);
         List<FuelActivity> fuelActivityList = this.autoTrackerDao.getFuelActivityList_SSP(serverSidePaginationRequest);
         serverSidePaginationResponse.setData(fuelActivityList);
@@ -65,8 +65,26 @@ public class AutoTrackerService {
 
     // Dashboard
 
-    public KeyValueDouble getLongestTimeBetweenFills() {
-        return new KeyValueDouble("result", this.autoTrackerDao.getLongestTimeBetweenFills());
+    public KeyValueLong getLongestTimeBetweenFills() {
+        List<FuelActivity> fuelActivityList = this.autoTrackerDao.getFuelActivityList();
+        List<LocalDate> list = fuelActivityList.stream()
+                .map(item -> item.getFill().getFillDateTime().toLocalDateTime().toLocalDate())
+                .collect(Collectors.toList());
+        int temp = getLargestGapInDateArray(list);
+        return new KeyValueLong("result", (long) temp);
+    }
+
+    private static int getLargestGapInDateArray(List<LocalDate> dateArray) {
+        int maxGap = 0;
+        List<LocalDate> dateArraySorted = dateArray.stream()
+                .sorted(Comparator.naturalOrder())
+                .collect(Collectors.toList());
+        for (int i = 1; i <= dateArraySorted.size() - 1; i++) {
+            Period diff = Period.between(dateArraySorted.get(i - 1), dateArraySorted.get(i));
+            //System.out.println(dateArraySorted.get(i - 1) + " - " + dateArraySorted.get(i) + " = " + diff.getDays());
+            maxGap = Math.max(diff.getDays(), maxGap);
+        }
+        return maxGap;
     }
 
     public KeyValueDouble getLongestDistanceBetweenFills() {

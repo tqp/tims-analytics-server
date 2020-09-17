@@ -5,10 +5,7 @@ import com.timsanalytics.apps.main.beans.FuelActivity;
 import com.timsanalytics.apps.main.beans.Station;
 import com.timsanalytics.apps.main.services.AutoTrackerService;
 import com.timsanalytics.apps.realityTracker.beans.Season;
-import com.timsanalytics.common.beans.KeyValue;
-import com.timsanalytics.common.beans.KeyValueDouble;
-import com.timsanalytics.common.beans.ServerSidePaginationRequest;
-import com.timsanalytics.common.beans.ServerSidePaginationResponse;
+import com.timsanalytics.common.beans.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -45,6 +42,20 @@ public class AutoTrackerController {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/fuel-activity", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get Fuel Activity List (All)", tags = {"Auto Tracker"}, description = "Get Fuel Activity List (All)", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<List<FuelActivity>> getFuelActivityList() {
+        try {
+            return ResponseEntity.ok()
+                    .body(this.autoTrackerService.getFuelActivityList());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -124,13 +135,8 @@ public class AutoTrackerController {
 
     @RequestMapping(value = "/dashboard/longest-time-between-fills", method = RequestMethod.GET)
     @Operation(summary = "Get Time Between Fills", tags = {"Auto Tracker"}, security = @SecurityRequirement(name = "bearerAuth"))
-    public KeyValueDouble getLongestTimeBetweenFills() {
-        try {
-            return autoTrackerService.getLongestTimeBetweenFills();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    public KeyValueLong getLongestTimeBetweenFills() {
+        return autoTrackerService.getLongestTimeBetweenFills();
     }
 
     @RequestMapping(value = "/dashboard/longest-distance-between-fills", method = RequestMethod.GET)
