@@ -356,6 +356,7 @@ public class AutoTrackerDao {
     }
 
     public Fill updateFuelActivity(Fill fill) {
+        this.printObjectService.PrintObject("Temp", fill);
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
         query.append("      AUTO_TRACKER.FILL\n");
@@ -367,7 +368,8 @@ public class AutoTrackerDao {
         query.append("      FILL.FILL_TOTAL_COST = ?,\n");
         query.append("      FILL.FILL_MILES_TRAVELED = ?,\n");
         query.append("      FILL.FILL_MILES_PER_GALLON = ?,\n");
-        query.append("      FILL.FILL_COMMENTS = ?\n");
+        query.append("      FILL.FILL_COMMENTS = ?,\n");
+        query.append("      FILL.STATION_GUID = ?\n");
         query.append("  WHERE\n");
         query.append("      FILL.FILL_GUID = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -383,7 +385,8 @@ public class AutoTrackerDao {
                         ps.setDouble(6, fill.getFillMilesTraveled());
                         ps.setDouble(7, fill.getFillMilesPerGallon());
                         ps.setString(8, fill.getFillComments());
-                        ps.setString(9, fill.getFillGuid());
+                        ps.setString(9, fill.getStationGuid());
+                        ps.setString(10, fill.getFillGuid());
                         return ps;
                     }
             );
@@ -433,13 +436,13 @@ public class AutoTrackerDao {
         query.append("      STATION_GUID,\n");
         query.append("      STATION_NAME,\n");
         query.append("      STATION_AFFILIATION,\n");
-        query.append("      STATION_ADDRESS1,\n");
+        query.append("      STATION_ADDRESS,\n");
         query.append("      STATION_CITY,\n");
         query.append("      STATION_STATE,\n");
         query.append("      STATION_ZIP,\n");
         query.append("      STATION_PHONE\n");
         query.append("  FROM\n");
-        query.append("      FUEL_TRACKER.STATION\n");
+        query.append("      AUTO_TRACKER.STATION\n");
         query.append("  WHERE\n");
         query.append("      LOWER(STATION_NAME) LIKE LOWER(?)\n");
         query.append("      AND STATION_STATUS = 'Active'\n");
@@ -447,7 +450,7 @@ public class AutoTrackerDao {
         query.append("      STATION_NAME\n");
         query.append("  LIMIT 5\n");
         try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{filter + "%"},
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{"%" + filter + "%"},
                     (rs, rowNum) -> {
                         Station fuelStation = new Station();
                         fuelStation.setStationGuid(rs.getString("STATION_GUID"));
