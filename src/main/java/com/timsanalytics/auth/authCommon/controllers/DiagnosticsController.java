@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/diagnostics")
-@Tag(name = "Test Endpoints", description = "These endpoints are used to test endpoint security.")
+@Tag(name = "Diagnostics Endpoints", description = "These endpoints are used to test endpoint security.")
 public class DiagnosticsController {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
 

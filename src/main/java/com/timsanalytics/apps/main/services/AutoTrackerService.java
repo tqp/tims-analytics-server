@@ -81,8 +81,8 @@ public class AutoTrackerService {
 
         // y = Date of Fill. Format: YYYY-MM-dd HH:mm:ss
         DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        List<Long> y = odometerData.stream().map(item -> {
-            LocalDateTime localDateTime = LocalDateTime.parse(item.getKey(), inputFormat);
+        List<Long> y = odometerData.stream().map(keyValueDouble -> {
+            LocalDateTime localDateTime = LocalDateTime.parse(keyValueDouble.getKey(), inputFormat);
             Instant instant = localDateTime.atZone(ZoneOffset.UTC).toInstant();
             return instant.toEpochMilli();
         }).collect(Collectors.toList());

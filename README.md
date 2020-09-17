@@ -37,7 +37,8 @@ Capacity:
 Apply, confirm, and wait.
 Re-enter configuration:  
 Load Balancer:  
-- Add Listener. Listener Port: 443, Listerer Protocol: HTTPS, Instance Port: 80, Instance Protocol: HTTP
+- Add Listener. Listener Port: 443, Listener Protocol: HTTPS (and Instance Port: 80, Instance Protocol: HTTP, if asked)
+- Use ELBSecurityPolicy-2016-08
 - Disable Port 80.
 Apply, confirm, and wait.
 

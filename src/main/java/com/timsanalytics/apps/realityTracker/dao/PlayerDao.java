@@ -57,21 +57,20 @@ public class PlayerDao {
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{playerGuid}, (rs, rowNum) -> {
-                Player item = new Player();
-                item.setPlayerGuid(rs.getString("PLAYER_GUID"));
-                item.setPlayerOccupation(rs.getString("PLAYER_OCCUPATION"));
-                int ageOnEntry = rs.getInt("PLAYER_AGE_ON_ENTRY");
-                item.setPlayerAgeOnEntry(rs.wasNull() ? null : ageOnEntry);
-                item.setSeasonGuid(rs.getString("SEASON_GUID"));
-                item.setContestantGuid(rs.getString("CONTESTANT_GUID"));
-                item.setSeriesGuid(rs.getString("SERIES_GUID"));
-                item.setSeriesName(rs.getString("SERIES_NAME"));
-                item.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
-                item.setSeasonName(rs.getString("SEASON_NAME"));
-                item.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
-                item.setContestantLastName(rs.getString("CONTESTANT_LAST_NAME"));
-                item.setContestantFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
-                return item;
+                Player row = new Player();
+                row.setPlayerGuid(rs.getString("PLAYER_GUID"));
+                row.setPlayerOccupation(rs.getString("PLAYER_OCCUPATION"));
+                row.setPlayerAgeOnEntry(rs.wasNull() ? null : rs.getInt("PLAYER_AGE_ON_ENTRY"));
+                row.setSeasonGuid(rs.getString("SEASON_GUID"));
+                row.setContestantGuid(rs.getString("CONTESTANT_GUID"));
+                row.setSeriesGuid(rs.getString("SERIES_GUID"));
+                row.setSeriesName(rs.getString("SERIES_NAME"));
+                row.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
+                row.setSeasonName(rs.getString("SEASON_NAME"));
+                row.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
+                row.setContestantLastName(rs.getString("CONTESTANT_LAST_NAME"));
+                row.setContestantFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
@@ -114,18 +113,18 @@ public class PlayerDao {
         contestantGuid = (contestantGuid != null) ? contestantGuid : "%";
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{seriesGuid, contestantGuid}, (rs, rowNum) -> {
-                Player item = new Player();
-                item.setPlayerGuid(rs.getString("PLAYER_GUID"));
-                item.setSeriesGuid(rs.getString("SERIES_GUID"));
-                item.setSeriesName(rs.getString("SERIES_NAME"));
-                item.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
-                item.setSeasonGuid(rs.getString("SEASON_GUID"));
-                item.setSeasonName(rs.getString("SEASON_NAME"));
-                item.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
-                item.setContestantGuid(rs.getString("CONTESTANT_GUID"));
-                item.setContestantLastName(rs.getString("CONTESTANT_LAST_NAME"));
-                item.setContestantFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
-                return item;
+                Player row = new Player();
+                row.setPlayerGuid(rs.getString("PLAYER_GUID"));
+                row.setSeriesGuid(rs.getString("SERIES_GUID"));
+                row.setSeriesName(rs.getString("SERIES_NAME"));
+                row.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
+                row.setSeasonGuid(rs.getString("SEASON_GUID"));
+                row.setSeasonName(rs.getString("SEASON_NAME"));
+                row.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
+                row.setContestantGuid(rs.getString("CONTESTANT_GUID"));
+                row.setContestantLastName(rs.getString("CONTESTANT_LAST_NAME"));
+                row.setContestantFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
@@ -155,15 +154,15 @@ public class PlayerDao {
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{contestantGuid}, (rs, rowNum) -> {
-                Player item = new Player();
-                item.setPlayerGuid(rs.getString("PLAYER_GUID"));
-                item.setSeriesGuid(rs.getString("SERIES_GUID"));
-                item.setSeriesName(rs.getString("SERIES_NAME"));
-                item.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
-                item.setSeasonGuid(rs.getString("SEASON_GUID"));
-                item.setSeasonName(rs.getString("SEASON_NAME"));
-                item.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
-                return item;
+                Player row = new Player();
+                row.setPlayerGuid(rs.getString("PLAYER_GUID"));
+                row.setSeriesGuid(rs.getString("SERIES_GUID"));
+                row.setSeriesName(rs.getString("SERIES_NAME"));
+                row.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
+                row.setSeasonGuid(rs.getString("SEASON_GUID"));
+                row.setSeasonName(rs.getString("SEASON_NAME"));
+                row.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
@@ -226,15 +225,15 @@ public class PlayerDao {
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{contestantGuid}, (rs, rowNum) -> {
-                Player item = new Player();
-                item.setPlayerGuid(rs.getString("PLAYER_GUID"));
-                item.setSeriesGuid(rs.getString("SERIES_GUID"));
-                item.setSeriesName(rs.getString("SERIES_NAME"));
-                item.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
-                item.setSeasonGuid(rs.getString("SEASON_GUID"));
-                item.setSeasonName(rs.getString("SEASON_NAME"));
-                item.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
-                return item;
+                Player row = new Player();
+                row.setPlayerGuid(rs.getString("PLAYER_GUID"));
+                row.setSeriesGuid(rs.getString("SERIES_GUID"));
+                row.setSeriesName(rs.getString("SERIES_NAME"));
+                row.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
+                row.setSeasonGuid(rs.getString("SEASON_GUID"));
+                row.setSeasonName(rs.getString("SEASON_NAME"));
+                row.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
@@ -275,14 +274,14 @@ public class PlayerDao {
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{contestantGuid}, (rs, rowNum) -> {
-                Player item = new Player();
-                item.setSeriesGuid(rs.getString("SERIES_GUID"));
-                item.setSeriesName(rs.getString("SERIES_NAME"));
-                item.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
-                item.setSeasonGuid(rs.getString("SEASON_GUID"));
-                item.setSeasonName(rs.getString("SEASON_NAME"));
-                item.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
-                return item;
+                Player row = new Player();
+                row.setSeriesGuid(rs.getString("SERIES_GUID"));
+                row.setSeriesName(rs.getString("SERIES_NAME"));
+                row.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
+                row.setSeasonGuid(rs.getString("SEASON_GUID"));
+                row.setSeasonName(rs.getString("SEASON_NAME"));
+                row.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
@@ -387,12 +386,12 @@ public class PlayerDao {
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{contestantGuid, seasonGuid},
                     (rs, rowNum) -> {
-                        Player item = new Player();
-                        item.setPlayerGuid(rs.getString("PLAYER_GUID"));
-                        item.setContestantGuid(rs.getString("CONTESTANT_GUID"));
-                        item.setSeasonGuid(rs.getString("SEASON_GUID"));
-                        item.setStatus(rs.getString("STATUS"));
-                        return item;
+                        Player row = new Player();
+                        row.setPlayerGuid(rs.getString("PLAYER_GUID"));
+                        row.setContestantGuid(rs.getString("CONTESTANT_GUID"));
+                        row.setSeasonGuid(rs.getString("SEASON_GUID"));
+                        row.setStatus(rs.getString("STATUS"));
+                        return row;
                     });
         } catch (EmptyResultDataAccessException e) {
 //            this.logger.error("EmptyResultDataAccessException: " + e);
@@ -424,12 +423,12 @@ public class PlayerDao {
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{seasonGuid}, (rs, rowNum) -> {
-                Player item = new Player();
-                item.setPlayerGuid(rs.getString("PLAYER_GUID"));
-                item.setContestantGuid(rs.getString("CONTESTANT_GUID"));
-                item.setContestantLastName(rs.getString("CONTESTANT_LAST_NAME"));
-                item.setContestantFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
-                return item;
+                Player row = new Player();
+                row.setPlayerGuid(rs.getString("PLAYER_GUID"));
+                row.setContestantGuid(rs.getString("CONTESTANT_GUID"));
+                row.setContestantLastName(rs.getString("CONTESTANT_LAST_NAME"));
+                row.setContestantFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
@@ -466,11 +465,11 @@ public class PlayerDao {
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{seasonGuid}, (rs, rowNum) -> {
-                Player item = new Player();
-                item.setContestantGuid(rs.getString("CONTESTANT_GUID"));
-                item.setContestantLastName(rs.getString("CONTESTANT_LAST_NAME"));
-                item.setContestantFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
-                return item;
+                Player row = new Player();
+                row.setContestantGuid(rs.getString("CONTESTANT_GUID"));
+                row.setContestantLastName(rs.getString("CONTESTANT_LAST_NAME"));
+                row.setContestantFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);

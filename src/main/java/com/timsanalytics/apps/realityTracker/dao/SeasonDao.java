@@ -87,15 +87,15 @@ public class SeasonDao {
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{seasonGuid}, (rs, rowNum) -> {
-                Season item = new Season();
-                item.setSeasonGuid(rs.getString("SEASON_GUID"));
-                item.setSeasonName(rs.getString("SEASON_NAME"));
-                item.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
-                item.setSeasonStartDate(rs.getDate("SEASON_START_DATE"));
-                item.setSeriesGuid(rs.getString("SERIES_GUID"));
-                item.setSeriesName(rs.getString("SERIES_NAME"));
-                item.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
-                return item;
+                Season row = new Season();
+                row.setSeasonGuid(rs.getString("SEASON_GUID"));
+                row.setSeasonName(rs.getString("SEASON_NAME"));
+                row.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
+                row.setSeasonStartDate(rs.getDate("SEASON_START_DATE"));
+                row.setSeriesGuid(rs.getString("SERIES_GUID"));
+                row.setSeriesName(rs.getString("SERIES_NAME"));
+                row.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
@@ -128,15 +128,15 @@ public class SeasonDao {
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{seriesGuid}, (rs, rowNum) -> {
-                Season item = new Season();
-                item.setSeasonGuid(rs.getString("SEASON_GUID"));
-                item.setSeasonName(rs.getString("SEASON_NAME"));
-                item.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
-                item.setSeasonStartDate(rs.getDate("SEASON_START_DATE"));
-                item.setSeriesGuid(rs.getString("SERIES_GUID"));
-                item.setSeriesName(rs.getString("SERIES_NAME"));
-                item.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
-                return item;
+                Season row = new Season();
+                row.setSeasonGuid(rs.getString("SEASON_GUID"));
+                row.setSeasonName(rs.getString("SEASON_NAME"));
+                row.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
+                row.setSeasonStartDate(rs.getDate("SEASON_START_DATE"));
+                row.setSeriesGuid(rs.getString("SERIES_GUID"));
+                row.setSeriesName(rs.getString("SERIES_NAME"));
+                row.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);

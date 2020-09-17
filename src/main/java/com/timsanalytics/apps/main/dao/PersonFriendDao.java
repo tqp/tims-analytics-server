@@ -69,11 +69,11 @@ public class PersonFriendDao {
                     pageStart,
                     pageEnd
             }, (rs, rowNum) -> {
-                Person item = new Person();
-                item.setGuid(rs.getString("PERSON_GUID"));
-                item.setFirstName(rs.getString("PERSON_FIRST_NAME"));
-                item.setLastName(rs.getString("PERSON_LAST_NAME"));
-                return item;
+                Person row = new Person();
+                row.setGuid(rs.getString("PERSON_GUID"));
+                row.setFirstName(rs.getString("PERSON_FIRST_NAME"));
+                row.setLastName(rs.getString("PERSON_LAST_NAME"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
@@ -142,12 +142,12 @@ public class PersonFriendDao {
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{personGuid, friendGuid},
                     (rs, rowNum) -> {
-                        PersonFriend item = new PersonFriend();
-                        item.setPersonFriendGuid(rs.getString("PERSON_FRIENDS_GUID"));
-                        item.setPersonGuid(rs.getString("PERSON_GUID"));
-                        item.setFriendGuid(rs.getString("FRIEND_GUID"));
-                        item.setStatus(rs.getString("STATUS"));
-                        return item;
+                        PersonFriend row = new PersonFriend();
+                        row.setPersonFriendGuid(rs.getString("PERSON_FRIENDS_GUID"));
+                        row.setPersonGuid(rs.getString("PERSON_GUID"));
+                        row.setFriendGuid(rs.getString("FRIEND_GUID"));
+                        row.setStatus(rs.getString("STATUS"));
+                        return row;
                     });
 //        } catch (EmptyResultDataAccessException e) {
 //            this.logger.error("EmptyResultDataAccessException: " + e);
@@ -179,11 +179,11 @@ public class PersonFriendDao {
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{personGuid}, (rs, rowNum) -> {
-                Person item = new Person();
-                item.setGuid(rs.getString("PERSON_GUID"));
-                item.setFirstName(rs.getString("PERSON_FIRST_NAME"));
-                item.setLastName(rs.getString("PERSON_LAST_NAME"));
-                return item;
+                Person row = new Person();
+                row.setGuid(rs.getString("PERSON_GUID"));
+                row.setFirstName(rs.getString("PERSON_FIRST_NAME"));
+                row.setLastName(rs.getString("PERSON_LAST_NAME"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
@@ -225,11 +225,11 @@ public class PersonFriendDao {
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{personGuid, personGuid}, (rs, rowNum) -> {
-                Person item = new Person();
-                item.setGuid(rs.getString("PERSON_GUID"));
-                item.setFirstName(rs.getString("PERSON_FIRST_NAME"));
-                item.setLastName(rs.getString("PERSON_LAST_NAME"));
-                return item;
+                Person row = new Person();
+                row.setGuid(rs.getString("PERSON_GUID"));
+                row.setFirstName(rs.getString("PERSON_FIRST_NAME"));
+                row.setLastName(rs.getString("PERSON_LAST_NAME"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);

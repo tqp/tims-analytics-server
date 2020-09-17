@@ -47,18 +47,18 @@ public class AuthDao {
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{username},
                     (rs, rowNum) -> {
-                        User item = new User();
-                        item.setUserGuid(rs.getString("USER_GUID"));
-                        item.setUsername(rs.getString("USER_USERNAME"));
-                        item.setPassword(rs.getString("USER_PASSWORD"));
-                        item.setLastLogin(rs.getTimestamp("USER_LAST_LOGIN"));
-                        item.setLoginCount(rs.getInt("USER_LOGIN_COUNT"));
-                        item.setStatus(rs.getString("STATUS"));
-                        item.setCreatedOn(rs.getTimestamp("CREATED_ON"));
-                        item.setCreatedBy(rs.getString("CREATED_BY"));
-                        item.setUpdatedOn(rs.getTimestamp("UPDATED_ON"));
-                        item.setUpdatedBy(rs.getString("UPDATED_BY"));
-                        return item;
+                        User row = new User();
+                        row.setUserGuid(rs.getString("USER_GUID"));
+                        row.setUsername(rs.getString("USER_USERNAME"));
+                        row.setPassword(rs.getString("USER_PASSWORD"));
+                        row.setLastLogin(rs.getTimestamp("USER_LAST_LOGIN"));
+                        row.setLoginCount(rs.getInt("USER_LOGIN_COUNT"));
+                        row.setStatus(rs.getString("STATUS"));
+                        row.setCreatedOn(rs.getTimestamp("CREATED_ON"));
+                        row.setCreatedBy(rs.getString("CREATED_BY"));
+                        row.setUpdatedOn(rs.getTimestamp("UPDATED_ON"));
+                        row.setUpdatedBy(rs.getString("UPDATED_BY"));
+                        return row;
                     });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
@@ -91,16 +91,16 @@ public class AuthDao {
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{userGuid},
                     (rs, rowNum) -> {
-                        Role item = new Role();
-                        item.setRoleGuid(rs.getString("ROLE_GUID"));
-                        item.setName(rs.getString("ROLE_NAME"));
-                        item.setAuthority(rs.getString("ROLE_AUTHORITY"));
-                        item.setStatus(rs.getString("STATUS"));
-                        item.setCreatedOn(rs.getTimestamp("CREATED_ON"));
-                        item.setCreatedBy(rs.getString("CREATED_BY"));
-                        item.setUpdatedOn(rs.getTimestamp("UPDATED_ON"));
-                        item.setUpdatedBy(rs.getString("UPDATED_BY"));
-                        return item;
+                        Role row = new Role();
+                        row.setRoleGuid(rs.getString("ROLE_GUID"));
+                        row.setName(rs.getString("ROLE_NAME"));
+                        row.setAuthority(rs.getString("ROLE_AUTHORITY"));
+                        row.setStatus(rs.getString("STATUS"));
+                        row.setCreatedOn(rs.getTimestamp("CREATED_ON"));
+                        row.setCreatedBy(rs.getString("CREATED_BY"));
+                        row.setUpdatedOn(rs.getTimestamp("UPDATED_ON"));
+                        row.setUpdatedBy(rs.getString("UPDATED_BY"));
+                        return row;
                     });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);

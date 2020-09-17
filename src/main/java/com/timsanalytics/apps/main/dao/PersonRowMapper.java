@@ -9,20 +9,20 @@ import java.sql.SQLException;
 public class PersonRowMapper implements RowMapper<Person> {
 
     public Person mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Person item = new Person();
-        item.setGuid(rs.getString("PERSON_GUID"));
-        item.setLastName(rs.getString("PERSON_LAST_NAME"));
-        item.setFirstName(rs.getString("PERSON_FIRST_NAME"));
-        item.setStreet(rs.getString("PERSON_STREET"));
-        item.setCity(rs.getString("PERSON_CITY"));
-        item.setCounty(rs.getString("PERSON_COUNTY"));
-        item.setState(rs.getString("PERSON_STATE"));
-        item.setZipCode(rs.getString("PERSON_ZIP_CODE"));
-        item.setHomePhone(rs.getString("PERSON_HOME_PHONE"));
-        item.setMobilePhone(rs.getString("PERSON_MOBILE_PHONE"));
-        item.setEmailAddress(rs.getString("PERSON_EMAIL_ADDRESS"));
-        item.setCompanyName(rs.getString("PERSON_COMPANY_NAME"));
-        item.setCompanyWebsite(rs.getString("PERSON_COMPANY_WEB_SITE"));
-        return item;
+        Person row = new Person();
+        row.setGuid(rs.getString("PERSON_GUID"));
+        row.setLastName(rs.getString("PERSON_LAST_NAME"));
+        row.setFirstName(rs.getString("PERSON_FIRST_NAME"));
+        row.setStreet(rs.getString("PERSON_STREET"));
+        row.setCity(rs.getString("PERSON_CITY"));
+        row.setCounty(rs.getString("PERSON_COUNTY"));
+        row.setState(rs.getString("PERSON_STATE"));
+        row.setZipCode(rs.getString("PERSON_ZIP_CODE"));
+        row.setHomePhone(rs.getString("PERSON_HOME_PHONE"));
+        row.setMobilePhone(rs.getString("PERSON_MOBILE_PHONE"));
+        row.setEmailAddress(rs.getString("PERSON_EMAIL_ADDRESS"));
+        row.setCompanyName(rs.getString("PERSON_COMPANY_NAME"));
+        row.setCompanyWebsite(rs.getString("PERSON_COMPANY_WEB_SITE"));
+        return row;
     }
 }

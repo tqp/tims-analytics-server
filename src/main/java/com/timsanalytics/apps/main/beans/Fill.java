@@ -1,11 +1,12 @@
 package com.timsanalytics.apps.main.beans;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class Fill {
     private String fillGuid;
     private String stationGuid;
-    private Date fillDate;
+    private Timestamp fillDateTime;
     private Double fillOdometer;
     private Double fillGallons;
     private Double fillCostPerGallon;
@@ -30,12 +31,12 @@ public class Fill {
         this.stationGuid = stationGuid;
     }
 
-    public Date getFillDate() {
-        return fillDate;
+    public Timestamp getFillDateTime() {
+        return fillDateTime;
     }
 
-    public void setFillDate(Date fillDate) {
-        this.fillDate = fillDate;
+    public void setFillDateTime(Timestamp fillDateTime) {
+        this.fillDateTime = fillDateTime;
     }
 
     public Double getFillOdometer() {

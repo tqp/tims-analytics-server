@@ -39,16 +39,16 @@ public class UserService {
         this.logger.debug("UserService -> createUser: username=" + User.getUsername());
         TransactionDefinition txDef = new DefaultTransactionDefinition();
         TransactionStatus txStatus = mySqlAuthTransactionManager.getTransaction(txDef);
-        User item;
+        User user;
         try {
             // Create the new User.
-            item = this.userDao.createUser(User, loggedInUser);
-            this.printObjectService.PrintObject("UserService -> createUser: User", item);
+            user = this.userDao.createUser(User, loggedInUser);
+            this.printObjectService.PrintObject("UserService -> createUser: User", user);
 
             // Add the Roles to the new User.
             for (int i = 0; i < User.getRoles().size(); i++) {
                 this.userRoleService.createUserRole(
-                        item.getUserGuid(),
+                        user.getUserGuid(),
                         User.getRoles().get(i).getRoleGuid(),
                         User.getRoles().get(i).getStatus(),
                         loggedInUser
@@ -57,13 +57,13 @@ public class UserService {
 
             // If everything was successful, commit to the database.
             mySqlAuthTransactionManager.commit(txStatus);
-            this.logger.debug("UserService -> createUser -> response: " + item);
+            this.logger.debug("UserService -> createUser -> response: " + user);
         } catch (Exception e) {
             mySqlAuthTransactionManager.rollback(txStatus);
             logger.error("Error during creation: " + User.getUsername(), e);
             throw e;
         }
-        return item;
+        return user;
     }
 
     public User getUser(String userGuid) {

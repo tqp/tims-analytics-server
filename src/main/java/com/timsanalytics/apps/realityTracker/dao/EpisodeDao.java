@@ -89,12 +89,12 @@ public class EpisodeDao {
         this.logger.trace("seasonGuid: " + seasonGuid);
         try {
             return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{seasonGuid}, (rs, rowNum) -> {
-                Episode item = new Episode();
-                item.setEpisodeGuid(rs.getString("EPISODE_GUID"));
-                item.setEpisodeName(rs.getString("EPISODE_NAME"));
-                item.setEpisodeDate(rs.getString("EPISODE_ORIGINAL_AIR_DATE"));
-                item.setSeasonGuid(rs.getString("SEASON_GUID"));
-                return item;
+                Episode row = new Episode();
+                row.setEpisodeGuid(rs.getString("EPISODE_GUID"));
+                row.setEpisodeName(rs.getString("EPISODE_NAME"));
+                row.setEpisodeDate(rs.getString("EPISODE_ORIGINAL_AIR_DATE"));
+                row.setSeasonGuid(rs.getString("SEASON_GUID"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
@@ -130,20 +130,20 @@ public class EpisodeDao {
         this.logger.trace("SQL:\n" + query.toString());
         try {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{episodeGuid}, (rs, rowNum) -> {
-                Episode item = new Episode();
-                item.setSeriesGuid(rs.getString("SERIES_GUID"));
-                item.setSeriesName(rs.getString("SERIES_NAME"));
-                item.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
-                item.setSeasonGuid(rs.getString("SEASON_GUID"));
-                item.setSeasonName(rs.getString("SEASON_NAME"));
-                item.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
-                item.setEpisodeGuid(rs.getString("EPISODE_GUID"));
-                item.setEpisodeName(rs.getString("EPISODE_NAME"));
-                item.setEpisodeDate(rs.getString("EPISODE_ORIGINAL_AIR_DATE"));
-                item.setEpisodeNumberInSeason(rs.getInt("EPISODE_NUMBER_IN_SEASON"));
-                item.setEpisodeNumberInSeries(rs.getInt("EPISODE_NUMBER_IN_SERIES"));
-                item.setEpisodeComments(rs.getString("EPISODE_COMMENTS"));
-                return item;
+                Episode row = new Episode();
+                row.setSeriesGuid(rs.getString("SERIES_GUID"));
+                row.setSeriesName(rs.getString("SERIES_NAME"));
+                row.setSeriesAbbreviation(rs.getString("SERIES_ABBREVIATION"));
+                row.setSeasonGuid(rs.getString("SEASON_GUID"));
+                row.setSeasonName(rs.getString("SEASON_NAME"));
+                row.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
+                row.setEpisodeGuid(rs.getString("EPISODE_GUID"));
+                row.setEpisodeName(rs.getString("EPISODE_NAME"));
+                row.setEpisodeDate(rs.getString("EPISODE_ORIGINAL_AIR_DATE"));
+                row.setEpisodeNumberInSeason(rs.getInt("EPISODE_NUMBER_IN_SEASON"));
+                row.setEpisodeNumberInSeries(rs.getInt("EPISODE_NUMBER_IN_SERIES"));
+                row.setEpisodeComments(rs.getString("EPISODE_COMMENTS"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);

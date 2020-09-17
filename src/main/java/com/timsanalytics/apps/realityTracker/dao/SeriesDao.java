@@ -131,10 +131,10 @@ public class SeriesDao {
                     pageStart,
                     pageSize
             }, (rs, rowNum) -> {
-                Series item = new Series();
-                item.setSeriesGuid(rs.getString("SERIES_GUID"));
-                item.setSeriesName(rs.getString("SERIES_NAME"));
-                return item;
+                Series row = new Series();
+                row.setSeriesGuid(rs.getString("SERIES_GUID"));
+                row.setSeriesName(rs.getString("SERIES_NAME"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);

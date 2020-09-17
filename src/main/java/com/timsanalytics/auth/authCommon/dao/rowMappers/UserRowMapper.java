@@ -9,22 +9,22 @@ import java.sql.SQLException;
 public class UserRowMapper implements RowMapper<User> {
 
     public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-        User item = new User();
-        item.setUserGuid(rs.getString("USER_GUID"));
-        item.setUsername(rs.getString("USER_USERNAME"));
-        item.setPassword(rs.getString("USER_PASSWORD"));
-        item.setLoginCount(rs.getInt("USER_LOGIN_COUNT"));
-        item.setLastLogin(rs.getTimestamp("USER_LAST_LOGIN"));
+        User row = new User();
+        row.setUserGuid(rs.getString("USER_GUID"));
+        row.setUsername(rs.getString("USER_USERNAME"));
+        row.setPassword(rs.getString("USER_PASSWORD"));
+        row.setLoginCount(rs.getInt("USER_LOGIN_COUNT"));
+        row.setLastLogin(rs.getTimestamp("USER_LAST_LOGIN"));
 
-        item.setSurname(rs.getString("USER_SURNAME"));
-        item.setGivenName(rs.getString("USER_GIVEN_NAME"));
-        item.setPicture(rs.getString("USER_PROFILE_PHOTO_URL"));
+        row.setSurname(rs.getString("USER_SURNAME"));
+        row.setGivenName(rs.getString("USER_GIVEN_NAME"));
+        row.setPicture(rs.getString("USER_PROFILE_PHOTO_URL"));
 
-        item.setStatus(rs.getString("STATUS"));
-        item.setCreatedOn(rs.getTimestamp("CREATED_ON"));
-        item.setCreatedBy(rs.getString("CREATED_BY"));
-        item.setUpdatedOn(rs.getTimestamp("UPDATED_ON"));
-        item.setUpdatedBy(rs.getString("UPDATED_BY"));
-        return item;
+        row.setStatus(rs.getString("STATUS"));
+        row.setCreatedOn(rs.getTimestamp("CREATED_ON"));
+        row.setCreatedBy(rs.getString("CREATED_BY"));
+        row.setUpdatedOn(rs.getTimestamp("UPDATED_ON"));
+        row.setUpdatedBy(rs.getString("UPDATED_BY"));
+        return row;
     }
 }

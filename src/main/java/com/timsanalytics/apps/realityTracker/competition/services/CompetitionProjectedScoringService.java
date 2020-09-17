@@ -43,7 +43,7 @@ public class CompetitionProjectedScoringService {
 
     public CompetitionScore getPickResultScoreByTeamUser(String teamKey, String userKey) {
         Integer score = this.pickResultService.getPickResultsByTeamUser(teamKey, userKey).stream()
-                .filter(item -> item.getStatus().equals(CompetitionPickResult.Status.CORRECT) || item.getStatus().equals(CompetitionPickResult.Status.PROJECTED))
+                .filter(competitionPickResult -> competitionPickResult.getStatus().equals(CompetitionPickResult.Status.CORRECT) || competitionPickResult.getStatus().equals(CompetitionPickResult.Status.PROJECTED))
                 .mapToInt(item -> this.roundService.getRoundByRoundNumber(item.getRoundNumber()).getRoundPoints())
                 .sum();
         return new CompetitionScore(teamKey, userKey, null, null, score, null);
@@ -52,7 +52,7 @@ public class CompetitionProjectedScoringService {
 
     public List<CompetitionScore> getPickResultScoreByTeamUserGroupByRound(String teamKey, String userKey) {
         return this.pickResultService.getPickResultsByTeamUser(teamKey, userKey).stream()
-                .filter(item -> item.getStatus().equals(CompetitionPickResult.Status.CORRECT) || item.getStatus().equals(CompetitionPickResult.Status.PROJECTED))
+                .filter(competitionPickResult -> competitionPickResult.getStatus().equals(CompetitionPickResult.Status.CORRECT) || competitionPickResult.getStatus().equals(CompetitionPickResult.Status.PROJECTED))
                 .collect(Collectors.groupingBy(CompetitionPickResult::getRoundNumber, Collectors.summingInt(item -> this.roundService.getRoundByRoundNumber(item.getRoundNumber()).getRoundPoints())))
                 .entrySet().stream()
                 .map(e -> new CompetitionScore(teamKey, userKey, e.getKey(), null, e.getValue(), null))
@@ -61,14 +61,14 @@ public class CompetitionProjectedScoringService {
 
     public List<CompetitionScore> getPickResultScoreByTeamGroupByUserRound(String teamKey) {
         return this.competitionPlayerService.getUserListByTeamKey(teamKey).stream()
-                .map(user -> this.getPickResultScoreByTeamUserGroupByRound(teamKey, user.getUserKey()))
+                .map(competitionUser -> this.getPickResultScoreByTeamUserGroupByRound(teamKey, competitionUser.getUserKey()))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 
     public List<CompetitionScore> getPickResultScoreByTeamGroupByUser(String teamKey) {
         return this.competitionPlayerService.getUserListByTeamKey(teamKey).stream()
-                .map(user -> this.getPickResultScoreByTeamUser(teamKey, user.getUserKey()))
+                .map(competitionUser -> this.getPickResultScoreByTeamUser(teamKey, competitionUser.getUserKey()))
                 .collect(Collectors.toList());
     }
 }

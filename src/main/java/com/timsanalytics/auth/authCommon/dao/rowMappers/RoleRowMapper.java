@@ -9,10 +9,10 @@ import java.sql.SQLException;
 public class RoleRowMapper implements RowMapper<Role> {
 
     public Role mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Role item = new Role();
-        item.setRoleGuid(rs.getString("ROLE_GUID"));
-        item.setName(rs.getString("ROLE_NAME"));
-        item.setAuthority(rs.getString("AUTHORITY"));
-        return item;
+        Role row = new Role();
+        row.setRoleGuid(rs.getString("ROLE_GUID"));
+        row.setName(rs.getString("ROLE_NAME"));
+        row.setAuthority(rs.getString("AUTHORITY"));
+        return row;
     }
 }

@@ -9,16 +9,16 @@ import java.sql.SQLException;
 public class AuditRowMapper implements RowMapper<Audit> {
 
     public Audit mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Audit item = new Audit();
-        item.setAuditGuid(rs.getString("AUDIT_GUID"));
-        item.setType(rs.getString("TYPE"));
-        item.setUsername(rs.getString("USERNAME"));
-        item.setMethod(rs.getString("METHOD"));
-        item.setRequest_uri(rs.getString("REQUEST_URI"));
-        item.setRequest_body(rs.getString("REQUEST_BODY"));
-        item.setResponse_time(rs.getLong("RESPONSE_TIME"));
-        item.setResponse_code(rs.getInt("RESPONSE_CODE"));
-        item.setTimestamp(rs.getTimestamp("TIMESTAMP"));
-        return item;
+        Audit row = new Audit();
+        row.setAuditGuid(rs.getString("AUDIT_GUID"));
+        row.setType(rs.getString("TYPE"));
+        row.setUsername(rs.getString("USERNAME"));
+        row.setMethod(rs.getString("METHOD"));
+        row.setRequest_uri(rs.getString("REQUEST_URI"));
+        row.setRequest_body(rs.getString("REQUEST_BODY"));
+        row.setResponse_time(rs.getLong("RESPONSE_TIME"));
+        row.setResponse_code(rs.getInt("RESPONSE_CODE"));
+        row.setTimestamp(rs.getTimestamp("TIMESTAMP"));
+        return row;
     }
 }

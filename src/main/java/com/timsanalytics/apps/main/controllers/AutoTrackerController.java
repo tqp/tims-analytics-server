@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/auto-tracker-two")
+@RequestMapping("/api/v1/auto-tracker-api")
 @Tag(name = "Auto Tracker", description = "Auto Tracker")
 public class AutoTrackerController {
 

@@ -15,7 +15,10 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -44,7 +47,7 @@ public class AutoTrackerDao {
         query.append("      (\n");
         query.append("          FILL.FILL_GUID,\n");
         query.append("          FILL.FILL_ODOMETER,\n");
-        query.append("          FILL.FILL_DATE,\n");
+        query.append("          FILL.FILL_DATE_TIME,\n");
         query.append("          FILL.FILL_GALLONS,\n");
         query.append("          FILL.FILL_COST_PER_GALLON,\n");
         query.append("          FILL.FILL_TOTAL_COST,\n");
@@ -75,7 +78,7 @@ public class AutoTrackerDao {
                         this.logger.debug("New Fill GUID: " + fill.getFillGuid());
                         ps.setString(1, fill.getFillGuid());
                         ps.setDouble(2, fill.getFillOdometer());
-                        ps.setDate(3, fill.getFillDate());
+                        ps.setTimestamp(3, fill.getFillDateTime());
                         ps.setDouble(4, fill.getFillGallons());
                         ps.setDouble(5, fill.getFillCostPerGallon());
                         ps.setDouble(6, fill.getFillTotalCost());
@@ -144,7 +147,7 @@ public class AutoTrackerDao {
 
         query.append("          ORDER BY\n");
         query.append(sortColumn).append(" ").append(sortDirection.toUpperCase()).append(",\n");
-        query.append("              FILL_DATE DESC\n"); // UPDATE THIS WHEN USING AS TEMPLATE!
+        query.append("              FILL_DATE_TIME DESC\n"); // UPDATE THIS WHEN USING AS TEMPLATE!
         query.append("      ) AS FILTER_SORT_QUERY\n");
         query.append("      -- END FILTER/SORT QUERY\n");
 
@@ -161,7 +164,7 @@ public class AutoTrackerDao {
             }, (rs, rowNum) -> {
                 Fill fill = new Fill();
                 fill.setFillGuid(rs.getString("FILL_GUID"));
-                fill.setFillDate(rs.getDate("FILL_DATE"));
+                fill.setFillDateTime(rs.getTimestamp("FILL_DATE_TIME"));
                 fill.setFillOdometer(rs.getDouble("FILL_ODOMETER"));
                 fill.setFillMilesTraveled(rs.getDouble("FILL_MILES_TRAVELED"));
                 fill.setFillMilesPerGallon(rs.getDouble("FILL_MILES_PER_GALLON"));
@@ -195,7 +198,7 @@ public class AutoTrackerDao {
 
         rootQuery.append("              SELECT");
         rootQuery.append("                  FILL_GUID,\n");
-        rootQuery.append("                  FILL_DATE,\n");
+        rootQuery.append("                  FILL_DATE_TIME,\n");
         rootQuery.append("                  FILL_ODOMETER,\n");
         rootQuery.append("                  FILL_MILES_TRAVELED,\n");
         rootQuery.append("                  FILL_MILES_PER_GALLON,\n");
@@ -245,7 +248,7 @@ public class AutoTrackerDao {
         query.append("  SELECT\n");
         query.append("      FILL_GUID,\n");
         query.append("      FILL_ODOMETER,\n");
-        query.append("      FILL_DATE,\n");
+        query.append("      FILL_DATE_TIME,\n");
         query.append("      FILL_GALLONS,\n");
         query.append("      FILL_COST_PER_GALLON,\n");
         query.append("      FILL_TOTAL_COST,\n");
@@ -272,7 +275,7 @@ public class AutoTrackerDao {
             return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{fuelActivityGuid}, (rs, rowNum) -> {
                 Fill fill = new Fill();
                 fill.setFillGuid(rs.getString("FILL_GUID"));
-                fill.setFillDate(rs.getDate("FILL_DATE"));
+                fill.setFillDateTime(rs.getTimestamp("FILL_DATE_TIME"));
                 fill.setFillOdometer(rs.getDouble("FILL_ODOMETER"));
                 fill.setFillMilesTraveled(rs.getDouble("FILL_MILES_TRAVELED"));
                 fill.setFillMilesPerGallon(rs.getDouble("FILL_MILES_PER_GALLON"));
@@ -304,13 +307,12 @@ public class AutoTrackerDao {
     }
 
     public Fill updateFuelActivity(Fill fill) {
-        this.printObjectService.PrintObject("fill", fill);
         StringBuilder query = new StringBuilder();
         query.append("  UPDATE\n");
         query.append("      AUTO_TRACKER.FILL\n");
         query.append("  SET\n");
         query.append("      FILL.FILL_ODOMETER = ?,\n");
-        query.append("      FILL.FILL_DATE = ?,\n");
+        query.append("      FILL.FILL_DATE_TIME = ?,\n");
         query.append("      FILL.FILL_GALLONS = ?,\n");
         query.append("      FILL.FILL_COST_PER_GALLON = ?,\n");
         query.append("      FILL.FILL_TOTAL_COST = ?,\n");
@@ -325,7 +327,7 @@ public class AutoTrackerDao {
                     connection -> {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setDouble(1, fill.getFillOdometer());
-                        ps.setDate(2, fill.getFillDate());
+                        ps.setTimestamp(2, fill.getFillDateTime());
                         ps.setDouble(3, fill.getFillGallons());
                         ps.setDouble(4, fill.getFillCostPerGallon());
                         ps.setDouble(5, fill.getFillTotalCost());
@@ -460,7 +462,7 @@ public class AutoTrackerDao {
     public List<KeyValueDouble> getOdometerData() {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      FILL_DATE,\n");
+        query.append("      FILL_DATE_TIME,\n");
         query.append("      FILL_ODOMETER\n");
         query.append("  FROM\n");
         query.append("      AUTO_TRACKER.FILL\n");
@@ -470,7 +472,7 @@ public class AutoTrackerDao {
         query.append("      FILL_ODOMETER\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> new KeyValueDouble(rs.getString("FILL_DATE"), rs.getDouble("FILL_ODOMETER")));
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> new KeyValueDouble(rs.getString("FILL_DATE_TIME"), rs.getDouble("FILL_ODOMETER")));
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;
@@ -483,17 +485,17 @@ public class AutoTrackerDao {
     public List<KeyValueDouble> getMpgData() {
         StringBuilder query = new StringBuilder();
         query.append("  SELECT\n");
-        query.append("      FILL_DATE,\n");
+        query.append("      FILL_DATE_TIME,\n");
         query.append("      FILL_MILES_TRAVELED / FILL_GALLONS AS MPG\n");
         query.append("  FROM\n");
         query.append("      AUTO_TRACKER.FILL\n");
         query.append("  WHERE\n");
         query.append("      STATUS = 'Active'\n");
         query.append("  ORDER BY\n");
-        query.append("      FILL_DATE;\n");
+        query.append("      FILL_DATE_TIME;\n");
         this.logger.trace("SQL:\n" + query.toString());
         try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> new KeyValueDouble(rs.getString("FILL_DATE"), rs.getDouble("MPG")));
+            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> new KeyValueDouble(rs.getString("FILL_DATE_TIME"), rs.getDouble("MPG")));
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
             return null;

@@ -233,12 +233,12 @@ public class UserDao {
                     pageStart,
                     pageSize
             }, (rs, rowNum) -> {
-                User item = new User();
-                item.setUserGuid(rs.getString("USER_GUID"));
-                item.setUsername(rs.getString("USER_USERNAME"));
-                item.setSurname(rs.getString("USER_SURNAME"));
-                item.setGivenName(rs.getString("USER_GIVEN_NAME"));
-                return item;
+                User row = new User();
+                row.setUserGuid(rs.getString("USER_GUID"));
+                row.setUsername(rs.getString("USER_USERNAME"));
+                row.setSurname(rs.getString("USER_SURNAME"));
+                row.setGivenName(rs.getString("USER_GIVEN_NAME"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);

@@ -5,7 +5,7 @@ import com.timsanalytics.common.beans.KeyValueString;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TestService {
+public class AuthCommonTestService {
 //    private SampleThingService sampleThingService;
 
     public KeyValue testMethod() {

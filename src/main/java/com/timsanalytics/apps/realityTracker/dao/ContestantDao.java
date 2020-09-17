@@ -157,12 +157,12 @@ public class ContestantDao {
                     pageStart,
                     pageSize
             }, (rs, rowNum) -> {
-                Contestant item = new Contestant();
-                item.setContestantGuid(rs.getString("CONTESTANT_GUID"));
-                item.setContestantLastName(rs.getString("CONTESTANT_LAST_NAME"));
-                item.setContestantFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
-                item.setContestantNickname(rs.getString("CONTESTANT_NICKNAME"));
-                return item;
+                Contestant row = new Contestant();
+                row.setContestantGuid(rs.getString("CONTESTANT_GUID"));
+                row.setContestantLastName(rs.getString("CONTESTANT_LAST_NAME"));
+                row.setContestantFirstName(rs.getString("CONTESTANT_FIRST_NAME"));
+                row.setContestantNickname(rs.getString("CONTESTANT_NICKNAME"));
+                return row;
             });
         } catch (EmptyResultDataAccessException e) {
             this.logger.error("EmptyResultDataAccessException: " + e);
