@@ -1,10 +1,9 @@
 package com.timsanalytics.apps.realityTracker.dao;
 
 import com.timsanalytics.apps.realityTracker.beans.Episode;
-import com.timsanalytics.apps.realityTracker.beans.Season;
 import com.timsanalytics.auth.authCommon.beans.KeyValue;
-import com.timsanalytics.utils.GenerateUuidService;
-import com.timsanalytics.utils.PrintObjectService;
+import com.timsanalytics.common.utils.GenerateUuidService;
+import com.timsanalytics.common.utils.PrintObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

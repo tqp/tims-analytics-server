@@ -1,4 +1,4 @@
-package com.timsanalytics.utils;
+package com.timsanalytics.common.utils;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Service;

@@ -25,6 +25,20 @@ rename table to oldTable;
 rename newTable to table;
 ```
 
+## Install Local JAR
+```text
+mvn install:install-file \
+   -Dfile=<path-to-file> \
+   -DgroupId=<group-id> \
+   -DartifactId=<artifact-id> \
+   -Dversion=<version> \
+   -Dpackaging=<packaging> \
+   -DgeneratePom=true
+```
+
+`mvn install:install-file -Dfile=C:\Users\tqp\.m2\repository\com\timsanalytics\jar\external-jar\1.0.0 -DgroupId=com.timsanalytics.jar -DartifactId=external-jar -Dversion=1.0.0 -Dpackaging=jar -DgeneratePom
+ =true`
+
 ## AWS Configruation
 
 Deploy server to Elastic Beanstalk (with https)

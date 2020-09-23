@@ -1,4 +1,4 @@
-package com.timsanalytics.utils;
+package com.timsanalytics.common.utils;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

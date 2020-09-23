@@ -3,7 +3,7 @@ package com.timsanalytics.apps.realityTracker.controllers;
 import com.timsanalytics.apps.realityTracker.beans.ListItem;
 import com.timsanalytics.apps.realityTracker.beans.Player;
 import com.timsanalytics.apps.realityTracker.services.PlayerService;
-import com.timsanalytics.utils.PrintObjectService;
+import com.timsanalytics.common.utils.PrintObjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

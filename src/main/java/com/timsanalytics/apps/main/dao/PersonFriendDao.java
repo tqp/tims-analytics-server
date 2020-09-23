@@ -3,7 +3,7 @@ package com.timsanalytics.apps.main.dao;
 import com.timsanalytics.apps.main.beans.Person;
 import com.timsanalytics.apps.main.beans.PersonFriend;
 import com.timsanalytics.common.beans.ServerSidePaginationRequest;
-import com.timsanalytics.utils.GenerateUuidService;
+import com.timsanalytics.common.utils.GenerateUuidService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

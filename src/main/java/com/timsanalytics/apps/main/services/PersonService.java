@@ -7,7 +7,7 @@ import com.timsanalytics.apps.main.dao.PersonFriendDao;
 import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.common.beans.ServerSidePaginationResponse;
-import com.timsanalytics.utils.GenerateUuidService;
+import com.timsanalytics.common.utils.GenerateUuidService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

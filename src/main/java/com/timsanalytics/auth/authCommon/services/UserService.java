@@ -5,7 +5,7 @@ import com.timsanalytics.auth.authCommon.beans.User;
 import com.timsanalytics.auth.authCommon.dao.UserDao;
 import com.timsanalytics.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.common.beans.ServerSidePaginationResponse;
-import com.timsanalytics.utils.PrintObjectService;
+import com.timsanalytics.common.utils.PrintObjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
