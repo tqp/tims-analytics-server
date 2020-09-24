@@ -12,11 +12,11 @@ import java.util.stream.Collectors;
 @Service
 public class ScoreService {
     private final PickResultService pickResultService;
-    private final UserService userService;
+    private final CompetitionUserService userService;
     private final RoundService roundService;
 
     @Autowired
-    public ScoreService(PickResultService pickResultService, UserService userService, RoundService roundService) {
+    public ScoreService(PickResultService pickResultService, CompetitionUserService userService, RoundService roundService) {
         this.pickResultService = pickResultService;
         this.userService = userService;
         this.roundService = roundService;

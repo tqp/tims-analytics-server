@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 public class ProjectedScoreService {
     private final PickService pickService;
     private final PickResultService pickResultService;
-    private final UserService userService;
+    private final CompetitionUserService userService;
     private final RoundService roundService;
     private final PrintObjectService printObjectService;
 
     @Autowired
     public ProjectedScoreService(PickService pickService,
                                  PickResultService pickResultService,
-                                 UserService userService,
+                                 CompetitionUserService userService,
                                  RoundService roundService,
                                  PrintObjectService printObjectService) {
         this.pickService = pickService;

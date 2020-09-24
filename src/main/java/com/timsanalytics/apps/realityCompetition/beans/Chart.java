@@ -4,9 +4,9 @@ public class Chart {
     private String contestantKey;
     private Integer roundNumber;
     private Integer position;
-    private String status;
+    private PickResult.Status status;
 
-    public Chart(String contestantKey, Integer roundNumber, Integer position, String status) {
+    public Chart(String contestantKey, Integer roundNumber, Integer position, PickResult.Status status) {
         this.contestantKey = contestantKey;
         this.roundNumber = roundNumber;
         this.position = position;
@@ -37,11 +37,11 @@ public class Chart {
         this.position = position;
     }
 
-    public String getStatus() {
+    public PickResult.Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(PickResult.Status status) {
         this.status = status;
     }
 }

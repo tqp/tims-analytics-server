@@ -10,8 +10,8 @@ public class Tester {
         DataService_BB22 dataService = new DataService_BB22();
 
         TeamService teamService = new TeamService(dataService);
-        UserService userService = new UserService(dataService);
-        ContestantService contestantService = new ContestantService(dataService);
+        CompetitionUserService userService = new CompetitionUserService(dataService);
+        CompetitionContestantService contestantService = new CompetitionContestantService(dataService);
         ResultService resultService = new ResultService(dataService);
         RoundService roundService = new RoundService(dataService, resultService);
         PickService pickService = new PickService(dataService, roundService, resultService);

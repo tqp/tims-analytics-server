@@ -17,7 +17,7 @@ public class BestPickService {
     RoundService roundService;
     ProjectedScoreService projectedScoreService;
     PickService pickService;
-    UserService userService;
+    CompetitionUserService userService;
     PrintObjectService printObjectService;
     PickResultService pickResultService;
 
@@ -26,7 +26,7 @@ public class BestPickService {
                            RoundService roundService,
                            ProjectedScoreService projectedScoreService,
                            PickService pickService,
-                           UserService userService,
+                           CompetitionUserService userService,
                            PrintObjectService printObjectService,
                            PickResultService pickResultService
 

@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ContestantService {
+public class CompetitionContestantService {
     private final DataService_BB22 dataService;
 
     @Autowired
-    public ContestantService(DataService_BB22 dataService) {
+    public CompetitionContestantService(DataService_BB22 dataService) {
         this.dataService = dataService;
     }
 
