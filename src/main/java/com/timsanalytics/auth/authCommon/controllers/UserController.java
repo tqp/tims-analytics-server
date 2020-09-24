@@ -1,12 +1,10 @@
 package com.timsanalytics.auth.authCommon.controllers;
 
-import com.timsanalytics.auth.authCommon.beans.KeyValue;
 import com.timsanalytics.auth.authCommon.beans.User;
 import com.timsanalytics.auth.authCommon.services.UserService;
 import com.timsanalytics.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.common.beans.ServerSidePaginationResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
