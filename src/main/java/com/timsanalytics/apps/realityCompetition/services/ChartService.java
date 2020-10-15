@@ -1,6 +1,7 @@
 package com.timsanalytics.apps.realityCompetition.services;
 
-import com.timsanalytics.apps.realityCompetition.beans.*;
+import com.timsanalytics.apps.realityCompetition.beans.Chart;
+import com.timsanalytics.apps.realityCompetition.beans.Pick;
 import com.timsanalytics.apps.realityCompetition.tester.Tester;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class ChartService {
         Tester.main(null);
     }
 
-    public List<Chart> getChartByPosition(String teamKey, String userKey) {
+    public List<Chart> getChartByPositionByTeamUser(String teamKey, String userKey) {
         List<Pick> pickList = this.pickService.getPickListByTeamUser(teamKey, userKey);
         int roundsAlreadyPlayed = this.roundService.getLastPlayedRoundNumber();
 
@@ -48,7 +49,6 @@ public class ChartService {
         System.out.println("roundsRemaining    : " + roundsRemaining);
 
         List<Chart> chartList = new ArrayList<>();
-
         AtomicInteger i = new AtomicInteger(1);
         pickList.forEach(pick -> {
             for (int j = 1; j < roundsAlreadyPlayed + roundsRemaining; j++) {
@@ -58,10 +58,13 @@ public class ChartService {
 //                        "Round " + j,
 //                        this.pickResultService.getPickResult(teamKey, userKey, i.get(), j).getStatus()
 //                );
-                chartList.add(new Chart(pick.getContestantKey(),
-                        j,
-                        i.get(),
-                        this.pickResultService.getPickResult(teamKey, userKey, i.get(), j).getStatus()));
+                chartList.add(
+                        new Chart(
+                                this.contestantService.getContestant(pick.getContestantKey()),
+                                j,
+                                i.get(),
+                                this.roundService.getRound(j).getRoundPoints(),
+                                this.pickResultService.getPickResult(teamKey, userKey, i.get(), j).getStatus()));
             }
             i.getAndIncrement();
         });

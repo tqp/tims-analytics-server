@@ -1,7 +1,10 @@
 package com.timsanalytics.apps.realityCompetition.services;
 
 
-import com.timsanalytics.apps.realityCompetition.beans.*;
+import com.timsanalytics.apps.realityCompetition.beans.BestPick;
+import com.timsanalytics.apps.realityCompetition.beans.Pick;
+import com.timsanalytics.apps.realityCompetition.beans.PickResult;
+import com.timsanalytics.apps.realityCompetition.beans.Result;
 import com.timsanalytics.apps.realityCompetition.tester.Tester;
 import com.timsanalytics.common.utils.PrintObjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,66 +47,29 @@ public class BestPickService {
         Tester.main(null);
     }
 
-    public List<BestPick> getBestPicks_NextRound(String teamKey, String userKey) {
-        return this.resultService.getResultList().stream()
-                // Get only contestants that are still in the game
-                .filter(result -> result.getRoundNumber().equals(this.roundService.getLastPlayedRoundNumber()))
-                .map(remainingContestants -> {
-                    // What is the next round?
-                    int nextRound = this.roundService.getLastPlayedRoundNumber() + 1;
-                    // How may points are correct guesses in the next round worth?
-                    double pointsPerCorrect = this.roundService.getRound(nextRound).getRoundPoints();
-
-                    List<Pick> myPickList = this.pickService.getPickList().stream()
-                            .filter(pick -> pick.getTeamKey().equalsIgnoreCase(teamKey)) // Filter picks by Team
-                            .filter(pick -> pick.getUserKey().equalsIgnoreCase(userKey)) // Filter picks by User
-                            .filter(pick -> pick.getContestantKey().equalsIgnoreCase(remainingContestants.getContestantKey()))
-                            .filter(pick -> pick.getPosition() <= roundService.getRound(nextRound).getRoundCutoffCount())
-                            .sorted(Comparator.comparing(Pick::getPosition))
-                            .collect(Collectors.toList());
-
-                    List<Pick> othersPickList = this.pickService.getPickList().stream()
-                            .filter(pick -> pick.getTeamKey().equalsIgnoreCase(teamKey)) // Filter picks by Team
-                            .filter(pick -> !pick.getUserKey().equalsIgnoreCase(userKey)) // Filter picks by User
-                            .filter(pick -> pick.getContestantKey().equalsIgnoreCase(remainingContestants.getContestantKey()))
-                            .filter(pick -> pick.getPosition() <= roundService.getRound(nextRound).getRoundCutoffCount())
-                            .sorted(Comparator.comparing(Pick::getPosition))
-                            .collect(Collectors.toList());
-
-                    int otherSize = this.userService.getUserListByTeamKey(teamKey).size() - 1;
-
-                    return new BestPick(remainingContestants.getContestantKey(),
-                            pointsPerCorrect * (double) myPickList.size(),
-                            pointsPerCorrect * ((double) othersPickList.size() / otherSize),
-                            pointsPerCorrect * ((double) myPickList.size() - ((double) othersPickList.size() / otherSize))
-                    );
-                })
-                .sorted(Comparator.comparing(BestPick::getPointDifferential).reversed())
-                .collect(Collectors.toList());
-    }
-
     public List<BestPick> getBestPicks(String teamKey, String userKey, Boolean onlyNextRound) {
         List<Result> remainingPlayerList = this.resultService.getResultList().stream()
-                // Get only contestants that are still in the game
+                // Get only the contestants that are still in the game
                 .filter(result -> result.getRoundNumber().equals(this.roundService.getLastPlayedRoundNumber()))
                 .collect(Collectors.toList());
 
-        int nextRoundNumber = this.roundService.getLastPlayedRoundNumber() + 1;
+        int nextRound = this.roundService.getLastPlayedRoundNumber() + 1;
+        int numberOfOpponentsOnTeam = this.userService.getUserListByTeamKey(teamKey).size() - 1;
 
         return remainingPlayerList.stream()
                 .map(result -> {
 
                     // Get my projected score for the contestant
                     double myPoints = this.pickResultService.getPickResultByTeamUser(teamKey, userKey).stream()
-                            .filter(pickResult -> onlyNextRound ? pickResult.getRoundNumber() == nextRoundNumber : pickResult.getRoundNumber() >= nextRoundNumber)
+                            .filter(pickResult -> onlyNextRound ? pickResult.getRoundNumber() == nextRound : pickResult.getRoundNumber() >= nextRound)
                             .filter(pickResult -> pickResult.getPick().getContestantKey().equalsIgnoreCase(result.getContestantKey()))
                             .filter(pickResult -> pickResult.getStatus().equals(PickResult.Status.CORRECT) || pickResult.getStatus().equals(PickResult.Status.PROJECTED))
                             .mapToDouble(pickResult -> this.roundService.getRound(pickResult.getRoundNumber()).getRoundPoints())
                             .sum();
 
-                    // Get my team opponents' combined score for the contestant
+                    // Get my team opponents combined score for the contestant
                     double opponentsTotalPoints = this.roundService.getRoundList().stream()
-                            .filter(pickResult -> onlyNextRound ? pickResult.getRoundNumber() == nextRoundNumber : pickResult.getRoundNumber() >= nextRoundNumber)
+                            .filter(pickResult -> onlyNextRound ? pickResult.getRoundNumber() == nextRound : pickResult.getRoundNumber() >= nextRound)
                             .flatMap(round -> {
                                 if (!this.roundService.isRoundNumberValid(round.getRoundNumber())) {
                                     throw new IllegalArgumentException("The round number is invalid.");
@@ -112,7 +78,7 @@ public class BestPickService {
                                             .filter(pick -> pick.getTeamKey().equalsIgnoreCase(teamKey))
                                             .filter(pick -> !pick.getUserKey().equalsIgnoreCase(userKey))
                                             .filter(pick -> this.pickService.isPositionValid(pick.getPosition(), round.getRoundNumber()))
-                                            .peek(pick -> pick.setRoundNumber(round.getRoundNumber())) // Add Round Number to Pick
+                                            .peek(pick -> pick.setRoundNumber(round.getRoundNumber()))
                                             .sorted(Comparator.comparing(Pick::getPosition));
                                 }
                             })
@@ -120,10 +86,43 @@ public class BestPickService {
                             .mapToDouble(pickResult -> this.roundService.getRound(pickResult.getRoundNumber()).getRoundPoints())
                             .sum();
 
-                    int numberOfOpponents = this.userService.getUserListByTeamKey(teamKey).size() - 1;
-                    double opponentsAveragePoints = opponentsTotalPoints / numberOfOpponents;
+                    double opponentsAveragePoints = opponentsTotalPoints / numberOfOpponentsOnTeam;
                     double pointDifferential = myPoints - opponentsAveragePoints;
                     return new BestPick(result.getContestantKey(), myPoints, opponentsAveragePoints, pointDifferential);
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<BestPick> getBestPicksAgainst(String teamKey, String userKey, String againstUserKey, Boolean onlyNextRound) {
+        List<Result> remainingPlayerList = this.resultService.getResultList().stream()
+                // Get only the contestants that are still in the game.
+                .filter(result -> result.getRoundNumber().equals(this.roundService.getLastPlayedRoundNumber()))
+                .collect(Collectors.toList());
+
+        int nextRound = this.roundService.getLastPlayedRoundNumber() + 1;
+        int numberOfOpponentsOnTeam = this.userService.getUserListByTeamKey(teamKey).size() - 1;
+
+        return remainingPlayerList.stream()
+                .map(result -> {
+
+                    // Get my projected score for the contestant
+                    double myPoints = this.pickResultService.getPickResultByTeamUser(teamKey, userKey).stream()
+                            .filter(pickResult -> onlyNextRound ? pickResult.getRoundNumber() == nextRound : pickResult.getRoundNumber() >= nextRound)
+                            .filter(pickResult -> pickResult.getPick().getContestantKey().equalsIgnoreCase(result.getContestantKey()))
+                            .filter(pickResult -> pickResult.getStatus().equals(PickResult.Status.CORRECT) || pickResult.getStatus().equals(PickResult.Status.PROJECTED))
+                            .mapToDouble(pickResult -> this.roundService.getRound(pickResult.getRoundNumber()).getRoundPoints())
+                            .sum();
+
+                    // Get my opponent's projected score for the contestant
+                    double theirPoints = this.pickResultService.getPickResultByTeamUser(teamKey, againstUserKey).stream()
+                            .filter(pickResult -> onlyNextRound ? pickResult.getRoundNumber() == nextRound : pickResult.getRoundNumber() >= nextRound)
+                            .filter(pickResult -> pickResult.getPick().getContestantKey().equalsIgnoreCase(result.getContestantKey()))
+                            .filter(pickResult -> pickResult.getStatus().equals(PickResult.Status.CORRECT) || pickResult.getStatus().equals(PickResult.Status.PROJECTED))
+                            .mapToDouble(pickResult -> this.roundService.getRound(pickResult.getRoundNumber()).getRoundPoints())
+                            .sum();
+
+                    double pointDifferential = myPoints - theirPoints;
+                    return new BestPick(result.getContestantKey(), myPoints, theirPoints, pointDifferential);
                 })
                 .collect(Collectors.toList());
     }
@@ -142,7 +141,7 @@ public class BestPickService {
                 .collect(Collectors.toList());
     }
 
-    public List<BestPick> getBestPicksRootNoImpact_NextRound(String teamKey, String userKey) {
+    public List<BestPick> getBestPicksNoImpact_NextRound(String teamKey, String userKey) {
         return this.getBestPicks(teamKey, userKey, true).stream()
                 .filter(bestPick -> bestPick.getPointDifferential() == 0)
                 .sorted(Comparator.comparing(BestPick::getPointDifferential).reversed())

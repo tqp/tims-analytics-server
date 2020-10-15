@@ -24,8 +24,8 @@ public class Tester {
         );
 
         String teamKey = "key_team2";
-        String userKey = "key_user1";
-        printObjectService.PrintObject("\nResult", chartService.getChartByPosition(teamKey, userKey));
+        String userKey = "key_user2";
+        printObjectService.PrintObject("\nResult", projectedScoreService.getProjectedScoreByTeam_GroupByUser(teamKey));
     }
 
 

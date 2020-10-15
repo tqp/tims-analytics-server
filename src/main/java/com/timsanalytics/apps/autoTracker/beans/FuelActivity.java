@@ -1,4 +1,4 @@
-package com.timsanalytics.apps.main.beans;
+package com.timsanalytics.apps.autoTracker.beans;
 
 public class FuelActivity {
     private Fill fill;

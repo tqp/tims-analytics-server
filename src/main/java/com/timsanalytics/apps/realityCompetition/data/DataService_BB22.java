@@ -40,21 +40,21 @@ public class DataService_BB22 {
 
     public List<Round> defineRounds() {
         List<Round> rounds = new ArrayList<>();
-        rounds.add(new Round(1, 15, 100.0 / 15));
-        rounds.add(new Round(2, 14, 100.0 / 14));
-        rounds.add(new Round(3, 13, 100.0 / 13));
-        rounds.add(new Round(4, 12, 100.0 / 12));
-        rounds.add(new Round(5, 11, 100.0 / 11));
-        rounds.add(new Round(6, 10, 100.0 / 10));
-        rounds.add(new Round(7, 9, 100.0 / 9));
-        rounds.add(new Round(8, 8, 100.0 / 8));
-        rounds.add(new Round(9, 7, 100.0 / 7));
-        rounds.add(new Round(10, 6, 100.0 / 6));
-        rounds.add(new Round(11, 5, 100.0 / 5));
-        rounds.add(new Round(12, 4, 100.0 / 4));
-        rounds.add(new Round(13, 3, 100.0 / 3));
-        rounds.add(new Round(14, 2, 100.0 / 2));
-        rounds.add(new Round(15, 1, 100.0 / 1));
+        rounds.add(new Round(1, 15, 1.0));
+        rounds.add(new Round(2, 14, 2.0));
+        rounds.add(new Round(3, 13, 3.0));
+        rounds.add(new Round(4, 12, 4.0));
+        rounds.add(new Round(5, 11, 5.0));
+        rounds.add(new Round(6, 10, 6.0));
+        rounds.add(new Round(7, 9, 7.0));
+        rounds.add(new Round(8, 8, 8.0));
+        rounds.add(new Round(9, 7, 9.0));
+        rounds.add(new Round(10, 6, 10.0));
+        rounds.add(new Round(11, 5, 11.0));
+        rounds.add(new Round(12, 4, 12.0));
+        rounds.add(new Round(13, 3, 13.0));
+        rounds.add(new Round(14, 2, 14.0));
+        rounds.add(new Round(15, 1, 15.0));
 
         return rounds.stream()
                 .sorted(Comparator
@@ -296,6 +296,59 @@ public class DataService_BB22 {
         results.add(new Result(6, 8, "key_Memphis"));
         results.add(new Result(6, 9, "key_NicoleF"));
         results.add(new Result(6, 10, "key_Tyler"));
+
+        // Round 7: Da'Vonne
+        results.add(new Result(7, 1, "key_Christmas"));
+        results.add(new Result(7, 2, "key_Cody"));
+        results.add(new Result(7, 3, "key_Dani"));
+        results.add(new Result(7, 4, "key_David"));
+        results.add(new Result(7, 5, "key_Enzo"));
+        results.add(new Result(7, 6, "key_Kevin"));
+        results.add(new Result(7, 7, "key_Memphis"));
+        results.add(new Result(7, 8, "key_NicoleF"));
+        results.add(new Result(7, 9, "key_Tyler"));
+
+        // Round 8: Kevin
+        results.add(new Result(8, 1, "key_Christmas"));
+        results.add(new Result(8, 2, "key_Cody"));
+        results.add(new Result(8, 3, "key_Dani"));
+        results.add(new Result(8, 4, "key_David"));
+        results.add(new Result(8, 5, "key_Enzo"));
+        results.add(new Result(8, 6, "key_Memphis"));
+        results.add(new Result(8, 7, "key_NicoleF"));
+        results.add(new Result(8, 8, "key_Tyler"));
+
+        // Round 9: David
+        results.add(new Result(9, 1, "key_Christmas"));
+        results.add(new Result(9, 2, "key_Cody"));
+        results.add(new Result(9, 3, "key_Dani"));
+        results.add(new Result(9, 4, "key_Enzo"));
+        results.add(new Result(9, 5, "key_Memphis"));
+        results.add(new Result(9, 6, "key_NicoleF"));
+        results.add(new Result(9, 7, "key_Tyler"));
+
+        // Round 10: Dani
+        results.add(new Result(10, 1, "key_Christmas"));
+        results.add(new Result(10, 2, "key_Cody"));
+        results.add(new Result(10, 3, "key_Enzo"));
+        results.add(new Result(10, 4, "key_Memphis"));
+        results.add(new Result(10, 5, "key_NicoleF"));
+        results.add(new Result(10, 6, "key_Tyler"));
+
+        // Round 11: Tyler
+        results.add(new Result(11, 1, "key_Christmas"));
+        results.add(new Result(11, 2, "key_Cody"));
+        results.add(new Result(11, 3, "key_Enzo"));
+        results.add(new Result(11, 4, "key_Memphis"));
+        results.add(new Result(11, 5, "key_NicoleF"));
+
+        // Round 12:
+
+        // Round 13:
+
+        // Round 14:
+
+        // Round 15:
 
         return results.stream()
                 .sorted(Comparator

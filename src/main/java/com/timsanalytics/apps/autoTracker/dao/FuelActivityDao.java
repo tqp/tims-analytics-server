@@ -1,10 +1,9 @@
-package com.timsanalytics.apps.main.dao;
+package com.timsanalytics.apps.autoTracker.dao;
 
-import com.timsanalytics.apps.main.beans.Fill;
-import com.timsanalytics.apps.main.beans.FuelActivity;
-import com.timsanalytics.apps.main.beans.Station;
+import com.timsanalytics.apps.autoTracker.beans.Fill;
+import com.timsanalytics.apps.autoTracker.beans.FuelActivity;
+import com.timsanalytics.apps.autoTracker.beans.Station;
 import com.timsanalytics.common.beans.KeyValue;
-import com.timsanalytics.common.beans.KeyValueDouble;
 import com.timsanalytics.common.beans.ServerSidePaginationRequest;
 import com.timsanalytics.common.utils.GenerateUuidService;
 import com.timsanalytics.common.utils.PrintObjectService;
@@ -19,22 +18,20 @@ import java.sql.PreparedStatement;
 import java.util.List;
 
 @Service
-public class AutoTrackerDao {
+public class FuelActivityDao {
     private final Logger logger = LoggerFactory.getLogger(getClass().getName());
     private final JdbcTemplate mySqlAuthJdbcTemplate;
     private final GenerateUuidService generateUuidService;
     private final PrintObjectService printObjectService;
 
     @Autowired
-    public AutoTrackerDao(JdbcTemplate mySqlAuthJdbcTemplate,
-                          GenerateUuidService generateUuidService,
-                          PrintObjectService printObjectService) {
+    public FuelActivityDao(JdbcTemplate mySqlAuthJdbcTemplate,
+                           GenerateUuidService generateUuidService,
+                           PrintObjectService printObjectService) {
         this.mySqlAuthJdbcTemplate = mySqlAuthJdbcTemplate;
         this.generateUuidService = generateUuidService;
         this.printObjectService = printObjectService;
     }
-
-    // FUEL ACTIVITY
 
     public Fill createFuelActivity(Fill fill) {
         this.printObjectService.PrintObject("fill", fill);
@@ -427,134 +424,4 @@ public class AutoTrackerDao {
             return null;
         }
     }
-
-    // STATION
-
-    public List<Station> getAutoCompleteStationName(String filter) {
-        StringBuilder query = new StringBuilder();
-        query.append("  SELECT\n");
-        query.append("      STATION_GUID,\n");
-        query.append("      STATION_NAME,\n");
-        query.append("      STATION_AFFILIATION,\n");
-        query.append("      STATION_ADDRESS,\n");
-        query.append("      STATION_CITY,\n");
-        query.append("      STATION_STATE,\n");
-        query.append("      STATION_ZIP,\n");
-        query.append("      STATION_PHONE\n");
-        query.append("  FROM\n");
-        query.append("      AUTO_TRACKER.STATION\n");
-        query.append("  WHERE\n");
-        query.append("      LOWER(STATION_NAME) LIKE LOWER(?)\n");
-        query.append("      AND STATION_STATUS = 'Active'\n");
-        query.append("  ORDER BY\n");
-        query.append("      STATION_NAME\n");
-        query.append("  LIMIT 5\n");
-        try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{"%" + filter + "%"},
-                    (rs, rowNum) -> {
-                        Station fuelStation = new Station();
-                        fuelStation.setStationGuid(rs.getString("STATION_GUID"));
-                        fuelStation.setStationName(rs.getString("STATION_NAME"));
-                        fuelStation.setStationAffiliation(rs.getString("STATION_AFFILIATION"));
-                        fuelStation.setStationAddress(rs.getString("STATION_ADDRESS"));
-                        fuelStation.setStationCity(rs.getString("STATION_CITY"));
-                        fuelStation.setStationState(rs.getString("STATION_STATE"));
-                        fuelStation.setStationZip(rs.getString("STATION_ZIP"));
-                        fuelStation.setStationPhone(rs.getString("STATION_PHONE"));
-                        return fuelStation;
-                    });
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("FuelStationDao -> getAutoCompleteStationName -> EmptyResultDataAccessException: " + e);
-            return null;
-        }
-    }
-
-    // DASHBOARD
-
-    public Double getLongestTimeBetweenFills() {
-        StringBuilder query = new StringBuilder();
-        query.append("  SELECT\n");
-        query.append("      MAX(FILL_MILES_TRAVELED) AS MAX_DISTANCE\n");
-        query.append("  FROM\n");
-        query.append("      AUTO_TRACKER.FILL\n");
-        query.append("  WHERE\n");
-        query.append("      STATUS = 'Active'\n");
-        this.logger.trace("SQL:\n" + query.toString());
-        try {
-            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{}, (rs, rowNum) -> rs.getDouble("MAX_DISTANCE"));
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("Exception: " + e);
-            return null;
-        }
-    }
-
-    public Double getLongestDistanceBetweenFills() {
-        StringBuilder query = new StringBuilder();
-        query.append("  SELECT\n");
-        query.append("      MAX(FILL_MILES_TRAVELED) AS MAX_DISTANCE\n");
-        query.append("  FROM\n");
-        query.append("      AUTO_TRACKER.FILL\n");
-        query.append("  WHERE\n");
-        query.append("      STATUS = 'Active'\n");
-        this.logger.trace("SQL:\n" + query.toString());
-        try {
-            return this.mySqlAuthJdbcTemplate.queryForObject(query.toString(), new Object[]{}, (rs, rowNum) -> rs.getDouble("MAX_DISTANCE"));
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("Exception: " + e);
-            return null;
-        }
-    }
-
-    public List<KeyValueDouble> getOdometerData() {
-        StringBuilder query = new StringBuilder();
-        query.append("  SELECT\n");
-        query.append("      FILL_DATE_TIME,\n");
-        query.append("      FILL_ODOMETER\n");
-        query.append("  FROM\n");
-        query.append("      AUTO_TRACKER.FILL\n");
-        query.append("  WHERE\n");
-        query.append("      STATUS = 'Active'\n");
-        query.append("  ORDER BY\n");
-        query.append("      FILL_ODOMETER\n");
-        this.logger.trace("SQL:\n" + query.toString());
-        try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> new KeyValueDouble(rs.getString("FILL_DATE_TIME"), rs.getDouble("FILL_ODOMETER")));
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("Exception: " + e);
-            return null;
-        }
-    }
-
-    public List<KeyValueDouble> getMpgData() {
-        StringBuilder query = new StringBuilder();
-        query.append("  SELECT\n");
-        query.append("      FILL_DATE_TIME,\n");
-        query.append("      FILL_MILES_TRAVELED / FILL_GALLONS AS MPG\n");
-        query.append("  FROM\n");
-        query.append("      AUTO_TRACKER.FILL\n");
-        query.append("  WHERE\n");
-        query.append("      STATUS = 'Active'\n");
-        query.append("  ORDER BY\n");
-        query.append("      FILL_DATE_TIME;\n");
-        this.logger.trace("SQL:\n" + query.toString());
-        try {
-            return this.mySqlAuthJdbcTemplate.query(query.toString(), new Object[]{}, (rs, rowNum) -> new KeyValueDouble(rs.getString("FILL_DATE_TIME"), rs.getDouble("MPG")));
-        } catch (EmptyResultDataAccessException e) {
-            this.logger.error("EmptyResultDataAccessException: " + e);
-            return null;
-        } catch (Exception e) {
-            this.logger.error("Exception: " + e);
-            return null;
-        }
-    }
-
 }

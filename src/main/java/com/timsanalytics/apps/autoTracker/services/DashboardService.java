@@ -1,10 +1,10 @@
-package com.timsanalytics.apps.main.services;
+package com.timsanalytics.apps.autoTracker.services;
 
-import com.timsanalytics.apps.main.beans.Fill;
-import com.timsanalytics.apps.main.beans.FuelActivity;
-import com.timsanalytics.apps.main.beans.Station;
-import com.timsanalytics.apps.main.dao.AutoTrackerDao;
-import com.timsanalytics.common.beans.*;
+import com.timsanalytics.apps.autoTracker.beans.FuelActivity;
+import com.timsanalytics.apps.autoTracker.dao.DashboardDao;
+import com.timsanalytics.common.beans.KeyValue;
+import com.timsanalytics.common.beans.KeyValueDouble;
+import com.timsanalytics.common.beans.KeyValueLong;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,57 +16,19 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
-public class AutoTrackerService {
-    private final AutoTrackerDao autoTrackerDao;
+public class DashboardService {
+    private final DashboardDao dashboardDao;
+    private final FuelActivityService fuelActivityService;
 
     @Autowired
-    public AutoTrackerService(AutoTrackerDao autoTrackerDao) {
-        this.autoTrackerDao = autoTrackerDao;
+    public DashboardService(DashboardDao dashboardDao,
+                            FuelActivityService fuelActivityService) {
+        this.dashboardDao = dashboardDao;
+        this.fuelActivityService = fuelActivityService;
     }
-
-    // Fuel Activity
-
-    public Fill createFuelActivity(Fill fill) {
-        return this.autoTrackerDao.createFuelActivity(fill);
-    }
-
-    public List<FuelActivity> getFuelActivityList() {
-        return this.autoTrackerDao.getFuelActivityList();
-    }
-
-    public ServerSidePaginationResponse<FuelActivity> getFuelActivityList_SSP(ServerSidePaginationRequest serverSidePaginationRequest) {
-        ServerSidePaginationResponse<FuelActivity> serverSidePaginationResponse = new ServerSidePaginationResponse<>();
-        serverSidePaginationResponse.setServerSidePaginationRequest(serverSidePaginationRequest);
-        List<FuelActivity> fuelActivityList = this.autoTrackerDao.getFuelActivityList_SSP(serverSidePaginationRequest);
-        serverSidePaginationResponse.setData(fuelActivityList);
-        serverSidePaginationResponse.setLoadedRecords(fuelActivityList.size());
-        serverSidePaginationResponse.setTotalRecords(this.autoTrackerDao.getFuelActivityList_SSP_TotalRecords(serverSidePaginationRequest));
-        return serverSidePaginationResponse;
-    }
-
-    public FuelActivity getFuelActivityDetail(String fuelActivityGuid) {
-        return this.autoTrackerDao.getFuelActivityDetail(fuelActivityGuid);
-    }
-
-    public Fill updateFuelActivity(Fill fill) {
-        return this.autoTrackerDao.updateFuelActivity(fill);
-    }
-
-    public KeyValue deleteFuelActivity(String fuelActivityGuid) {
-        return this.autoTrackerDao.deleteFuelActivity(fuelActivityGuid);
-    }
-
-    // STATION
-
-    // Auto-Complete
-    public List<Station> getAutoCompleteStationName(String filter) {
-        return this.autoTrackerDao.getAutoCompleteStationName(filter);
-    }
-
-    // Dashboard
 
     public KeyValueLong getLongestTimeBetweenFills() {
-        List<FuelActivity> fuelActivityList = this.autoTrackerDao.getFuelActivityList();
+        List<FuelActivity> fuelActivityList = this.fuelActivityService.getFuelActivityList();
         List<LocalDate> list = fuelActivityList.stream()
                 .map(item -> item.getFill().getFillDateTime().toLocalDateTime().toLocalDate())
                 .collect(Collectors.toList());
@@ -88,11 +50,11 @@ public class AutoTrackerService {
     }
 
     public KeyValueDouble getLongestDistanceBetweenFills() {
-        return new KeyValueDouble("result", this.autoTrackerDao.getLongestDistanceBetweenFills());
+        return new KeyValueDouble("result", this.dashboardDao.getLongestDistanceBetweenFills());
     }
 
     public KeyValue getEstimated1kDate() {
-        List<KeyValueDouble> odometerData = this.autoTrackerDao.getOdometerData();
+        List<KeyValueDouble> odometerData = this.dashboardDao.getOdometerData();
 
         // x = Odometer Reading
         List<Double> x = odometerData.stream().map(KeyValueDouble::getValue).collect(Collectors.toList());
@@ -112,11 +74,11 @@ public class AutoTrackerService {
     }
 
     public List<KeyValueDouble> getOdometerData() {
-        return this.autoTrackerDao.getOdometerData();
+        return this.dashboardDao.getOdometerData();
     }
 
     public List<KeyValueDouble> getMpgData() {
-        return this.autoTrackerDao.getMpgData();
+        return this.dashboardDao.getMpgData();
     }
 
     private static Double predictForValue(List<Double> x, List<Long> y) {

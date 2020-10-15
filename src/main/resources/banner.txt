@@ -2,7 +2,7 @@
  ##############################################################################
  #
  #   ${application.title}
- #   ------------
+ #   ----------------------
  #
  #   Build:                 ${application.timestamp}
  #   Environment:           ${application.environment}

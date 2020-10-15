@@ -1,6 +1,5 @@
-package com.timsanalytics.apps.main.beans;
+package com.timsanalytics.apps.autoTracker.beans;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 public class Fill {

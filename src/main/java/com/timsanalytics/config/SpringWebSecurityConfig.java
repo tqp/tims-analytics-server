@@ -99,6 +99,8 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/person/**").hasAnyRole("USER")
                 .antMatchers("/api/v1/auto-complete/**").hasAnyRole("USER")
 
+                .antMatchers("/api/v1/auto-tracker/**").hasAnyRole("USER")
+
                 .antMatchers("/reality-tracker/api/v1/series/**").hasAnyRole("USER")
                 .antMatchers("/reality-tracker/api/v1/season/**").hasAnyRole("USER")
                 .antMatchers("/reality-tracker/api/v1/contestant/**").hasAnyRole("USER")
@@ -117,7 +119,6 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // API Endpoints ADMIN
 
                 // API Endpoints DEVELOPER
-                .antMatchers("/api/v1/auto-tracker/**").hasAnyRole("DEVELOPER")
                 .antMatchers("/api/v1/charter-sauce/**").hasAnyRole("DEVELOPER")
                 .antMatchers("/api/v1/reality-tracker/**").hasAnyRole("DEVELOPER")
                 .antMatchers("/api/v1/sample-app/**").hasAnyRole("DEVELOPER")
