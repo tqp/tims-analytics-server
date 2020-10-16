@@ -9,6 +9,7 @@ public class Season {
     private String seasonGuid;
     private String seasonName;
     private String seasonAbbreviation;
+    private Integer seasonNumber;
     private Date seasonStartDate;
     private String seriesGuid;
     private String seriesName;
@@ -42,6 +43,14 @@ public class Season {
 
     public void setSeasonAbbreviation(String seasonAbbreviation) {
         this.seasonAbbreviation = seasonAbbreviation;
+    }
+
+    public Integer getSeasonNumber() {
+        return seasonNumber;
+    }
+
+    public void setSeasonNumber(Integer seasonNumber) {
+        this.seasonNumber = seasonNumber;
     }
 
     public Date getSeasonStartDate() {

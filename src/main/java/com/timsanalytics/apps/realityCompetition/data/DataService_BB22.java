@@ -343,6 +343,10 @@ public class DataService_BB22 {
         results.add(new Result(11, 5, "key_NicoleF"));
 
         // Round 12:
+        results.add(new Result(12, 1, "key_Christmas"));
+        results.add(new Result(12, 2, "key_Cody"));
+        results.add(new Result(12, 3, "key_Enzo"));
+        results.add(new Result(12, 4, "key_NicoleF"));
 
         // Round 13:
 

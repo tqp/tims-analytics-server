@@ -34,10 +34,13 @@ public class SeasonDao {
         query.append("          SERIES_GUID,\n");
         query.append("          SEASON_NAME,\n");
         query.append("          SEASON_ABBREVIATION,\n");
+        query.append("          SEASON_NUMBER,\n");
         query.append("          STATUS\n");
         query.append("      )\n");
         query.append("      VALUES\n");
         query.append("      (\n");
+        query.append("          ?,\n");
+        query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
         query.append("          ?,\n");
@@ -56,6 +59,8 @@ public class SeasonDao {
                         ps.setString(1, season.getSeasonGuid());
                         ps.setString(2, season.getSeriesGuid());
                         ps.setString(3, season.getSeasonName());
+                        ps.setString(4, season.getSeasonAbbreviation());
+                        ps.setInt(5, season.getSeasonNumber());
                         return ps;
                     }
             );
@@ -75,6 +80,7 @@ public class SeasonDao {
         query.append("      SEASON_GUID,\n");
         query.append("      SEASON_NAME,\n");
         query.append("      SEASON_ABBREVIATION,\n");
+        query.append("      SEASON_NUMBER,\n");
         query.append("      SEASON_START_DATE,\n");
         query.append("      SEASON.SERIES_GUID,\n");
         query.append("      SERIES.SERIES_NAME,\n");
@@ -91,6 +97,7 @@ public class SeasonDao {
                 row.setSeasonGuid(rs.getString("SEASON_GUID"));
                 row.setSeasonName(rs.getString("SEASON_NAME"));
                 row.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
+                row.setSeasonNumber(rs.getInt("SEASON_NUMBER"));
                 row.setSeasonStartDate(rs.getDate("SEASON_START_DATE"));
                 row.setSeriesGuid(rs.getString("SERIES_GUID"));
                 row.setSeriesName(rs.getString("SERIES_NAME"));
@@ -112,6 +119,7 @@ public class SeasonDao {
         query.append("      SEASON_GUID,\n");
         query.append("      SEASON_NAME,\n");
         query.append("      SEASON_ABBREVIATION,\n");
+        query.append("      SEASON_NUMBER,\n");
         query.append("      SEASON_START_DATE,\n");
         query.append("      SEASON.SERIES_GUID,\n");
         query.append("      SERIES.SERIES_NAME,\n");
@@ -132,6 +140,7 @@ public class SeasonDao {
                 row.setSeasonGuid(rs.getString("SEASON_GUID"));
                 row.setSeasonName(rs.getString("SEASON_NAME"));
                 row.setSeasonAbbreviation(rs.getString("SEASON_ABBREVIATION"));
+                row.setSeasonNumber(rs.getInt("SEASON_NUMBER"));
                 row.setSeasonStartDate(rs.getDate("SEASON_START_DATE"));
                 row.setSeriesGuid(rs.getString("SERIES_GUID"));
                 row.setSeriesName(rs.getString("SERIES_NAME"));
@@ -153,7 +162,8 @@ public class SeasonDao {
         query.append("      REALITY_TRACKER.SEASON\n");
         query.append("  SET\n");
         query.append("      SEASON.SEASON_NAME = ?,\n");
-        query.append("      SEASON.SEASON_ABBREVIATION = ?\n");
+        query.append("      SEASON.SEASON_ABBREVIATION = ?,\n");
+        query.append("      SEASON.SEASON_NUMBER = ?\n");
         query.append("  WHERE\n");
         query.append("      SEASON.SEASON_GUID = ?\n");
         this.logger.trace("SQL:\n" + query.toString());
@@ -163,7 +173,8 @@ public class SeasonDao {
                         PreparedStatement ps = connection.prepareStatement(query.toString());
                         ps.setString(1, season.getSeasonName());
                         ps.setString(2, season.getSeasonAbbreviation());
-                        ps.setString(3, season.getSeasonGuid());
+                        ps.setInt(3, season.getSeasonNumber());
+                        ps.setString(4, season.getSeasonGuid());
                         return ps;
                     }
             );
