@@ -76,14 +76,14 @@ public class GoogleAuthService {
 
             // Generate Token
             String token = this.tokenService.generateTokenFromUser(appUser);
-            this.logger.debug("Token=" + token);
+            //this.logger.debug("Token=" + token);
 
             // Generate short-lived token to pass securely to client.
             String shortLivedToken = generateShortLivedToken(token);
 
             // Redirect to short-lived token exchange page
-            this.logger.debug("Redirecting SLT to " + environment.getProperty("application.client.url") + "/open-pages/token-exchange?slt=" + shortLivedToken);
-            response.sendRedirect(environment.getProperty("application.client.url") + "/open-pages/token-exchange?slt=" + shortLivedToken);
+            //this.logger.debug("Redirecting SLT to " + environment.getProperty("application.client.url") + "/#/token-exchange?slt=" + shortLivedToken);
+            response.sendRedirect(environment.getProperty("application.client.url") + "/#/token-exchange?slt=" + shortLivedToken);
         } else {
             this.logger.debug("User not found");
             response.sendRedirect(environment.getProperty("application.client.url") + "/open-pages/login?error=UsernameNotFoundException");

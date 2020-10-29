@@ -82,6 +82,12 @@
         <!-- / DATA SOURCES AND SERVICE -->
 
         <!-- UTILITIES -->
+        <!-- Amazon Web Services SDK SNS -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-sns</artifactId>
+            <version>1.11.163</version>
+        </dependency>
         <!-- JSON Web Tokens -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
