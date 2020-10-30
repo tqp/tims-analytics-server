@@ -92,20 +92,20 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/reality-tracker/api/v1/competition/**/**").permitAll()
 
                 // API Endpoints USER
-                .antMatchers("/api/v1/my-profile/**").hasAnyRole("USER")
-                .antMatchers("/api/v1/settings/**").hasAnyRole("USER")
-                .antMatchers("/api/v1/holiday/**").hasAnyRole("USER")
-                .antMatchers("/api/v1/word-counter/**").hasAnyRole("USER")
-                .antMatchers("/api/v1/person/**").hasAnyRole("USER")
-                .antMatchers("/api/v1/auto-complete/**").hasAnyRole("USER")
+                .antMatchers("/api/v1/my-profile/**").hasAnyRole("USER, GUEST")
+                .antMatchers("/api/v1/settings/**").hasAnyRole("USER, GUEST")
+                .antMatchers("/api/v1/holiday/**").hasAnyRole("USER, GUEST")
+                .antMatchers("/api/v1/word-counter/**").hasAnyRole("USER, GUEST")
+                .antMatchers("/api/v1/person/**").hasAnyRole("USER, GUEST")
+                .antMatchers("/api/v1/auto-complete/**").hasAnyRole("USER, GUEST")
 
-                .antMatchers("/api/v1/auto-tracker/**").hasAnyRole("USER")
+                .antMatchers("/api/v1/auto-tracker/**").hasAnyRole("USER, GUEST")
 
-                .antMatchers("/reality-tracker/api/v1/series/**").hasAnyRole("USER")
-                .antMatchers("/reality-tracker/api/v1/season/**").hasAnyRole("USER")
-                .antMatchers("/reality-tracker/api/v1/contestant/**").hasAnyRole("USER")
-                .antMatchers("/reality-tracker/api/v1/competition/**").hasAnyRole("USER")
-                .antMatchers("/reality-tracker/api/v1/player/**").hasAnyRole("USER")
+                .antMatchers("/reality-tracker/api/v1/series/**").hasAnyRole("USER, GUEST")
+                .antMatchers("/reality-tracker/api/v1/season/**").hasAnyRole("USER, GUEST")
+                .antMatchers("/reality-tracker/api/v1/contestant/**").hasAnyRole("USER, GUEST")
+                .antMatchers("/reality-tracker/api/v1/competition/**").hasAnyRole("USER, GUEST")
+                .antMatchers("/reality-tracker/api/v1/player/**").hasAnyRole("USER, GUEST")
 
                 // API Endpoints MANAGER
                 .antMatchers("/api/v1/app-user/**").hasAnyRole("MANAGER")
@@ -125,6 +125,7 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // Testing Endpoints
                 .antMatchers("/api/v1/diagnostics/endpoint/open/**").permitAll()
+                .antMatchers("/api/v1/diagnostics/endpoint/guest/**").hasAnyRole("GUEST")
                 .antMatchers("/api/v1/diagnostics/endpoint/user/**").hasAnyRole("USER")
                 .antMatchers("/api/v1/diagnostics/endpoint/manager/**").hasAnyRole("MANAGER")
                 .antMatchers("/api/v1/diagnostics/endpoint/admin/**").hasAnyRole("ADMIN")
