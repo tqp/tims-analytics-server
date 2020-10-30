@@ -41,7 +41,7 @@ mvn install:install-file \
 
 ## AWS Configruation
 
-Deploy server to Elastic Beanstalk (with https)
+#### Deploy server to Elastic Beanstalk (with https)
 
 Elastic Beanstalk -> Environments -> <environment-name> -> Configuration  
 Capacity:
@@ -65,3 +65,12 @@ Route 53:
 - Record Type: A - Routes traffic to an IPv4 address and some AWS resources.
 
 MAKE SURE YOU UPDATE CORS ON THE SERVER!!!
+
+#### Spring Profiles Active
+To set "spring.profiles.active" the way you would when starting Tomcat, open ElasticBeanstalk, 
+go to Configuration -> Software -> Environment Properties. Then, set:  
+```text
+name = spring.profiles.active, value = prod
+```
+  
+Don't get fooled by all the websites that say to set SPRING_PROFILES_ACTIVE.

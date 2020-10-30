@@ -86,7 +86,7 @@ public class GoogleAuthService {
             response.sendRedirect(environment.getProperty("application.client.url") + "/#/token-exchange?slt=" + shortLivedToken);
         } else {
             this.logger.debug("User not found");
-            response.sendRedirect(environment.getProperty("application.client.url") + "/open-pages/login?error=UsernameNotFoundException");
+            response.sendRedirect(environment.getProperty("application.client.url") + "/#/login-page?error=UsernameNotFoundException");
         }
     }
 
