@@ -31,6 +31,16 @@ public class DiagnosticsController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/endpoint/guest", method = RequestMethod.GET)
+    @Operation(summary = "Tests access to Guest-restricted endpoints", tags = {"Test Endpoints"}, security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<KeyValue> GuestTest() {
+        this.logger.debug("EndpointTestController -> GuestTest");
+        return ResponseEntity
+                .ok()
+                .body(new KeyValue("Open", "Connected to Guest Endpoint"));
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/endpoint/user", method = RequestMethod.GET)
     @Operation(summary = "Tests access to User-restricted endpoints", tags = {"Test Endpoints"}, security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<KeyValue> UserTest() {
